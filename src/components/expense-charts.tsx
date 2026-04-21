@@ -59,7 +59,7 @@ export function ExpenseCharts({ expenses }: { expenses: Expense[] }) {
                 ))}
               </Pie>
               <Tooltip
-                formatter={(v: number) => formatBRL(v)}
+                formatter={(v) => formatBRL(Number(v))}
                 contentStyle={{
                   background: "var(--card)",
                   border: "1px solid var(--border)",
@@ -92,7 +92,7 @@ export function ExpenseCharts({ expenses }: { expenses: Expense[] }) {
               <XAxis dataKey="date" tick={{ fontSize: 11, fill: "var(--muted-foreground)" }} />
               <YAxis tick={{ fontSize: 11, fill: "var(--muted-foreground)" }} />
               <Tooltip
-                formatter={(v: number) => formatBRL(v)}
+                formatter={(v) => formatBRL(Number(v))}
                 contentStyle={{
                   background: "var(--card)",
                   border: "1px solid var(--border)",
