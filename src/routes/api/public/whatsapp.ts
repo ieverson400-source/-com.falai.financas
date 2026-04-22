@@ -4,6 +4,7 @@ import { createHmac, timingSafeEqual } from "crypto";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { extractExpenseFromAudio } from "@/server/expense-ai";
 import { normalizeWhatsAppPhone } from "@/lib/phone";
+import type { TablesUpdate } from "@/integrations/supabase/types";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -59,7 +60,7 @@ async function fetchTwilioMedia(url: string) {
   return Buffer.from(arrayBuffer).toString("base64");
 }
 
-async function markInbox(messageSid: string, updates: Record<string, unknown>) {
+async function markInbox(messageSid: string, updates: TablesUpdate<"whatsapp_inbox">) {
   await supabaseAdmin.from("whatsapp_inbox").update(updates).eq("message_sid", messageSid);
 }
 
@@ -104,16 +105,6 @@ export const Route = createFileRoute("/api/public/whatsapp")({
         }
 
         if (!profile) {
-          await supabaseAdmin.from("whatsapp_inbox").upsert({
-            user_id: "00000000-0000-0000-0000-000000000000",
-            from_phone: phone,
-            message_sid: parsed.data.MessageSid,
-            media_url: parsed.data.MediaUrl0 ?? null,
-            media_content_type: parsed.data.MediaContentType0 ?? null,
-            processing_status: "ignored",
-            error_message: "Número não vinculado a nenhum cliente",
-            payload: Object.fromEntries(params.entries()),
-          }, { onConflict: "message_sid", ignoreDuplicates: false });
           return textResponse("Número não vinculado", 200);
         }
 
@@ -135,7 +126,10 @@ export const Route = createFileRoute("/api/public/whatsapp")({
           return textResponse(upsertError.message, 500);
         }
 
-        if (!parsed.data.MediaUrl0 || !(parsed.data.MediaContentType0 ?? "").startsWith("audio/")) {
+        const mediaUrl = parsed.data.MediaUrl0;
+        const mediaContentType = parsed.data.MediaContentType0;
+
+        if (!mediaUrl || !mediaContentType || !mediaContentType.startsWith("audio/")) {
           await markInbox(parsed.data.MessageSid, {
             processing_status: "ignored",
             error_message: "Mensagem recebida sem áudio compatível",
@@ -145,10 +139,10 @@ export const Route = createFileRoute("/api/public/whatsapp")({
 
         try {
           const today = new Date().toISOString().slice(0, 10);
-          const audioBase64 = await fetchTwilioMedia(parsed.data.MediaUrl0);
+          const audioBase64 = await fetchTwilioMedia(mediaUrl);
           const extracted = await extractExpenseFromAudio({
             audioBase64,
-            mimeType: parsed.data.MediaContentType0,
+            mimeType: mediaContentType,
             today,
           });
 

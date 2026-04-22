@@ -7,6 +7,8 @@ import { Card } from "@/components/ui/card";
 import { AudioRecorder } from "@/components/audio-recorder";
 import { ExpenseCharts } from "@/components/expense-charts";
 import { ManualExpenseDialog } from "@/components/manual-expense-dialog";
+import { WhatsAppLinkCard } from "@/components/whatsapp-link-card";
+import { WhatsAppInboxCard, type WhatsAppInboxItem } from "@/components/whatsapp-inbox-card";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import { LogOut, Trash2, Mic, Hand } from "lucide-react";
@@ -39,6 +41,8 @@ function AppDashboard() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [whatsAppPhone, setWhatsAppPhone] = useState<string | null>(null);
+  const [whatsAppInbox, setWhatsAppInbox] = useState<WhatsAppInboxItem[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
@@ -48,17 +52,27 @@ function AppDashboard() {
   const load = useCallback(async () => {
     if (!user) return;
     setRefreshing(true);
-    const { data, error } = await supabase
-      .from("expenses")
-      .select("*")
-      .order("expense_date", { ascending: false })
-      .order("created_at", { ascending: false });
+    const [expensesRes, profileRes, inboxRes] = await Promise.all([
+      supabase
+        .from("expenses")
+        .select("*")
+        .order("expense_date", { ascending: false })
+        .order("created_at", { ascending: false }),
+      supabase.from("profiles").select("whatsapp_phone").eq("user_id", user.id).maybeSingle(),
+      supabase
+        .from("whatsapp_inbox")
+        .select("id, from_phone, transcript, processing_status, error_message, created_at")
+        .order("created_at", { ascending: false })
+        .limit(8),
+    ]);
     setRefreshing(false);
-    if (error) {
-      toast.error(error.message);
+    if (expensesRes.error || profileRes.error || inboxRes.error) {
+      toast.error(expensesRes.error?.message || profileRes.error?.message || inboxRes.error?.message || "Falha ao carregar dados");
       return;
     }
-    setExpenses((data ?? []) as Expense[]);
+    setExpenses((expensesRes.data ?? []) as Expense[]);
+    setWhatsAppPhone(profileRes.data?.whatsapp_phone ?? null);
+    setWhatsAppInbox((inboxRes.data ?? []) as WhatsAppInboxItem[]);
   }, [user]);
 
   useEffect(() => {
@@ -131,11 +145,14 @@ function AppDashboard() {
               <p className="text-xs uppercase tracking-wider text-muted-foreground">Total geral</p>
               <p className="font-display text-2xl font-semibold mt-1">{formatBRL(totalAll)}</p>
             </Card>
+            <WhatsAppLinkCard currentPhone={whatsAppPhone} onSaved={setWhatsAppPhone} />
           </div>
         </div>
 
         {/* Charts */}
         <ExpenseCharts expenses={monthExpenses} />
+
+        <WhatsAppInboxCard items={whatsAppInbox} />
 
         {/* List */}
         <Card className="bg-card">
