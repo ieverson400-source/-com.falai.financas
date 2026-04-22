@@ -57,6 +57,7 @@ export type Database = {
           id: string
           updated_at: string
           user_id: string
+          whatsapp_phone: string | null
         }
         Insert: {
           created_at?: string
@@ -64,6 +65,7 @@ export type Database = {
           id?: string
           updated_at?: string
           user_id: string
+          whatsapp_phone?: string | null
         }
         Update: {
           created_at?: string
@@ -71,8 +73,75 @@ export type Database = {
           id?: string
           updated_at?: string
           user_id?: string
+          whatsapp_phone?: string | null
         }
         Relationships: []
+      }
+      whatsapp_inbox: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          expense_id: string | null
+          from_phone: string
+          id: string
+          media_content_type: string | null
+          media_url: string | null
+          message_sid: string
+          payload: Json
+          processing_status: string
+          provider: string
+          transcript: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          expense_id?: string | null
+          from_phone: string
+          id?: string
+          media_content_type?: string | null
+          media_url?: string | null
+          message_sid: string
+          payload?: Json
+          processing_status?: string
+          provider?: string
+          transcript?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          expense_id?: string | null
+          from_phone?: string
+          id?: string
+          media_content_type?: string | null
+          media_url?: string | null
+          message_sid?: string
+          payload?: Json
+          processing_status?: string
+          provider?: string
+          transcript?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "whatsapp_inbox_expense_fk"
+            columns: ["expense_id"]
+            isOneToOne: false
+            referencedRelation: "expenses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "whatsapp_inbox_user_fk"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
       }
     }
     Views: {
