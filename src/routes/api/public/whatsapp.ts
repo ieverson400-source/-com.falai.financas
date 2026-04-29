@@ -105,6 +105,30 @@ export const Route = createFileRoute("/api/public/whatsapp")({
         }
 
         if (!profile) {
+          // Registra/atualiza o número não mapeado para revisão posterior
+          const { data: existing } = await supabaseAdmin
+            .from("whatsapp_unmapped_numbers")
+            .select("id, hits")
+            .eq("from_phone", phone)
+            .maybeSingle();
+
+          if (existing) {
+            await supabaseAdmin
+              .from("whatsapp_unmapped_numbers")
+              .update({
+                hits: existing.hits + 1,
+                last_seen_at: new Date().toISOString(),
+                last_message_sid: parsed.data.MessageSid,
+                last_payload: Object.fromEntries(params.entries()),
+              })
+              .eq("id", existing.id);
+          } else {
+            await supabaseAdmin.from("whatsapp_unmapped_numbers").insert({
+              from_phone: phone,
+              last_message_sid: parsed.data.MessageSid,
+              last_payload: Object.fromEntries(params.entries()),
+            });
+          }
           return textResponse("Número não vinculado", 200);
         }
 
