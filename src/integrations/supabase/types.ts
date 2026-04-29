@@ -143,6 +143,36 @@ export type Database = {
           },
         ]
       }
+      whatsapp_unmapped_numbers: {
+        Row: {
+          first_seen_at: string
+          from_phone: string
+          hits: number
+          id: string
+          last_message_sid: string | null
+          last_payload: Json
+          last_seen_at: string
+        }
+        Insert: {
+          first_seen_at?: string
+          from_phone: string
+          hits?: number
+          id?: string
+          last_message_sid?: string | null
+          last_payload?: Json
+          last_seen_at?: string
+        }
+        Update: {
+          first_seen_at?: string
+          from_phone?: string
+          hits?: number
+          id?: string
+          last_message_sid?: string | null
+          last_payload?: Json
+          last_seen_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
