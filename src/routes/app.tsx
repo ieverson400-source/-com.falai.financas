@@ -10,6 +10,7 @@ import { ManualExpenseDialog } from "@/components/manual-expense-dialog";
 import { WhatsAppLinkCard } from "@/components/whatsapp-link-card";
 import { WhatsAppInboxCard, type WhatsAppInboxItem } from "@/components/whatsapp-inbox-card";
 import { TwilioConfigCard } from "@/components/twilio-config-card";
+import { WhatsAppMappingsCard } from "@/components/whatsapp-mappings-card";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import { LogOut, Trash2, Mic, Hand } from "lucide-react";
@@ -154,6 +155,8 @@ function AppDashboard() {
         <ExpenseCharts expenses={monthExpenses} />
 
         <TwilioConfigCard />
+
+        <WhatsAppMappingsCard />
 
         <WhatsAppInboxCard items={whatsAppInbox} />
 
