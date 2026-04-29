@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { createHmac, timingSafeEqual } from "crypto";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import { extractExpenseFromAudio } from "@/server/expense-ai";
+import { extractExpenseFromAudio, extractExpenseFromText } from "@/server/expense-ai";
 import { normalizeWhatsAppPhone } from "@/lib/phone";
 import type { TablesUpdate } from "@/integrations/supabase/types";
 
@@ -18,6 +18,7 @@ const FormSchema = z.object({
   NumMedia: z.string().optional(),
   MediaUrl0: z.string().url().optional(),
   MediaContentType0: z.string().min(3).max(120).optional(),
+  Body: z.string().max(4000).optional(),
 });
 
 function textResponse(body: string, status = 200) {
@@ -152,23 +153,26 @@ export const Route = createFileRoute("/api/public/whatsapp")({
 
         const mediaUrl = parsed.data.MediaUrl0;
         const mediaContentType = parsed.data.MediaContentType0;
+        const bodyText = parsed.data.Body?.trim() ?? "";
+        const hasAudio = !!(mediaUrl && mediaContentType && mediaContentType.startsWith("audio/"));
 
-        if (!mediaUrl || !mediaContentType || !mediaContentType.startsWith("audio/")) {
+        if (!hasAudio && bodyText.length === 0) {
           await markInbox(parsed.data.MessageSid, {
             processing_status: "ignored",
-            error_message: "Mensagem recebida sem áudio compatível",
+            error_message: "Mensagem recebida sem áudio nem texto",
           });
-          return textResponse("Mensagem sem áudio", 200);
+          return textResponse("Mensagem vazia", 200);
         }
 
         try {
           const today = new Date().toISOString().slice(0, 10);
-          const audioBase64 = await fetchTwilioMedia(mediaUrl);
-          const extracted = await extractExpenseFromAudio({
-            audioBase64,
-            mimeType: mediaContentType,
-            today,
-          });
+          const extracted = hasAudio
+            ? await extractExpenseFromAudio({
+                audioBase64: await fetchTwilioMedia(mediaUrl!),
+                mimeType: mediaContentType!,
+                today,
+              })
+            : await extractExpenseFromText({ text: bodyText, today });
 
           const { data: expense, error: expenseError } = await supabaseAdmin
             .from("expenses")

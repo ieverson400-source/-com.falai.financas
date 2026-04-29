@@ -127,3 +127,89 @@ export async function extractExpenseFromAudio({
     expense_date: args.expense_date === "today" ? today : args.expense_date,
   } satisfies ExtractedExpense;
 }
+
+const TEXT_SYSTEM_PROMPT = `Você é um assistente de finanças pessoais. O usuário envia mensagens de texto em português brasileiro descrevendo gastos.
+
+Sua tarefa:
+1. Interpretar a mensagem do usuário.
+2. Extrair: valor (número, em reais), categoria, descrição curta e data (formato YYYY-MM-DD; se não mencionada, use "today").
+
+Categorias permitidas: ${CATEGORIES.join(", ")}.
+Escolha a mais adequada. Use "Outros" se nenhuma servir.
+
+Sempre chame a função register_expense exatamente uma vez. No campo transcript, copie a mensagem original do usuário.`;
+
+export async function extractExpenseFromText({
+  text,
+  today,
+}: {
+  text: string;
+  today: string;
+}) {
+  const apiKey = process.env.LOVABLE_API_KEY;
+  if (!apiKey) throw new Error("LOVABLE_API_KEY não configurada");
+
+  const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: "google/gemini-2.5-flash",
+      messages: [
+        { role: "system", content: TEXT_SYSTEM_PROMPT },
+        {
+          role: "user",
+          content: `Hoje é ${today}. Mensagem do usuário: "${text}"`,
+        },
+      ],
+      tools: [
+        {
+          type: "function",
+          function: {
+            name: "register_expense",
+            description: "Registra um gasto extraído da mensagem de texto",
+            parameters: {
+              type: "object",
+              properties: {
+                transcript: { type: "string", description: "Mensagem original do usuário" },
+                amount: { type: "number", description: "Valor do gasto em reais" },
+                category: { type: "string", enum: CATEGORIES },
+                description: { type: "string", description: "Descrição curta do gasto" },
+                expense_date: {
+                  type: "string",
+                  description: "Data no formato YYYY-MM-DD",
+                },
+              },
+              required: ["transcript", "amount", "category", "expense_date"],
+              additionalProperties: false,
+            },
+          },
+        },
+      ],
+      tool_choice: { type: "function", function: { name: "register_expense" } },
+    }),
+  });
+
+  if (!res.ok) {
+    const body = await res.text();
+    if (res.status === 429) throw new Error("Limite de uso atingido. Tente novamente em alguns instantes.");
+    if (res.status === 402) throw new Error("Créditos esgotados. Adicione créditos em Settings → Workspace → Usage.");
+    throw new Error(`Erro IA [${res.status}]: ${body.slice(0, 200)}`);
+  }
+
+  const json = await res.json();
+  const toolCall = json.choices?.[0]?.message?.tool_calls?.[0];
+  if (!toolCall) throw new Error("Não consegui entender o gasto. Tente algo como: 'gastei 30 reais no almoço'.");
+
+  const args = JSON.parse(toolCall.function.arguments) as ExtractedExpense;
+
+  return {
+    transcript: args.transcript || text,
+    amount: Number(args.amount),
+    category: String(args.category),
+    description: args.description ?? null,
+    expense_date: args.expense_date === "today" ? today : args.expense_date,
+  } satisfies ExtractedExpense;
+}
