@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { createHmac, timingSafeEqual } from "crypto";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import { extractExpenseFromAudio } from "@/server/expense-ai";
+import { extractExpenseFromAudio, extractExpenseFromText } from "@/server/expense-ai";
 import { normalizeWhatsAppPhone } from "@/lib/phone";
 import type { TablesUpdate } from "@/integrations/supabase/types";
 
