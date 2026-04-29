@@ -18,6 +18,7 @@ const FormSchema = z.object({
   NumMedia: z.string().optional(),
   MediaUrl0: z.string().url().optional(),
   MediaContentType0: z.string().min(3).max(120).optional(),
+  Body: z.string().max(4000).optional(),
 });
 
 function textResponse(body: string, status = 200) {
