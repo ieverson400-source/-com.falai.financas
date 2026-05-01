@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
 import { MessageCircle, Save } from "lucide-react";
 import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { saveWhatsAppPhone } from "@/server/whatsapp.functions";
+import { supabase } from "@/integrations/supabase/client";
+import { normalizeWhatsAppPhone } from "@/lib/phone";
 
 interface Props {
   currentPhone: string | null;
@@ -16,13 +16,37 @@ interface Props {
 export function WhatsAppLinkCard({ currentPhone, onSaved }: Props) {
   const [phone, setPhone] = useState(currentPhone ?? "");
   const [saving, setSaving] = useState(false);
-  const savePhone = useServerFn(saveWhatsAppPhone);
 
   const handleSave = async () => {
+    const normalized = normalizeWhatsAppPhone(phone);
+    if (!normalized) {
+      toast.error("Use um número válido com DDI, ex: +5511999999999.");
+      return;
+    }
+
     setSaving(true);
     try {
-      const result = await savePhone({ data: { phone } });
-      onSaved(result.whatsapp_phone);
+      const { data: userRes, error: userErr } = await supabase.auth.getUser();
+      if (userErr || !userRes.user) throw new Error("Faça login novamente para salvar o número.");
+
+      // Verifica conflito com outro usuário
+      const { data: conflict, error: conflictErr } = await supabase
+        .from("profiles")
+        .select("user_id")
+        .eq("whatsapp_phone", normalized)
+        .maybeSingle();
+      if (conflictErr) throw new Error(conflictErr.message);
+      if (conflict && conflict.user_id !== userRes.user.id) {
+        throw new Error("Esse número já está vinculado a outro cliente.");
+      }
+
+      const { error: updateErr } = await supabase
+        .from("profiles")
+        .update({ whatsapp_phone: normalized })
+        .eq("user_id", userRes.user.id);
+      if (updateErr) throw new Error(updateErr.message);
+
+      onSaved(normalized);
       toast.success("Número do WhatsApp salvo.");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Não foi possível salvar o número.");
