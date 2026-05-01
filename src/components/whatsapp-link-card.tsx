@@ -16,51 +16,77 @@ interface Props {
 export function WhatsAppLinkCard({ currentPhone, onSaved }: Props) {
   const [phone, setPhone] = useState(currentPhone ?? "");
   const [saving, setSaving] = useState(false);
+  const [diagnostic, setDiagnostic] = useState<string | null>(null);
 
   const handleSave = async () => {
     const normalized = normalizeWhatsAppPhone(phone);
     if (!normalized) {
-      toast.error("Use um número válido com DDI, ex: +5511999999999.");
+      const message = `Etapa: validação do número. Erro: "${phone}" não parece estar em formato internacional. Use DDI + DDD + número, ex: +5511999999999.`;
+      setDiagnostic(message);
+      toast.error(message);
       return;
     }
 
     setSaving(true);
+    setDiagnostic(`Etapa: iniciando vínculo. Número normalizado: ${normalized}.`);
     try {
       const { data: userRes, error: userErr } = await supabase.auth.getUser();
-      if (userErr || !userRes.user) throw new Error("Faça login novamente para salvar o número.");
+      if (userErr || !userRes.user) {
+        throw new Error(
+          `Etapa: autenticação. Não foi possível confirmar seu login. Detalhe: ${userErr?.message ?? "sessão ausente"}.`,
+        );
+      }
 
       // Verifica conflito com outro usuário
+      setDiagnostic("Etapa: verificando se o número já está vinculado ao seu perfil.");
       const { data: conflict, error: conflictErr } = await supabase
         .from("profiles")
         .select("user_id")
         .eq("whatsapp_phone", normalized)
         .maybeSingle();
-      if (conflictErr) throw new Error(conflictErr.message);
+      if (conflictErr) {
+        throw new Error(
+          `Etapa: consulta de conflito. Código: ${conflictErr.code ?? "sem código"}. Detalhe: ${conflictErr.message}`,
+        );
+      }
       if (conflict && conflict.user_id !== userRes.user.id) {
-        throw new Error("Esse número já está vinculado a outro cliente.");
+        throw new Error("Etapa: consulta de conflito. Esse número já está vinculado a outro cliente.");
       }
 
+      setDiagnostic("Etapa: atualizando seu perfil com o número informado.");
       const { data: savedProfile, error: updateErr } = await supabase
         .from("profiles")
         .update({ whatsapp_phone: normalized })
         .eq("user_id", userRes.user.id)
         .select("whatsapp_phone")
         .maybeSingle();
-      if (updateErr) throw new Error(updateErr.message);
+      if (updateErr) {
+        throw new Error(
+          `Etapa: atualização do perfil. Código: ${updateErr.code ?? "sem código"}. Detalhe: ${updateErr.message}`,
+        );
+      }
 
       if (!savedProfile) {
+        setDiagnostic("Etapa: perfil não existia; criando perfil com o número informado.");
         const { error: insertErr } = await supabase.from("profiles").insert({
           user_id: userRes.user.id,
           display_name: userRes.user.user_metadata?.display_name ?? userRes.user.email ?? null,
           whatsapp_phone: normalized,
         });
-        if (insertErr) throw new Error(insertErr.message);
+        if (insertErr) {
+          throw new Error(
+            `Etapa: criação do perfil. Código: ${insertErr.code ?? "sem código"}. Detalhe: ${insertErr.message}`,
+          );
+        }
       }
 
       onSaved(normalized);
+      setDiagnostic(`Sucesso: número ${normalized} salvo no seu perfil.`);
       toast.success("Número do WhatsApp salvo.");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Não foi possível salvar o número.");
+      const message = error instanceof Error ? error.message : "Não foi possível salvar o número.";
+      setDiagnostic(message);
+      toast.error(message);
     } finally {
       setSaving(false);
     }
@@ -99,6 +125,13 @@ export function WhatsAppLinkCard({ currentPhone, onSaved }: Props) {
             <Save className="size-4" />
             {saving ? "Salvando..." : "Salvar número"}
           </Button>
+
+          {diagnostic && (
+            <div className="rounded-md border border-border bg-secondary/60 p-3 text-xs leading-relaxed text-muted-foreground">
+              <span className="font-medium text-foreground">Diagnóstico: </span>
+              {diagnostic}
+            </div>
+          )}
         </div>
       </div>
     </Card>
