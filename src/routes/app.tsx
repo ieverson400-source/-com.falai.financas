@@ -9,8 +9,6 @@ import { ExpenseCharts } from "@/components/expense-charts";
 import { ManualExpenseDialog } from "@/components/manual-expense-dialog";
 import { WhatsAppLinkCard } from "@/components/whatsapp-link-card";
 import { WhatsAppInboxCard, type WhatsAppInboxItem } from "@/components/whatsapp-inbox-card";
-import { TwilioConfigCard } from "@/components/twilio-config-card";
-import { WhatsAppMappingsCard } from "@/components/whatsapp-mappings-card";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import { LogOut, Trash2, Mic, Hand } from "lucide-react";
@@ -69,7 +67,12 @@ function AppDashboard() {
     ]);
     setRefreshing(false);
     if (expensesRes.error || profileRes.error || inboxRes.error) {
-      toast.error(expensesRes.error?.message || profileRes.error?.message || inboxRes.error?.message || "Falha ao carregar dados");
+      toast.error(
+        expensesRes.error?.message ||
+          profileRes.error?.message ||
+          inboxRes.error?.message ||
+          "Falha ao carregar dados",
+      );
       return;
     }
     setExpenses((expensesRes.data ?? []) as Expense[]);
@@ -154,10 +157,6 @@ function AppDashboard() {
         {/* Charts */}
         <ExpenseCharts expenses={monthExpenses} />
 
-        <TwilioConfigCard />
-
-        <WhatsAppMappingsCard />
-
         <WhatsAppInboxCard items={whatsAppInbox} />
 
         {/* List */}
@@ -191,7 +190,10 @@ function AppDashboard() {
                         <Mic className="size-3 text-primary shrink-0" aria-label="Por áudio" />
                       )}
                       {e.source === "manual" && (
-                        <Hand className="size-3 text-muted-foreground shrink-0" aria-label="Manual" />
+                        <Hand
+                          className="size-3 text-muted-foreground shrink-0"
+                          aria-label="Manual"
+                        />
                       )}
                     </div>
                     {(e.description || e.raw_transcript) && (

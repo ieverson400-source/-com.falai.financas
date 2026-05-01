@@ -40,11 +40,22 @@ export function WhatsAppLinkCard({ currentPhone, onSaved }: Props) {
         throw new Error("Esse número já está vinculado a outro cliente.");
       }
 
-      const { error: updateErr } = await supabase
+      const { data: savedProfile, error: updateErr } = await supabase
         .from("profiles")
         .update({ whatsapp_phone: normalized })
-        .eq("user_id", userRes.user.id);
+        .eq("user_id", userRes.user.id)
+        .select("whatsapp_phone")
+        .maybeSingle();
       if (updateErr) throw new Error(updateErr.message);
+
+      if (!savedProfile) {
+        const { error: insertErr } = await supabase.from("profiles").insert({
+          user_id: userRes.user.id,
+          display_name: userRes.user.user_metadata?.display_name ?? userRes.user.email ?? null,
+          whatsapp_phone: normalized,
+        });
+        if (insertErr) throw new Error(insertErr.message);
+      }
 
       onSaved(normalized);
       toast.success("Número do WhatsApp salvo.");
@@ -80,7 +91,11 @@ export function WhatsAppLinkCard({ currentPhone, onSaved }: Props) {
             />
           </div>
 
-          <Button onClick={handleSave} disabled={saving || phone.trim().length === 0} className="gap-2">
+          <Button
+            onClick={handleSave}
+            disabled={saving || phone.trim().length === 0}
+            className="gap-2"
+          >
             <Save className="size-4" />
             {saving ? "Salvando..." : "Salvar número"}
           </Button>
