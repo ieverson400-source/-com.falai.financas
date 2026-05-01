@@ -91,7 +91,11 @@ export function WhatsAppLinkCard({ currentPhone, onSaved }: Props) {
             />
           </div>
 
-          <Button onClick={handleSave} disabled={saving || phone.trim().length === 0} className="gap-2">
+          <Button
+            onClick={handleSave}
+            disabled={saving || phone.trim().length === 0}
+            className="gap-2"
+          >
             <Save className="size-4" />
             {saving ? "Salvando..." : "Salvar número"}
           </Button>
