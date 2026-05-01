@@ -67,7 +67,12 @@ function AppDashboard() {
     ]);
     setRefreshing(false);
     if (expensesRes.error || profileRes.error || inboxRes.error) {
-      toast.error(expensesRes.error?.message || profileRes.error?.message || inboxRes.error?.message || "Falha ao carregar dados");
+      toast.error(
+        expensesRes.error?.message ||
+          profileRes.error?.message ||
+          inboxRes.error?.message ||
+          "Falha ao carregar dados",
+      );
       return;
     }
     setExpenses((expensesRes.data ?? []) as Expense[]);
@@ -185,7 +190,10 @@ function AppDashboard() {
                         <Mic className="size-3 text-primary shrink-0" aria-label="Por áudio" />
                       )}
                       {e.source === "manual" && (
-                        <Hand className="size-3 text-muted-foreground shrink-0" aria-label="Manual" />
+                        <Hand
+                          className="size-3 text-muted-foreground shrink-0"
+                          aria-label="Manual"
+                        />
                       )}
                     </div>
                     {(e.description || e.raw_transcript) && (
