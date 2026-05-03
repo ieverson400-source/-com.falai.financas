@@ -87,7 +87,7 @@ export const simulateWhatsAppWebhook = createServerFn({ method: "POST" })
       message_sid: messageSid,
       processing_status: "processing",
       payload: simulatedPayload,
-      media_content_type: hasAudio ? data.audioMimeType : null,
+      media_content_type: hasAudio ? data.audioMimeType! : null,
       media_url: hasAudio ? "simulated://audio" : null,
     });
 
