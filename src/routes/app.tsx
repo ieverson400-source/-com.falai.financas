@@ -122,6 +122,9 @@ function AppDashboard() {
             <span className="font-display font-semibold">Falaí</span>
           </Link>
           <div className="flex items-center gap-2">
+            <Link to="/app/whatsapp-test">
+              <Button variant="outline" size="sm">Testar webhook</Button>
+            </Link>
             <span className="text-sm text-muted-foreground hidden sm:inline truncate max-w-40">
               {user.email}
             </span>
