@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import { extractExpenseFromText } from "@/server/expense-ai";
+import { extractExpenseFromAudio, extractExpenseFromText } from "@/server/expense-ai";
 import { normalizeWhatsAppPhone } from "@/lib/phone";
 
 export interface LastInboxEntry {
@@ -39,8 +39,13 @@ export const getLastWhatsAppCall = createServerFn({ method: "GET" })
   });
 
 const SimulateInput = z.object({
-  text: z.string().min(1).max(2000),
-});
+  text: z.string().max(2000).optional(),
+  audioBase64: z.string().min(10).optional(),
+  audioMimeType: z.string().min(3).max(120).optional(),
+}).refine(
+  (v) => (v.text && v.text.trim().length > 0) || (v.audioBase64 && v.audioMimeType),
+  { message: "Forneça um texto ou um áudio para simular." },
+);
 
 export const simulateWhatsAppWebhook = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -48,7 +53,6 @@ export const simulateWhatsAppWebhook = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { userId } = context;
 
-    // Encontra o número vinculado ao usuário
     const { data: profile, error: profileErr } = await supabaseAdmin
       .from("profiles")
       .select("whatsapp_phone")
@@ -60,15 +64,22 @@ export const simulateWhatsAppWebhook = createServerFn({ method: "POST" })
       throw new Error("Você precisa vincular um número de WhatsApp ao perfil antes de simular.");
     }
 
+    const hasAudio = !!(data.audioBase64 && data.audioMimeType);
     const phone = normalizeWhatsAppPhone(profile.whatsapp_phone) ?? profile.whatsapp_phone;
     const messageSid = `SIMULATED_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-    const simulatedPayload = {
+    const simulatedPayload: Record<string, unknown> = {
       From: `whatsapp:${phone}`,
-      Body: data.text,
       MessageSid: messageSid,
       _simulated: true,
       _simulatedAt: new Date().toISOString(),
     };
+    if (hasAudio) {
+      simulatedPayload.NumMedia = "1";
+      simulatedPayload.MediaContentType0 = data.audioMimeType;
+      simulatedPayload._audioBytes = Math.floor((data.audioBase64!.length * 3) / 4);
+    } else {
+      simulatedPayload.Body = data.text;
+    }
 
     const { error: insertErr } = await supabaseAdmin.from("whatsapp_inbox").insert({
       user_id: userId,
@@ -76,13 +87,21 @@ export const simulateWhatsAppWebhook = createServerFn({ method: "POST" })
       message_sid: messageSid,
       processing_status: "processing",
       payload: simulatedPayload,
+      media_content_type: hasAudio ? data.audioMimeType : null,
+      media_url: hasAudio ? "simulated://audio" : null,
     });
 
     if (insertErr) throw new Error(`Falha ao registrar inbox: ${insertErr.message}`);
 
     try {
       const today = new Date().toISOString().slice(0, 10);
-      const extracted = await extractExpenseFromText({ text: data.text, today });
+      const extracted = hasAudio
+        ? await extractExpenseFromAudio({
+            audioBase64: data.audioBase64!,
+            mimeType: data.audioMimeType!,
+            today,
+          })
+        : await extractExpenseFromText({ text: data.text!, today });
 
       const { data: expense, error: expenseErr } = await supabaseAdmin
         .from("expenses")
@@ -110,7 +129,16 @@ export const simulateWhatsAppWebhook = createServerFn({ method: "POST" })
         })
         .eq("message_sid", messageSid);
 
-      return { ok: true, messageSid, expenseId: expense.id, extracted };
+      return {
+        ok: true as const,
+        messageSid,
+        expenseId: expense.id,
+        transcript: extracted.transcript,
+        amount: extracted.amount,
+        category: extracted.category,
+        description: extracted.description ?? null,
+        expense_date: extracted.expense_date,
+      };
     } catch (error) {
       const message = error instanceof Error ? error.message : "Falha desconhecida";
       await supabaseAdmin
