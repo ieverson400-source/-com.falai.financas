@@ -184,21 +184,68 @@ function WhatsAppTestPage() {
           <div>
             <h2 className="font-display text-base font-semibold">Simular mensagem</h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              O texto abaixo será processado como se tivesse chegado pelo WhatsApp do número vinculado ao seu perfil.
+              Envie um texto OU um áudio. Será processado como se viesse do WhatsApp vinculado ao seu perfil.
             </p>
           </div>
+
           <Textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
             rows={3}
             placeholder="Ex: gastei 30 reais no Uber"
+            disabled={!!audioBlob}
           />
+
+          <div className="rounded-lg border border-dashed border-border p-4">
+            <div className="flex flex-wrap items-center gap-2">
+              {!recording ? (
+                <Button type="button" variant="outline" size="sm" onClick={startRecording} className="gap-2" disabled={submitting}>
+                  <Mic className="size-4" /> Gravar áudio
+                </Button>
+              ) : (
+                <Button type="button" variant="destructive" size="sm" onClick={stopRecording} className="gap-2">
+                  <Square className="size-4" /> Parar ({fmt(elapsed)})
+                </Button>
+              )}
+              <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-input bg-background px-3 py-1.5 text-sm hover:bg-accent">
+                <Upload className="size-4" /> Enviar arquivo
+                <input
+                  type="file"
+                  accept="audio/*"
+                  className="hidden"
+                  onChange={handleFile}
+                  disabled={submitting || recording}
+                />
+              </label>
+              {audioBlob && (
+                <div className="ml-auto flex items-center gap-2 text-sm text-muted-foreground">
+                  <span className="truncate max-w-48">{audioName}</span>
+                  <span>· {(audioBlob.size / 1024).toFixed(1)} KB</span>
+                  <button onClick={clearAudio} className="text-muted-foreground hover:text-destructive" aria-label="Remover áudio">
+                    <X className="size-4" />
+                  </button>
+                </div>
+              )}
+            </div>
+            {audioBlob && (
+              <audio
+                controls
+                src={URL.createObjectURL(audioBlob)}
+                className="mt-3 w-full"
+              />
+            )}
+          </div>
+
           <div className="flex justify-end gap-2">
             <Button variant="outline" onClick={refresh} disabled={loadingLast} className="gap-2">
               <RefreshCw className={`size-4 ${loadingLast ? "animate-spin" : ""}`} /> Atualizar
             </Button>
-            <Button onClick={handleSimulate} disabled={submitting || !text.trim()} className="gap-2">
-              <Send className="size-4" /> {submitting ? "Enviando..." : "Simular"}
+            <Button
+              onClick={handleSimulate}
+              disabled={submitting || (!audioBlob && !text.trim())}
+              className="gap-2"
+            >
+              <Send className="size-4" /> {submitting ? "Processando..." : audioBlob ? "Simular áudio" : "Simular texto"}
             </Button>
           </div>
         </Card>
