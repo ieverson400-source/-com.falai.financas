@@ -55,7 +55,7 @@ function WhatsAppTestPage() {
   const refresh = useCallback(async () => {
     setLoadingLast(true);
     try {
-      const data = await fetchLast();
+      const data = (await fetchLast()) as LastInboxEntry | null;
       setLast(data);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Falha ao carregar logs");

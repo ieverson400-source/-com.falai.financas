@@ -14,7 +14,7 @@ export interface LastInboxEntry {
   error_message: string | null;
   media_url: string | null;
   media_content_type: string | null;
-  payload: unknown;
+  payload: Record<string, unknown> | null;
   created_at: string;
   updated_at: string;
   expense_id: string | null;
