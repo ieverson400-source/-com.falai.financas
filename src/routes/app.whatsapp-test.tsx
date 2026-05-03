@@ -161,7 +161,7 @@ function WhatsAppTestPage() {
               <div className="sm:col-span-2">
                 <dt className="text-xs uppercase tracking-wider text-muted-foreground">Payload</dt>
                 <pre className="mt-1 overflow-auto rounded-md border border-border bg-muted/40 p-3 text-xs">
-                  {JSON.stringify(last.payload, null, 2)}
+                  {last.payload_json}
                 </pre>
               </div>
             </dl>

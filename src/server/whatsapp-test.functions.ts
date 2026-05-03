@@ -14,7 +14,7 @@ export interface LastInboxEntry {
   error_message: string | null;
   media_url: string | null;
   media_content_type: string | null;
-  payload: Record<string, unknown> | null;
+  payload_json: string;
   created_at: string;
   updated_at: string;
   expense_id: string | null;
@@ -33,7 +33,9 @@ export const getLastWhatsAppCall = createServerFn({ method: "GET" })
       .maybeSingle();
 
     if (error) throw new Error(error.message);
-    return (data as LastInboxEntry | null) ?? null;
+    if (!data) return null;
+    const { payload, ...rest } = data as Record<string, unknown> & { payload: unknown };
+    return { ...(rest as Omit<LastInboxEntry, "payload_json">), payload_json: JSON.stringify(payload ?? {}, null, 2) };
   });
 
 const SimulateInput = z.object({
