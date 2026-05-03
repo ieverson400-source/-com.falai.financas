@@ -81,15 +81,17 @@ export const simulateWhatsAppWebhook = createServerFn({ method: "POST" })
       simulatedPayload.Body = data.text;
     }
 
-    const { error: insertErr } = await supabaseAdmin.from("whatsapp_inbox").insert({
-      user_id: userId,
-      from_phone: phone,
-      message_sid: messageSid,
-      processing_status: "processing",
-      payload: simulatedPayload,
-      media_content_type: hasAudio ? data.audioMimeType! : null,
-      media_url: hasAudio ? "simulated://audio" : null,
-    });
+    const { error: insertErr } = await supabaseAdmin.from("whatsapp_inbox").insert([
+      {
+        user_id: userId,
+        from_phone: phone,
+        message_sid: messageSid,
+        processing_status: "processing",
+        payload: simulatedPayload,
+        media_content_type: hasAudio ? data.audioMimeType! : null,
+        media_url: hasAudio ? "simulated://audio" : null,
+      },
+    ]);
 
     if (insertErr) throw new Error(`Falha ao registrar inbox: ${insertErr.message}`);
 
