@@ -1,18 +1,29 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
-import { ArrowLeft, RefreshCw, Send, CheckCircle2, AlertCircle, Clock3 } from "lucide-react";
+import { ArrowLeft, RefreshCw, Send, CheckCircle2, AlertCircle, Clock3, Mic, Square, Upload, X } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import {
   getLastWhatsAppCall,
   simulateWhatsAppWebhook,
   type LastInboxEntry,
 } from "@/server/whatsapp-test.functions";
+
+async function blobToBase64(blob: Blob): Promise<string> {
+  const buf = await blob.arrayBuffer();
+  let binary = "";
+  const bytes = new Uint8Array(buf);
+  const chunk = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunk) {
+    binary += String.fromCharCode.apply(null, Array.from(bytes.subarray(i, i + chunk)));
+  }
+  return btoa(binary);
+}
 
 export const Route = createFileRoute("/app/whatsapp-test")({
   component: WhatsAppTestPage,
@@ -47,6 +58,13 @@ function WhatsAppTestPage() {
   const [last, setLast] = useState<LastInboxEntry | null>(null);
   const [loadingLast, setLoadingLast] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+  const [audioName, setAudioName] = useState<string | null>(null);
+  const [recording, setRecording] = useState(false);
+  const [elapsed, setElapsed] = useState(0);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth" });
@@ -68,12 +86,67 @@ function WhatsAppTestPage() {
     if (user) refresh();
   }, [user, refresh]);
 
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mr = new MediaRecorder(stream, { mimeType: "audio/webm" });
+      chunksRef.current = [];
+      mr.ondataavailable = (e) => e.data.size > 0 && chunksRef.current.push(e.data);
+      mr.onstop = () => {
+        stream.getTracks().forEach((t) => t.stop());
+        const blob = new Blob(chunksRef.current, { type: "audio/webm" });
+        setAudioBlob(blob);
+        setAudioName(`gravacao-${new Date().toISOString().slice(11, 19)}.webm`);
+      };
+      mr.start();
+      mediaRecorderRef.current = mr;
+      setRecording(true);
+      setElapsed(0);
+      timerRef.current = setInterval(() => setElapsed((s) => s + 1), 1000);
+    } catch {
+      toast.error("Permita acesso ao microfone para gravar.");
+    }
+  };
+
+  const stopRecording = () => {
+    mediaRecorderRef.current?.stop();
+    setRecording(false);
+    if (timerRef.current) clearInterval(timerRef.current);
+  };
+
+  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 10_000_000) {
+      toast.error("Arquivo muito grande (máx 10 MB).");
+      return;
+    }
+    setAudioBlob(file);
+    setAudioName(file.name);
+    e.target.value = "";
+  };
+
+  const clearAudio = () => {
+    setAudioBlob(null);
+    setAudioName(null);
+  };
+
   const handleSimulate = async () => {
-    if (!text.trim()) return;
+    const hasAudio = !!audioBlob;
+    if (!hasAudio && !text.trim()) return;
     setSubmitting(true);
     try {
-      await simulate({ data: { text: text.trim() } });
-      toast.success("Webhook simulado com sucesso");
+      const payload = hasAudio
+        ? {
+            audioBase64: await blobToBase64(audioBlob!),
+            audioMimeType: audioBlob!.type || "audio/webm",
+          }
+        : { text: text.trim() };
+      const result = await simulate({ data: payload });
+      toast.success(
+        `Processado · R$ ${Number(result.amount).toFixed(2)} · ${result.category}`,
+        { description: result.transcript },
+      );
       await refresh();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Falha na simulação");
@@ -92,6 +165,7 @@ function WhatsAppTestPage() {
   }
 
   const meta = last ? statusMeta(last.processing_status) : null;
+  const fmt = (s: number) => `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, "0")}`;
 
   return (
     <div className="min-h-screen bg-background">
