@@ -12,6 +12,7 @@ import { WhatsAppInboxCard, type WhatsAppInboxItem } from "@/components/whatsapp
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import { LogOut, Trash2, Mic, Hand } from "lucide-react";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { categoryColor, formatBRL } from "@/lib/categories";
 import { format, parseISO, startOfMonth } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -122,6 +123,7 @@ function AppDashboard() {
             <span className="font-display font-semibold truncate">Falaí</span>
           </Link>
           <div className="flex items-center gap-1.5 sm:gap-2">
+            <ThemeToggle />
             <Link to="/app/whatsapp-test" className="hidden xs:inline-flex sm:inline-flex">
               <Button variant="outline" size="sm" className="h-10 sm:h-9 px-3">
                 <span className="hidden sm:inline">Testar webhook</span>
