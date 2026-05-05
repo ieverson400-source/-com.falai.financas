@@ -113,47 +113,53 @@ function AppDashboard() {
     <div className="min-h-screen bg-background">
       <Toaster richColors />
 
-      <header className="border-b border-border bg-card">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="size-8 rounded-lg bg-gradient-hero flex items-center justify-center">
+      <header className="border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 sticky top-0 z-30">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-2">
+          <Link to="/" className="flex items-center gap-2 min-w-0">
+            <div className="size-9 rounded-xl bg-gradient-hero flex items-center justify-center shadow-soft">
               <Mic className="size-4 text-primary-foreground" />
             </div>
-            <span className="font-display font-semibold">Falaí</span>
+            <span className="font-display font-semibold truncate">Falaí</span>
           </Link>
-          <div className="flex items-center gap-2">
-            <Link to="/app/whatsapp-test">
-              <Button variant="outline" size="sm">Testar webhook</Button>
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <Link to="/app/whatsapp-test" className="hidden xs:inline-flex sm:inline-flex">
+              <Button variant="outline" size="sm" className="h-10 sm:h-9 px-3">
+                <span className="hidden sm:inline">Testar webhook</span>
+                <span className="sm:hidden">Webhook</span>
+              </Button>
             </Link>
-            <span className="text-sm text-muted-foreground hidden sm:inline truncate max-w-40">
+            <span className="text-sm text-muted-foreground hidden md:inline truncate max-w-40">
               {user.email}
             </span>
-            <Button variant="ghost" size="sm" onClick={signOut} className="gap-2">
-              <LogOut className="size-4" /> Sair
+            <Button variant="ghost" size="sm" onClick={signOut} className="gap-2 h-10 sm:h-9 px-3">
+              <LogOut className="size-4" />
+              <span className="hidden sm:inline">Sair</span>
             </Button>
           </div>
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6 sm:space-y-8">
         {/* Top stats + recorder */}
-        <div className="grid lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5">
           <div className="lg:col-span-2">
             <AudioRecorder onSuccess={load} />
           </div>
-          <div className="space-y-4">
-            <Card className="p-6 bg-card">
-              <p className="text-xs uppercase tracking-wider text-muted-foreground">Mês atual</p>
-              <p className="font-display text-3xl font-bold mt-1">{formatBRL(totalMonth)}</p>
+          <div className="grid grid-cols-2 lg:grid-cols-1 gap-4">
+            <Card className="p-5 sm:p-6 bg-card shadow-soft transition-shadow hover:shadow-elevated">
+              <p className="text-[11px] uppercase tracking-wider text-muted-foreground">Mês atual</p>
+              <p className="font-display text-2xl sm:text-3xl font-bold mt-1 break-words">{formatBRL(totalMonth)}</p>
               <p className="text-xs text-muted-foreground mt-2">
                 {monthExpenses.length} {monthExpenses.length === 1 ? "gasto" : "gastos"}
               </p>
             </Card>
-            <Card className="p-6 bg-secondary border-0">
-              <p className="text-xs uppercase tracking-wider text-muted-foreground">Total geral</p>
-              <p className="font-display text-2xl font-semibold mt-1">{formatBRL(totalAll)}</p>
+            <Card className="p-5 sm:p-6 bg-secondary border-0 shadow-soft">
+              <p className="text-[11px] uppercase tracking-wider text-muted-foreground">Total geral</p>
+              <p className="font-display text-xl sm:text-2xl font-semibold mt-1 break-words">{formatBRL(totalAll)}</p>
             </Card>
-            <WhatsAppLinkCard currentPhone={whatsAppPhone} onSaved={setWhatsAppPhone} />
+            <div className="col-span-2 lg:col-span-1">
+              <WhatsAppLinkCard currentPhone={whatsAppPhone} onSaved={setWhatsAppPhone} />
+            </div>
           </div>
         </div>
 
@@ -163,10 +169,10 @@ function AppDashboard() {
         <WhatsAppInboxCard items={whatsAppInbox} />
 
         {/* List */}
-        <Card className="bg-card">
-          <div className="p-6 flex items-center justify-between border-b border-border">
-            <div>
-              <h3 className="font-display text-lg font-semibold">Gastos recentes</h3>
+        <Card className="bg-card shadow-soft overflow-hidden">
+          <div className="p-4 sm:p-6 flex items-center justify-between gap-3 border-b border-border">
+            <div className="min-w-0">
+              <h3 className="font-display text-base sm:text-lg font-semibold">Gastos recentes</h3>
               <p className="text-xs text-muted-foreground mt-0.5">
                 {refreshing ? "Atualizando..." : `${expenses.length} no total`}
               </p>
@@ -175,13 +181,16 @@ function AppDashboard() {
           </div>
 
           {expenses.length === 0 ? (
-            <div className="p-12 text-center text-sm text-muted-foreground">
+            <div className="p-10 sm:p-12 text-center text-sm text-muted-foreground">
               Nenhum gasto ainda.
             </div>
           ) : (
             <ul className="divide-y divide-border">
               {expenses.slice(0, 30).map((e) => (
-                <li key={e.id} className="px-6 py-4 flex items-center gap-4 group">
+                <li
+                  key={e.id}
+                  className="px-4 sm:px-6 py-3.5 sm:py-4 flex items-center gap-3 sm:gap-4 group transition-colors hover:bg-muted/40"
+                >
                   <div
                     className="size-2.5 rounded-full shrink-0"
                     style={{ background: categoryColor(e.category) }}
@@ -206,16 +215,16 @@ function AppDashboard() {
                     )}
                   </div>
                   <div className="text-right shrink-0">
-                    <p className="font-display font-semibold tabular-nums">
+                    <p className="font-display font-semibold tabular-nums text-sm sm:text-base">
                       {formatBRL(Number(e.amount))}
                     </p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-[11px] sm:text-xs text-muted-foreground">
                       {format(parseISO(e.expense_date), "dd MMM", { locale: ptBR })}
                     </p>
                   </div>
                   <button
                     onClick={() => deleteExp(e.id)}
-                    className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive"
+                    className="inline-flex items-center justify-center size-11 sm:size-9 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors sm:opacity-0 sm:group-hover:opacity-100 focus-visible:opacity-100"
                     aria-label="Excluir"
                   >
                     <Trash2 className="size-4" />

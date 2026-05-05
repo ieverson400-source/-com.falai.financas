@@ -25,37 +25,37 @@ function Landing() {
   return (
     <div className="min-h-screen bg-background">
       {/* Nav */}
-      <nav className="px-6 py-5 flex items-center justify-between max-w-7xl mx-auto">
+      <nav className="px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between max-w-7xl mx-auto">
         <div className="flex items-center gap-2">
-          <div className="size-9 rounded-xl bg-gradient-hero flex items-center justify-center">
+          <div className="size-9 rounded-xl bg-gradient-hero flex items-center justify-center shadow-soft">
             <Mic className="size-4 text-primary-foreground" />
           </div>
           <span className="font-display text-lg font-semibold">Falaí</span>
         </div>
         <Link to="/auth">
-          <Button variant="ghost" size="sm">Entrar</Button>
+          <Button variant="ghost" size="sm" className="h-10 px-4">Entrar</Button>
         </Link>
       </nav>
 
       {/* Hero */}
-      <section className="px-6 pt-12 pb-24 max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+      <section className="px-4 sm:px-6 pt-8 sm:pt-12 pb-16 sm:pb-24 max-w-7xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary text-xs font-medium mb-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary text-xs font-medium mb-5 sm:mb-6">
               <Sparkles className="size-3.5 text-primary" />
               Powered by Lovable AI
             </div>
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] mb-6">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] mb-5 sm:mb-6">
               Fale seu gasto.
               <br />
               <span className="text-primary">Pronto.</span>
             </h1>
-            <p className="text-lg text-muted-foreground mb-8 max-w-md leading-relaxed">
+            <p className="text-base sm:text-lg text-muted-foreground mb-7 sm:mb-8 max-w-md leading-relaxed">
               Grave um áudio dizendo "gastei 150 reais com a conta de luz". A IA transcreve, extrai o valor, categoriza e gera relatórios.
             </p>
             <div className="flex gap-3">
-              <Link to="/auth">
-                <Button size="lg" className="gap-2">
+              <Link to="/auth" className="w-full sm:w-auto">
+                <Button size="lg" className="gap-2 w-full sm:w-auto h-12 sm:h-10 transition-transform hover:scale-[1.02]">
                   Começar grátis <ArrowRight className="size-4" />
                 </Button>
               </Link>
@@ -64,18 +64,18 @@ function Landing() {
 
           <div className="relative">
             <div className="absolute -inset-8 bg-gradient-warm opacity-20 blur-3xl rounded-full" />
-            <div className="relative bg-card rounded-3xl p-8 shadow-elevated border border-border">
+            <div className="relative bg-card rounded-3xl p-5 sm:p-8 shadow-elevated border border-border">
               <div className="space-y-4">
-                <div className="flex items-center gap-3 p-4 rounded-2xl bg-secondary">
+                <div className="flex items-center gap-3 p-3 sm:p-4 rounded-2xl bg-secondary">
                   <div className="size-10 rounded-full bg-primary flex items-center justify-center shrink-0">
                     <Mic className="size-4 text-primary-foreground" />
                   </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">"Gastei 89 reais no mercado hoje"</p>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">"Gastei 89 reais no mercado hoje"</p>
                     <p className="text-xs text-muted-foreground mt-1">0:03 — você</p>
                   </div>
                 </div>
-                <div className="p-4 rounded-2xl bg-gradient-hero text-primary-foreground">
+                <div className="p-4 rounded-2xl bg-gradient-hero text-primary-foreground shadow-soft">
                   <p className="text-xs opacity-80 mb-1">✓ Registrado</p>
                   <p className="font-semibold">R$ 89,00 · Supermercado</p>
                   <p className="text-xs opacity-80 mt-1">21 abr 2026</p>
@@ -101,8 +101,8 @@ function Landing() {
       </section>
 
       {/* Features */}
-      <section className="px-6 py-20 bg-secondary/40">
-        <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-8">
+      <section className="px-4 sm:px-6 py-16 sm:py-20 bg-secondary/40">
+        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-10">
           {[
             { icon: Mic, title: "Áudio → texto", desc: "Grave ou faça upload. A IA transcreve em português." },
             { icon: Sparkles, title: "Categoria automática", desc: "Valor, categoria e data extraídos sem digitar." },
@@ -119,7 +119,7 @@ function Landing() {
         </div>
       </section>
 
-      <footer className="px-6 py-10 text-center text-xs text-muted-foreground">
+      <footer className="px-4 sm:px-6 py-8 sm:py-10 text-center text-xs text-muted-foreground">
         © 2026 Falaí Finanças
       </footer>
     </div>
