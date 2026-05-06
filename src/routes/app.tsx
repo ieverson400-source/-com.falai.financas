@@ -565,6 +565,42 @@ function ProfileTab({
         )}
       </section>
 
+      {/* Loving the app? */}
+      <Card className="p-5 bg-gradient-hero text-primary-foreground border-0 shadow-elevated">
+        <div className="flex items-center gap-3">
+          <div className="size-11 rounded-xl bg-white/15 backdrop-blur flex items-center justify-center shrink-0">
+            <Heart className="size-5" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="font-display font-semibold">Está gostando do app?</p>
+            <p className="text-xs opacity-80 mt-0.5">Compartilhe com quem você gosta 💜</p>
+          </div>
+        </div>
+        <Button
+          variant="secondary"
+          className="w-full mt-4 bg-white text-primary hover:bg-white/90 gap-2"
+          onClick={async () => {
+            const shareData = {
+              title: "Falaí Finanças",
+              text: "Organize seus gastos por áudio com IA — experimenta!",
+              url: typeof window !== "undefined" ? window.location.origin : "",
+            };
+            try {
+              if (typeof navigator !== "undefined" && navigator.share) {
+                await navigator.share(shareData);
+              } else if (typeof navigator !== "undefined" && navigator.clipboard) {
+                await navigator.clipboard.writeText(shareData.url);
+                toast.success("Link copiado!");
+              }
+            } catch {
+              /* cancelado */
+            }
+          }}
+        >
+          <Share2 className="size-4" /> Compartilhar
+        </Button>
+      </Card>
+
       {/* Account actions */}
       <section>
         <h3 className="font-display font-semibold mb-2 px-1 text-sm uppercase tracking-wider text-muted-foreground">
@@ -574,6 +610,13 @@ function ProfileTab({
           <button className="w-full px-4 py-3.5 flex items-center gap-3 text-left hover:bg-muted/40 transition-colors">
             <UserIcon className="size-4 text-muted-foreground" />
             <span className="text-sm font-medium flex-1">Editar perfil</span>
+          </button>
+          <button
+            onClick={() => toast.message("Configurações em breve")}
+            className="w-full px-4 py-3.5 flex items-center gap-3 text-left hover:bg-muted/40 transition-colors"
+          >
+            <Settings className="size-4 text-muted-foreground" />
+            <span className="text-sm font-medium flex-1">Configurações</span>
           </button>
           <button className="w-full px-4 py-3.5 flex items-center gap-3 text-left hover:bg-muted/40 transition-colors">
             <Shield className="size-4 text-muted-foreground" />
@@ -588,6 +631,107 @@ function ProfileTab({
           </button>
         </Card>
       </section>
+    </div>
+  );
+}
+
+function ReportsTab({
+  monthExpenses,
+  totalMonth,
+}: {
+  monthExpenses: Expense[];
+  totalMonth: number;
+}) {
+  const today = new Date();
+  const monthLabel = format(today, "MMMM 'de' yyyy", { locale: ptBR });
+
+  // Receitas demo (placeholder) e cálculo de balanço
+  const receitas = 0;
+  const saldo = receitas - totalMonth;
+
+  // Próximos compromissos financeiros (agenda demo)
+  const agenda = [
+    { day: format(today, "dd MMM", { locale: ptBR }), title: "Conta de luz", amount: 0 },
+    { day: format(new Date(today.getFullYear(), today.getMonth(), today.getDate() + 3), "dd MMM", { locale: ptBR }), title: "Internet", amount: 0 },
+    { day: format(new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7), "dd MMM", { locale: ptBR }), title: "Aluguel", amount: 0 },
+  ];
+
+  return (
+    <div className="space-y-6 animate-in fade-in duration-300">
+      <div className="px-1">
+        <h2 className="font-display text-xl font-semibold flex items-center gap-2">
+          <BarChart3 className="size-5 text-primary" /> Relatórios
+        </h2>
+        <p className="text-xs text-muted-foreground mt-0.5 capitalize">{monthLabel}</p>
+      </div>
+
+      {/* Balanço */}
+      <Card className="p-5 sm:p-6 bg-gradient-hero text-primary-foreground border-0 shadow-elevated">
+        <div className="flex items-center gap-2 text-[11px] uppercase tracking-wider opacity-80">
+          <TrendingUp className="size-3.5" /> Balanço do mês
+        </div>
+        <p className="font-display text-3xl sm:text-4xl font-bold mt-1 break-words">
+          {formatBRL(saldo)}
+        </p>
+        <div className="grid grid-cols-2 gap-2 mt-4">
+          <div className="rounded-xl bg-white/10 backdrop-blur px-3 py-2.5">
+            <div className="flex items-center gap-1.5 text-[11px] opacity-80">
+              <ArrowUpRight className="size-3.5" /> Receitas
+            </div>
+            <p className="font-semibold mt-0.5 text-sm tabular-nums">{formatBRL(receitas)}</p>
+          </div>
+          <div className="rounded-xl bg-white/10 backdrop-blur px-3 py-2.5">
+            <div className="flex items-center gap-1.5 text-[11px] opacity-80">
+              <ArrowDownRight className="size-3.5" /> Gastos
+            </div>
+            <p className="font-semibold mt-0.5 text-sm tabular-nums">{formatBRL(totalMonth)}</p>
+          </div>
+        </div>
+      </Card>
+
+      {/* Receitas */}
+      <Card className="bg-card shadow-soft overflow-hidden">
+        <div className="p-4 sm:p-6 border-b border-border flex items-center justify-between">
+          <div>
+            <h3 className="font-display text-base sm:text-lg font-semibold">Receitas</h3>
+            <p className="text-xs text-muted-foreground mt-0.5">Entradas previstas e realizadas</p>
+          </div>
+          <Button size="sm" variant="outline" onClick={() => toast.message("Adicionar receita em breve")}>
+            Nova
+          </Button>
+        </div>
+        <div className="p-8 text-center text-sm text-muted-foreground">
+          Nenhuma receita lançada ainda.
+        </div>
+      </Card>
+
+      {/* Agenda */}
+      <Card className="bg-card shadow-soft overflow-hidden">
+        <div className="p-4 sm:p-6 border-b border-border">
+          <h3 className="font-display text-base sm:text-lg font-semibold flex items-center gap-2">
+            <CalendarIcon className="size-4 text-primary" /> Agenda
+          </h3>
+          <p className="text-xs text-muted-foreground mt-0.5">Próximos compromissos</p>
+        </div>
+        <ul className="divide-y divide-border">
+          {agenda.map((a) => (
+            <li key={a.title} className="px-4 sm:px-6 py-4 flex items-center gap-3">
+              <div className="size-10 rounded-xl bg-primary/10 text-primary flex flex-col items-center justify-center shrink-0 text-[10px] font-semibold uppercase">
+                {a.day.split(" ")[0]}
+                <span className="opacity-70">{a.day.split(" ")[1]}</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-medium truncate text-sm">{a.title}</p>
+                <p className="text-xs text-muted-foreground">A vencer</p>
+              </div>
+              <p className="font-display font-semibold tabular-nums text-sm">{formatBRL(a.amount)}</p>
+            </li>
+          ))}
+        </ul>
+      </Card>
+
+      {/* Gráficos */}
+      <ExpenseCharts expenses={monthExpenses} />
     </div>
   );
 }
