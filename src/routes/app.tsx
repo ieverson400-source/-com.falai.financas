@@ -313,7 +313,11 @@ function AppDashboard() {
           <ProfileTab user={user} onSignOut={signOut} />
         )}
 
-        {activeTab !== "inicio" && activeTab !== "perfil" && (
+        {activeTab === "relatorios" && (
+          <ReportsTab monthExpenses={monthExpenses} totalMonth={totalMonth} />
+        )}
+
+        {activeTab !== "inicio" && activeTab !== "perfil" && activeTab !== "relatorios" && (
           <Card className="p-10 sm:p-16 bg-card shadow-soft text-center">
             <div className="mx-auto size-14 rounded-2xl bg-muted flex items-center justify-center mb-4">
               <Construction className="size-6 text-muted-foreground" />
