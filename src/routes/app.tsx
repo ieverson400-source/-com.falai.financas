@@ -353,14 +353,6 @@ function AppDashboard() {
         <div className="h-[env(safe-area-inset-bottom)]" />
       </nav>
 
-      {/* Sign out floating */}
-      <button
-        onClick={signOut}
-        className="hidden sm:inline-flex fixed bottom-20 right-4 z-30 items-center gap-2 rounded-full bg-card border border-border shadow-soft px-4 py-2 text-sm hover:bg-muted transition-colors"
-        aria-label="Sair"
-      >
-        <LogOut className="size-4" /> Sair
-      </button>
     </div>
   );
 }
