@@ -699,3 +699,19 @@ function ReportsTab({
     </div>
   );
 }
+
+function ConfigThemeRow() {
+  const { theme, toggle } = useTheme();
+  const isDark = theme === "dark";
+  return (
+    <button
+      onClick={toggle}
+      className="w-full px-4 py-3.5 flex items-center gap-3 text-left hover:bg-muted/40 transition-colors"
+      aria-label="Alternar tema"
+    >
+      {isDark ? <Moon className="size-4 text-muted-foreground" /> : <Sun className="size-4 text-muted-foreground" />}
+      <span className="text-sm font-medium flex-1">Tema {isDark ? "escuro" : "claro"}</span>
+      <span className="text-xs text-muted-foreground">{isDark ? "Mudar para claro" : "Mudar para escuro"}</span>
+    </button>
+  );
+}
