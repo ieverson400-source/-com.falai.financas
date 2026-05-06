@@ -95,10 +95,6 @@ function AppDashboard() {
     load();
   };
 
-  const signOut = async () => {
-    await supabase.auth.signOut();
-    navigate({ to: "/" });
-  };
 
   if (loading || !user) {
     return (
