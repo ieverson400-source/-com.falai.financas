@@ -594,23 +594,10 @@ function ProfileTab({
             <UserIcon className="size-4 text-muted-foreground" />
             <span className="text-sm font-medium flex-1">Editar perfil</span>
           </button>
-          <button
-            onClick={() => toast.message("Configurações em breve")}
-            className="w-full px-4 py-3.5 flex items-center gap-3 text-left hover:bg-muted/40 transition-colors"
-          >
-            <Settings className="size-4 text-muted-foreground" />
-            <span className="text-sm font-medium flex-1">Configurações</span>
-          </button>
+          <ConfigThemeRow />
           <button className="w-full px-4 py-3.5 flex items-center gap-3 text-left hover:bg-muted/40 transition-colors">
             <Shield className="size-4 text-muted-foreground" />
             <span className="text-sm font-medium flex-1">Privacidade e segurança</span>
-          </button>
-          <button
-            onClick={onSignOut}
-            className="w-full px-4 py-3.5 flex items-center gap-3 text-left hover:bg-destructive/10 text-destructive transition-colors"
-          >
-            <LogOut className="size-4" />
-            <span className="text-sm font-medium flex-1">Sair</span>
           </button>
         </Card>
       </section>
