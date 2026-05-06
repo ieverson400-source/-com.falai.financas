@@ -11,7 +11,7 @@ import { WhatsAppLinkCard } from "@/components/whatsapp-link-card";
 import { WhatsAppInboxCard, type WhatsAppInboxItem } from "@/components/whatsapp-inbox-card";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
-import { LogOut, Trash2, Mic, Hand, Home, Wallet, ArrowLeftRight, Link2, User as UserIcon, Building2, PiggyBank, CreditCard, ArrowUpRight, ArrowDownRight, Sparkles, Construction } from "lucide-react";
+import { LogOut, Trash2, Mic, Hand, Home, Wallet, ArrowLeftRight, Link2, User as UserIcon, Building2, PiggyBank, CreditCard, ArrowUpRight, ArrowDownRight, Sparkles, Construction, Crown, Check, Zap, Star, Shield } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { categoryColor, formatBRL } from "@/lib/categories";
 import { format, parseISO, startOfMonth } from "date-fns";
@@ -309,7 +309,11 @@ function AppDashboard() {
           </>
         )}
 
-        {activeTab !== "inicio" && (
+        {activeTab === "perfil" && (
+          <ProfileTab user={user} onSignOut={signOut} />
+        )}
+
+        {activeTab !== "inicio" && activeTab !== "perfil" && (
           <Card className="p-10 sm:p-16 bg-card shadow-soft text-center">
             <div className="mx-auto size-14 rounded-2xl bg-muted flex items-center justify-center mb-4">
               <Construction className="size-6 text-muted-foreground" />
@@ -362,6 +366,224 @@ function AppDashboard() {
       >
         <LogOut className="size-4" /> Sair
       </button>
+    </div>
+  );
+}
+
+function ProfileTab({
+  user,
+  onSignOut,
+}: {
+  user: { email?: string | null; id: string };
+  onSignOut: () => void;
+}) {
+  const [plan, setPlan] = useState<"free" | "pro" | "premium">("free");
+  const isSubscriber = plan !== "free";
+
+  const plans = [
+    {
+      key: "pro" as const,
+      name: "Pro",
+      price: "R$ 19,90",
+      period: "/mês",
+      icon: Zap,
+      highlight: false,
+      features: [
+        "Gastos ilimitados por áudio",
+        "Conexão bancária automática",
+        "Relatórios avançados",
+      ],
+    },
+    {
+      key: "premium" as const,
+      name: "Premium",
+      price: "R$ 39,90",
+      period: "/mês",
+      icon: Crown,
+      highlight: true,
+      features: [
+        "Tudo do Pro",
+        "IA financeira personalizada",
+        "Suporte prioritário 24/7",
+        "Múltiplas contas + família",
+      ],
+    },
+  ];
+
+  return (
+    <div className="space-y-6 animate-in fade-in duration-300">
+      {/* Profile header */}
+      <Card className="p-5 sm:p-6 bg-card shadow-soft flex items-center gap-4">
+        <div className="size-14 rounded-2xl bg-gradient-hero flex items-center justify-center text-primary-foreground font-display font-bold text-lg shrink-0">
+          {(user.email ?? "?").slice(0, 1).toUpperCase()}
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="font-display font-semibold truncate">
+            {user.email?.split("@")[0]}
+          </p>
+          <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+        </div>
+        {isSubscriber && (
+          <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary px-2.5 py-1 text-[11px] font-semibold shrink-0">
+            <Crown className="size-3" /> {plan === "premium" ? "Premium" : "Pro"}
+          </span>
+        )}
+      </Card>
+
+      {/* Subscriber Area */}
+      <section aria-labelledby="assinantes">
+        <div className="flex items-center justify-between mb-3 px-1">
+          <div>
+            <h2 id="assinantes" className="font-display text-xl font-semibold flex items-center gap-2">
+              <Crown className="size-5 text-primary" /> Área de Assinantes
+            </h2>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {isSubscriber
+                ? "Aproveite todos os benefícios exclusivos."
+                : "Desbloqueie todo o potencial do Falaí Finanças."}
+            </p>
+          </div>
+        </div>
+
+        {isSubscriber ? (
+          <Card className="p-5 sm:p-6 bg-gradient-hero text-primary-foreground border-0 shadow-elevated">
+            <div className="flex items-center gap-3">
+              <div className="size-12 rounded-xl bg-white/15 backdrop-blur flex items-center justify-center shrink-0">
+                <Crown className="size-6" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-display text-lg font-semibold capitalize">Plano {plan}</p>
+                <p className="text-xs opacity-80">Renovação automática mensal</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-2 mt-5">
+              <div className="rounded-xl bg-white/10 backdrop-blur px-3 py-2.5">
+                <div className="flex items-center gap-1.5 text-[11px] opacity-80">
+                  <Star className="size-3.5" /> Status
+                </div>
+                <p className="font-semibold mt-0.5 text-sm">Ativo</p>
+              </div>
+              <div className="rounded-xl bg-white/10 backdrop-blur px-3 py-2.5">
+                <div className="flex items-center gap-1.5 text-[11px] opacity-80">
+                  <Shield className="size-3.5" /> Suporte
+                </div>
+                <p className="font-semibold mt-0.5 text-sm">Prioritário</p>
+              </div>
+            </div>
+            <div className="flex gap-2 mt-5">
+              <Button
+                variant="secondary"
+                size="sm"
+                className="flex-1"
+                onClick={() => toast.success("Gerenciar assinatura em breve")}
+              >
+                Gerenciar
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="flex-1 text-primary-foreground hover:bg-white/10"
+                onClick={() => setPlan("free")}
+              >
+                Cancelar
+              </Button>
+            </div>
+          </Card>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {plans.map((p) => {
+              const Icon = p.icon;
+              return (
+                <Card
+                  key={p.key}
+                  className={`relative p-5 shadow-soft transition-all hover:shadow-elevated ${
+                    p.highlight
+                      ? "bg-gradient-hero text-primary-foreground border-0"
+                      : "bg-card"
+                  }`}
+                >
+                  {p.highlight && (
+                    <span className="absolute -top-2.5 right-4 inline-flex items-center gap-1 rounded-full bg-accent text-accent-foreground px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+                      <Star className="size-3" /> Popular
+                    </span>
+                  )}
+                  <div className="flex items-center gap-2.5">
+                    <div
+                      className={`size-10 rounded-xl flex items-center justify-center ${
+                        p.highlight ? "bg-white/15 backdrop-blur" : "bg-primary/10 text-primary"
+                      }`}
+                    >
+                      <Icon className="size-5" />
+                    </div>
+                    <div>
+                      <p className="font-display font-semibold">{p.name}</p>
+                      <p className={`text-[11px] ${p.highlight ? "opacity-80" : "text-muted-foreground"}`}>
+                        Para você levar a sério
+                      </p>
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <span className="font-display text-3xl font-bold">{p.price}</span>
+                    <span className={`text-sm ${p.highlight ? "opacity-80" : "text-muted-foreground"}`}>
+                      {p.period}
+                    </span>
+                  </div>
+                  <ul className="mt-4 space-y-2">
+                    {p.features.map((f) => (
+                      <li key={f} className="flex items-start gap-2 text-sm">
+                        <Check
+                          className={`size-4 mt-0.5 shrink-0 ${
+                            p.highlight ? "text-accent" : "text-primary"
+                          }`}
+                        />
+                        <span className={p.highlight ? "" : "text-foreground"}>{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Button
+                    className={`w-full mt-5 ${
+                      p.highlight
+                        ? "bg-white text-primary hover:bg-white/90"
+                        : ""
+                    }`}
+                    variant={p.highlight ? "secondary" : "default"}
+                    onClick={() => {
+                      setPlan(p.key);
+                      toast.success(`Plano ${p.name} ativado!`);
+                    }}
+                  >
+                    Assinar {p.name}
+                  </Button>
+                </Card>
+              );
+            })}
+          </div>
+        )}
+      </section>
+
+      {/* Account actions */}
+      <section>
+        <h3 className="font-display font-semibold mb-2 px-1 text-sm uppercase tracking-wider text-muted-foreground">
+          Conta
+        </h3>
+        <Card className="bg-card shadow-soft overflow-hidden divide-y divide-border">
+          <button className="w-full px-4 py-3.5 flex items-center gap-3 text-left hover:bg-muted/40 transition-colors">
+            <UserIcon className="size-4 text-muted-foreground" />
+            <span className="text-sm font-medium flex-1">Editar perfil</span>
+          </button>
+          <button className="w-full px-4 py-3.5 flex items-center gap-3 text-left hover:bg-muted/40 transition-colors">
+            <Shield className="size-4 text-muted-foreground" />
+            <span className="text-sm font-medium flex-1">Privacidade e segurança</span>
+          </button>
+          <button
+            onClick={onSignOut}
+            className="w-full px-4 py-3.5 flex items-center gap-3 text-left hover:bg-destructive/10 text-destructive transition-colors"
+          >
+            <LogOut className="size-4" />
+            <span className="text-sm font-medium flex-1">Sair</span>
+          </button>
+        </Card>
+      </section>
     </div>
   );
 }
