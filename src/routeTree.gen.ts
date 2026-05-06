@@ -9,23 +9,12 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as MobileRouteImport } from './routes/mobile'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as MobileIndexRouteImport } from './routes/mobile.index'
-import { Route as MobileTransacoesRouteImport } from './routes/mobile.transacoes'
-import { Route as MobilePerfilRouteImport } from './routes/mobile.perfil'
-import { Route as MobileContasRouteImport } from './routes/mobile.contas'
-import { Route as MobileConectarRouteImport } from './routes/mobile.conectar'
 import { Route as AppWhatsappTestRouteImport } from './routes/app.whatsapp-test'
 import { Route as ApiPublicWhatsappRouteImport } from './routes/api/public/whatsapp'
 
-const MobileRoute = MobileRouteImport.update({
-  id: '/mobile',
-  path: '/mobile',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -40,31 +29,6 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
-} as any)
-const MobileIndexRoute = MobileIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => MobileRoute,
-} as any)
-const MobileTransacoesRoute = MobileTransacoesRouteImport.update({
-  id: '/transacoes',
-  path: '/transacoes',
-  getParentRoute: () => MobileRoute,
-} as any)
-const MobilePerfilRoute = MobilePerfilRouteImport.update({
-  id: '/perfil',
-  path: '/perfil',
-  getParentRoute: () => MobileRoute,
-} as any)
-const MobileContasRoute = MobileContasRouteImport.update({
-  id: '/contas',
-  path: '/contas',
-  getParentRoute: () => MobileRoute,
-} as any)
-const MobileConectarRoute = MobileConectarRouteImport.update({
-  id: '/conectar',
-  path: '/conectar',
-  getParentRoute: () => MobileRoute,
 } as any)
 const AppWhatsappTestRoute = AppWhatsappTestRouteImport.update({
   id: '/whatsapp-test',
@@ -81,13 +45,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRoute
-  '/mobile': typeof MobileRouteWithChildren
   '/app/whatsapp-test': typeof AppWhatsappTestRoute
-  '/mobile/conectar': typeof MobileConectarRoute
-  '/mobile/contas': typeof MobileContasRoute
-  '/mobile/perfil': typeof MobilePerfilRoute
-  '/mobile/transacoes': typeof MobileTransacoesRoute
-  '/mobile/': typeof MobileIndexRoute
   '/api/public/whatsapp': typeof ApiPublicWhatsappRoute
 }
 export interface FileRoutesByTo {
@@ -95,11 +53,6 @@ export interface FileRoutesByTo {
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRoute
   '/app/whatsapp-test': typeof AppWhatsappTestRoute
-  '/mobile/conectar': typeof MobileConectarRoute
-  '/mobile/contas': typeof MobileContasRoute
-  '/mobile/perfil': typeof MobilePerfilRoute
-  '/mobile/transacoes': typeof MobileTransacoesRoute
-  '/mobile': typeof MobileIndexRoute
   '/api/public/whatsapp': typeof ApiPublicWhatsappRoute
 }
 export interface FileRoutesById {
@@ -107,13 +60,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRoute
-  '/mobile': typeof MobileRouteWithChildren
   '/app/whatsapp-test': typeof AppWhatsappTestRoute
-  '/mobile/conectar': typeof MobileConectarRoute
-  '/mobile/contas': typeof MobileContasRoute
-  '/mobile/perfil': typeof MobilePerfilRoute
-  '/mobile/transacoes': typeof MobileTransacoesRoute
-  '/mobile/': typeof MobileIndexRoute
   '/api/public/whatsapp': typeof ApiPublicWhatsappRoute
 }
 export interface FileRouteTypes {
@@ -122,38 +69,16 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/auth'
-    | '/mobile'
     | '/app/whatsapp-test'
-    | '/mobile/conectar'
-    | '/mobile/contas'
-    | '/mobile/perfil'
-    | '/mobile/transacoes'
-    | '/mobile/'
     | '/api/public/whatsapp'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/app'
-    | '/auth'
-    | '/app/whatsapp-test'
-    | '/mobile/conectar'
-    | '/mobile/contas'
-    | '/mobile/perfil'
-    | '/mobile/transacoes'
-    | '/mobile'
-    | '/api/public/whatsapp'
+  to: '/' | '/app' | '/auth' | '/app/whatsapp-test' | '/api/public/whatsapp'
   id:
     | '__root__'
     | '/'
     | '/app'
     | '/auth'
-    | '/mobile'
     | '/app/whatsapp-test'
-    | '/mobile/conectar'
-    | '/mobile/contas'
-    | '/mobile/perfil'
-    | '/mobile/transacoes'
-    | '/mobile/'
     | '/api/public/whatsapp'
   fileRoutesById: FileRoutesById
 }
@@ -161,19 +86,11 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
   AuthRoute: typeof AuthRoute
-  MobileRoute: typeof MobileRouteWithChildren
   ApiPublicWhatsappRoute: typeof ApiPublicWhatsappRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/mobile': {
-      id: '/mobile'
-      path: '/mobile'
-      fullPath: '/mobile'
-      preLoaderRoute: typeof MobileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -194,41 +111,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/mobile/': {
-      id: '/mobile/'
-      path: '/'
-      fullPath: '/mobile/'
-      preLoaderRoute: typeof MobileIndexRouteImport
-      parentRoute: typeof MobileRoute
-    }
-    '/mobile/transacoes': {
-      id: '/mobile/transacoes'
-      path: '/transacoes'
-      fullPath: '/mobile/transacoes'
-      preLoaderRoute: typeof MobileTransacoesRouteImport
-      parentRoute: typeof MobileRoute
-    }
-    '/mobile/perfil': {
-      id: '/mobile/perfil'
-      path: '/perfil'
-      fullPath: '/mobile/perfil'
-      preLoaderRoute: typeof MobilePerfilRouteImport
-      parentRoute: typeof MobileRoute
-    }
-    '/mobile/contas': {
-      id: '/mobile/contas'
-      path: '/contas'
-      fullPath: '/mobile/contas'
-      preLoaderRoute: typeof MobileContasRouteImport
-      parentRoute: typeof MobileRoute
-    }
-    '/mobile/conectar': {
-      id: '/mobile/conectar'
-      path: '/conectar'
-      fullPath: '/mobile/conectar'
-      preLoaderRoute: typeof MobileConectarRouteImport
-      parentRoute: typeof MobileRoute
     }
     '/app/whatsapp-test': {
       id: '/app/whatsapp-test'
@@ -257,32 +139,21 @@ const AppRouteChildren: AppRouteChildren = {
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
-interface MobileRouteChildren {
-  MobileConectarRoute: typeof MobileConectarRoute
-  MobileContasRoute: typeof MobileContasRoute
-  MobilePerfilRoute: typeof MobilePerfilRoute
-  MobileTransacoesRoute: typeof MobileTransacoesRoute
-  MobileIndexRoute: typeof MobileIndexRoute
-}
-
-const MobileRouteChildren: MobileRouteChildren = {
-  MobileConectarRoute: MobileConectarRoute,
-  MobileContasRoute: MobileContasRoute,
-  MobilePerfilRoute: MobilePerfilRoute,
-  MobileTransacoesRoute: MobileTransacoesRoute,
-  MobileIndexRoute: MobileIndexRoute,
-}
-
-const MobileRouteWithChildren =
-  MobileRoute._addFileChildren(MobileRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
   AuthRoute: AuthRoute,
-  MobileRoute: MobileRouteWithChildren,
   ApiPublicWhatsappRoute: ApiPublicWhatsappRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
