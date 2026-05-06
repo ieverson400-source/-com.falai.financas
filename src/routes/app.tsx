@@ -301,7 +301,7 @@ function AppDashboard() {
         )}
 
         {activeTab === "perfil" && (
-          <ProfileTab user={user} onSignOut={signOut} />
+          <ProfileTab user={user} />
         )}
 
         {activeTab === "relatorios" && (
