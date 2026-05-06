@@ -197,4 +197,3 @@ function MobileHome() {
   );
 }
 
-import { Link2 } from "lucide-react";
