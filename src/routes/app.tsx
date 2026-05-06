@@ -359,10 +359,8 @@ function AppDashboard() {
 
 function ProfileTab({
   user,
-  onSignOut,
 }: {
   user: { email?: string | null; id: string };
-  onSignOut: () => void;
 }) {
   const [plan, setPlan] = useState<"free" | "pro" | "premium">("free");
   const isSubscriber = plan !== "free";
