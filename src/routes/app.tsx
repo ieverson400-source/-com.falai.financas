@@ -127,16 +127,9 @@ function AppDashboard() {
           </Link>
           <div className="flex items-center gap-1.5 sm:gap-2">
             <ThemeToggle />
-            <Link to="/app/home">
-              <Button variant="default" size="sm" className="h-10 sm:h-9 px-3 gap-2">
-                <Home className="size-4" />
-                <span className="hidden sm:inline">Início</span>
-              </Button>
-            </Link>
-            <Link to="/app/whatsapp-test" className="hidden xs:inline-flex sm:inline-flex">
+            <Link to="/app/whatsapp-test" className="hidden sm:inline-flex">
               <Button variant="outline" size="sm" className="h-10 sm:h-9 px-3">
-                <span className="hidden sm:inline">Testar webhook</span>
-                <span className="sm:hidden">Webhook</span>
+                <span>Webhook</span>
               </Button>
             </Link>
             <span className="text-sm text-muted-foreground hidden md:inline truncate max-w-40">
