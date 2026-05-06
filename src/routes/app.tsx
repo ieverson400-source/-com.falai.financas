@@ -127,11 +127,6 @@ function AppDashboard() {
           </Link>
           <div className="flex items-center gap-1.5 sm:gap-2">
             <ThemeToggle />
-            <Link to="/app/whatsapp-test" className="hidden sm:inline-flex">
-              <Button variant="outline" size="sm" className="h-10 sm:h-9 px-3">
-                <span>Webhook</span>
-              </Button>
-            </Link>
             <span className="text-sm text-muted-foreground hidden md:inline truncate max-w-40">
               {user.email}
             </span>
