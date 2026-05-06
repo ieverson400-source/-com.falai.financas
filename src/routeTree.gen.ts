@@ -13,6 +13,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppWhatsappTestRouteImport } from './routes/app.whatsapp-test'
+import { Route as AppHomeRouteImport } from './routes/app.home'
 import { Route as ApiPublicWhatsappRouteImport } from './routes/api/public/whatsapp'
 
 const AuthRoute = AuthRouteImport.update({
@@ -35,6 +36,11 @@ const AppWhatsappTestRoute = AppWhatsappTestRouteImport.update({
   path: '/whatsapp-test',
   getParentRoute: () => AppRoute,
 } as any)
+const AppHomeRoute = AppHomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => AppRoute,
+} as any)
 const ApiPublicWhatsappRoute = ApiPublicWhatsappRouteImport.update({
   id: '/api/public/whatsapp',
   path: '/api/public/whatsapp',
@@ -45,6 +51,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRoute
+  '/app/home': typeof AppHomeRoute
   '/app/whatsapp-test': typeof AppWhatsappTestRoute
   '/api/public/whatsapp': typeof ApiPublicWhatsappRoute
 }
@@ -52,6 +59,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRoute
+  '/app/home': typeof AppHomeRoute
   '/app/whatsapp-test': typeof AppWhatsappTestRoute
   '/api/public/whatsapp': typeof ApiPublicWhatsappRoute
 }
@@ -60,6 +68,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRoute
+  '/app/home': typeof AppHomeRoute
   '/app/whatsapp-test': typeof AppWhatsappTestRoute
   '/api/public/whatsapp': typeof ApiPublicWhatsappRoute
 }
@@ -69,15 +78,23 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/auth'
+    | '/app/home'
     | '/app/whatsapp-test'
     | '/api/public/whatsapp'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/app' | '/auth' | '/app/whatsapp-test' | '/api/public/whatsapp'
+  to:
+    | '/'
+    | '/app'
+    | '/auth'
+    | '/app/home'
+    | '/app/whatsapp-test'
+    | '/api/public/whatsapp'
   id:
     | '__root__'
     | '/'
     | '/app'
     | '/auth'
+    | '/app/home'
     | '/app/whatsapp-test'
     | '/api/public/whatsapp'
   fileRoutesById: FileRoutesById
@@ -119,6 +136,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppWhatsappTestRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/home': {
+      id: '/app/home'
+      path: '/home'
+      fullPath: '/app/home'
+      preLoaderRoute: typeof AppHomeRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/api/public/whatsapp': {
       id: '/api/public/whatsapp'
       path: '/api/public/whatsapp'
@@ -130,10 +154,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppRouteChildren {
+  AppHomeRoute: typeof AppHomeRoute
   AppWhatsappTestRoute: typeof AppWhatsappTestRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppHomeRoute: AppHomeRoute,
   AppWhatsappTestRoute: AppWhatsappTestRoute,
 }
 
@@ -148,12 +174,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
