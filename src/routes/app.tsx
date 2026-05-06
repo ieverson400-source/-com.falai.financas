@@ -10,6 +10,7 @@ import { ManualExpenseDialog } from "@/components/manual-expense-dialog";
 import { WhatsAppLinkCard } from "@/components/whatsapp-link-card";
 import { WhatsAppInboxCard, type WhatsAppInboxItem } from "@/components/whatsapp-inbox-card";
 import { Toaster } from "@/components/ui/sonner";
+import { ChatBot } from "@/components/chat-bot";
 import { toast } from "sonner";
 import { Trash2, Mic, Hand, Home, Wallet, ArrowLeftRight, BarChart3, User as UserIcon, Building2, PiggyBank, CreditCard, ArrowUpRight, ArrowDownRight, Sparkles, Construction, Crown, Check, Zap, Star, Shield, Calendar as CalendarIcon, TrendingUp, Heart, Share2, Moon, Sun } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
@@ -112,6 +113,7 @@ function AppDashboard() {
   return (
     <div className="min-h-screen bg-background">
       <Toaster richColors />
+      <ChatBot />
 
       <header className="border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 sticky top-0 z-30">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-2">
