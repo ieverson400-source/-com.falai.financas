@@ -339,7 +339,7 @@ function AppDashboard() {
               { key: "inicio", label: "Início", icon: Home },
               { key: "contas", label: "Contas", icon: Wallet },
               { key: "transacoes", label: "Transações", icon: ArrowLeftRight },
-              { key: "conectar", label: "Conectar", icon: Link2 },
+              { key: "relatorios", label: "Relatórios", icon: BarChart3 },
               { key: "perfil", label: "Perfil", icon: UserIcon },
             ] as { key: TabKey; label: string; icon: typeof Home }[]
           ).map(({ key, label, icon: Icon }) => {
