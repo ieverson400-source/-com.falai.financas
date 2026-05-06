@@ -11,7 +11,7 @@ import { WhatsAppLinkCard } from "@/components/whatsapp-link-card";
 import { WhatsAppInboxCard, type WhatsAppInboxItem } from "@/components/whatsapp-inbox-card";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
-import { LogOut, Trash2, Mic, Hand, Home } from "lucide-react";
+import { LogOut, Trash2, Mic, Hand, Home, Wallet, ArrowLeftRight, Link2, User as UserIcon, Building2, PiggyBank, CreditCard, ArrowUpRight, ArrowDownRight, Sparkles, Construction } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { categoryColor, formatBRL } from "@/lib/categories";
 import { format, parseISO, startOfMonth } from "date-fns";
