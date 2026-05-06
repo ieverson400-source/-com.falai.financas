@@ -125,16 +125,7 @@ function AppDashboard() {
             </div>
             <span className="font-display font-semibold truncate">Falaí</span>
           </Link>
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            <ThemeToggle />
-            <span className="text-sm text-muted-foreground hidden md:inline truncate max-w-40">
-              {user.email}
-            </span>
-            <Button variant="ghost" size="sm" onClick={signOut} className="gap-2 h-10 sm:h-9 px-3">
-              <LogOut className="size-4" />
-              <span className="hidden sm:inline">Sair</span>
-            </Button>
-          </div>
+          <div className="flex items-center gap-1.5 sm:gap-2" />
         </div>
       </header>
 
