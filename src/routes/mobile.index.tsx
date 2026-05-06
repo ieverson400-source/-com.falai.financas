@@ -10,6 +10,7 @@ import {
   ArrowDownLeft,
   ArrowUpRight,
   Building2,
+  Link2,
   PiggyBank,
   Plus,
   Sparkles,
