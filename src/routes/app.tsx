@@ -11,8 +11,8 @@ import { WhatsAppLinkCard } from "@/components/whatsapp-link-card";
 import { WhatsAppInboxCard, type WhatsAppInboxItem } from "@/components/whatsapp-inbox-card";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
-import { LogOut, Trash2, Mic, Hand, Home, Wallet, ArrowLeftRight, BarChart3, User as UserIcon, Building2, PiggyBank, CreditCard, ArrowUpRight, ArrowDownRight, Sparkles, Construction, Crown, Check, Zap, Star, Shield, Calendar as CalendarIcon, TrendingUp, Settings, Heart, Share2 } from "lucide-react";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { Trash2, Mic, Hand, Home, Wallet, ArrowLeftRight, BarChart3, User as UserIcon, Building2, PiggyBank, CreditCard, ArrowUpRight, ArrowDownRight, Sparkles, Construction, Crown, Check, Zap, Star, Shield, Calendar as CalendarIcon, TrendingUp, Heart, Share2, Moon, Sun } from "lucide-react";
+import { useTheme } from "@/hooks/use-theme";
 import { categoryColor, formatBRL } from "@/lib/categories";
 import { format, parseISO, startOfMonth } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -95,10 +95,6 @@ function AppDashboard() {
     load();
   };
 
-  const signOut = async () => {
-    await supabase.auth.signOut();
-    navigate({ to: "/" });
-  };
 
   if (loading || !user) {
     return (
@@ -125,16 +121,7 @@ function AppDashboard() {
             </div>
             <span className="font-display font-semibold truncate">Falaí</span>
           </Link>
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            <ThemeToggle />
-            <span className="text-sm text-muted-foreground hidden md:inline truncate max-w-40">
-              {user.email}
-            </span>
-            <Button variant="ghost" size="sm" onClick={signOut} className="gap-2 h-10 sm:h-9 px-3">
-              <LogOut className="size-4" />
-              <span className="hidden sm:inline">Sair</span>
-            </Button>
-          </div>
+          <div className="flex items-center gap-1.5 sm:gap-2" />
         </div>
       </header>
 
@@ -310,7 +297,7 @@ function AppDashboard() {
         )}
 
         {activeTab === "perfil" && (
-          <ProfileTab user={user} onSignOut={signOut} />
+          <ProfileTab user={user} />
         )}
 
         {activeTab === "relatorios" && (
@@ -362,24 +349,14 @@ function AppDashboard() {
         <div className="h-[env(safe-area-inset-bottom)]" />
       </nav>
 
-      {/* Sign out floating */}
-      <button
-        onClick={signOut}
-        className="hidden sm:inline-flex fixed bottom-20 right-4 z-30 items-center gap-2 rounded-full bg-card border border-border shadow-soft px-4 py-2 text-sm hover:bg-muted transition-colors"
-        aria-label="Sair"
-      >
-        <LogOut className="size-4" /> Sair
-      </button>
     </div>
   );
 }
 
 function ProfileTab({
   user,
-  onSignOut,
 }: {
   user: { email?: string | null; id: string };
-  onSignOut: () => void;
 }) {
   const [plan, setPlan] = useState<"free" | "pro" | "premium">("free");
   const isSubscriber = plan !== "free";
@@ -611,23 +588,10 @@ function ProfileTab({
             <UserIcon className="size-4 text-muted-foreground" />
             <span className="text-sm font-medium flex-1">Editar perfil</span>
           </button>
-          <button
-            onClick={() => toast.message("Configurações em breve")}
-            className="w-full px-4 py-3.5 flex items-center gap-3 text-left hover:bg-muted/40 transition-colors"
-          >
-            <Settings className="size-4 text-muted-foreground" />
-            <span className="text-sm font-medium flex-1">Configurações</span>
-          </button>
+          <ConfigThemeRow />
           <button className="w-full px-4 py-3.5 flex items-center gap-3 text-left hover:bg-muted/40 transition-colors">
             <Shield className="size-4 text-muted-foreground" />
             <span className="text-sm font-medium flex-1">Privacidade e segurança</span>
-          </button>
-          <button
-            onClick={onSignOut}
-            className="w-full px-4 py-3.5 flex items-center gap-3 text-left hover:bg-destructive/10 text-destructive transition-colors"
-          >
-            <LogOut className="size-4" />
-            <span className="text-sm font-medium flex-1">Sair</span>
           </button>
         </Card>
       </section>
@@ -733,5 +697,21 @@ function ReportsTab({
       {/* Gráficos */}
       <ExpenseCharts expenses={monthExpenses} />
     </div>
+  );
+}
+
+function ConfigThemeRow() {
+  const { theme, toggle } = useTheme();
+  const isDark = theme === "dark";
+  return (
+    <button
+      onClick={toggle}
+      className="w-full px-4 py-3.5 flex items-center gap-3 text-left hover:bg-muted/40 transition-colors"
+      aria-label="Alternar tema"
+    >
+      {isDark ? <Moon className="size-4 text-muted-foreground" /> : <Sun className="size-4 text-muted-foreground" />}
+      <span className="text-sm font-medium flex-1">Tema {isDark ? "escuro" : "claro"}</span>
+      <span className="text-xs text-muted-foreground">{isDark ? "Mudar para claro" : "Mudar para escuro"}</span>
+    </button>
   );
 }
