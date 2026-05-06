@@ -38,6 +38,8 @@ interface Expense {
   created_at: string;
 }
 
+type TabKey = "inicio" | "contas" | "transacoes" | "conectar" | "perfil";
+
 function AppDashboard() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
@@ -45,6 +47,7 @@ function AppDashboard() {
   const [whatsAppPhone, setWhatsAppPhone] = useState<string | null>(null);
   const [whatsAppInbox, setWhatsAppInbox] = useState<WhatsAppInboxItem[]>([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [activeTab, setActiveTab] = useState<TabKey>("inicio");
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth" });
