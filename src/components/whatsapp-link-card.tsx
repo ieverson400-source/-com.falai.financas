@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { MessageCircle, Save } from "lucide-react";
+import { MessageCircle, Save, Send } from "lucide-react";
 import { toast } from "sonner";
+import { useServerFn } from "@tanstack/react-start";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { normalizeWhatsAppPhone } from "@/lib/phone";
+import { sendWhatsAppWelcome } from "@/server/whatsapp-send.functions";
 
 interface Props {
   currentPhone: string | null;
