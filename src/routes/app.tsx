@@ -172,8 +172,9 @@ function AppDashboard() {
 
             {/* Top stats + recorder */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5">
-              <div className="lg:col-span-2">
+              <div className="lg:col-span-2 space-y-4 sm:space-y-5">
                 <AudioRecorder onSuccess={load} />
+                <ReceiptScanner onSuccess={load} userId={user.id} />
               </div>
               <div className="grid grid-cols-2 lg:grid-cols-1 gap-4">
                 <Card className="p-5 sm:p-6 bg-card shadow-soft transition-shadow hover:shadow-elevated">
