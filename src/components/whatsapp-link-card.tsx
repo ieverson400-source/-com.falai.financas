@@ -139,14 +139,26 @@ export function WhatsAppLinkCard({ currentPhone, onSaved }: Props) {
             />
           </div>
 
-          <Button
-            onClick={handleSave}
-            disabled={saving || phone.trim().length === 0}
-            className="gap-2"
-          >
-            <Save className="size-4" />
-            {saving ? "Salvando..." : "Salvar número"}
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              onClick={handleSave}
+              disabled={saving || phone.trim().length === 0}
+              className="gap-2"
+            >
+              <Save className="size-4" />
+              {saving ? "Salvando..." : "Salvar número"}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleSendWelcome}
+              disabled={sending || phone.trim().length === 0}
+              className="gap-2"
+            >
+              <Send className="size-4" />
+              {sending ? "Enviando..." : "Enviar boas-vindas"}
+            </Button>
+          </div>
 
           {diagnostic && (
             <div className="rounded-md border border-border bg-secondary/60 p-3 text-xs leading-relaxed text-muted-foreground">
