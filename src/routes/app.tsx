@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { AudioRecorder } from "@/components/audio-recorder";
 import { ExpenseCharts } from "@/components/expense-charts";
 import { ManualExpenseDialog } from "@/components/manual-expense-dialog";
+import { ReceiptScanner } from "@/components/receipt-scanner";
 import { WhatsAppLinkCard } from "@/components/whatsapp-link-card";
 import { WhatsAppInboxCard, type WhatsAppInboxItem } from "@/components/whatsapp-inbox-card";
 import { Toaster } from "@/components/ui/sonner";
