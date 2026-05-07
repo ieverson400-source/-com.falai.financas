@@ -18,7 +18,27 @@ interface Props {
 export function WhatsAppLinkCard({ currentPhone, onSaved }: Props) {
   const [phone, setPhone] = useState(currentPhone ?? "");
   const [saving, setSaving] = useState(false);
+  const [sending, setSending] = useState(false);
   const [diagnostic, setDiagnostic] = useState<string | null>(null);
+  const sendWelcome = useServerFn(sendWhatsAppWelcome);
+
+  const handleSendWelcome = async () => {
+    const normalized = normalizeWhatsAppPhone(phone);
+    if (!normalized) {
+      toast.error("Informe um número válido em formato internacional, ex: +5519996020358.");
+      return;
+    }
+    setSending(true);
+    try {
+      await sendWelcome({ data: { phone: normalized } });
+      toast.success("Mensagem de boas-vindas enviada via WhatsApp.");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Falha desconhecida.";
+      toast.error(`Não foi possível enviar a mensagem de boas-vindas. ${message}`);
+    } finally {
+      setSending(false);
+    }
+  };
 
   const handleSave = async () => {
     const normalized = normalizeWhatsAppPhone(phone);
