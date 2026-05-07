@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { MessageCircle, Save } from "lucide-react";
+import { MessageCircle, Save, Send } from "lucide-react";
 import { toast } from "sonner";
+import { useServerFn } from "@tanstack/react-start";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { normalizeWhatsAppPhone } from "@/lib/phone";
+import { sendWhatsAppWelcome } from "@/server/whatsapp-send.functions";
 
 interface Props {
   currentPhone: string | null;
@@ -16,7 +18,27 @@ interface Props {
 export function WhatsAppLinkCard({ currentPhone, onSaved }: Props) {
   const [phone, setPhone] = useState(currentPhone ?? "");
   const [saving, setSaving] = useState(false);
+  const [sending, setSending] = useState(false);
   const [diagnostic, setDiagnostic] = useState<string | null>(null);
+  const sendWelcome = useServerFn(sendWhatsAppWelcome);
+
+  const handleSendWelcome = async () => {
+    const normalized = normalizeWhatsAppPhone(phone);
+    if (!normalized) {
+      toast.error("Informe um número válido em formato internacional, ex: +5519996020358.");
+      return;
+    }
+    setSending(true);
+    try {
+      await sendWelcome({ data: { phone: normalized } });
+      toast.success("Mensagem de boas-vindas enviada via WhatsApp.");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Falha desconhecida.";
+      toast.error(`Não foi possível enviar a mensagem de boas-vindas. ${message}`);
+    } finally {
+      setSending(false);
+    }
+  };
 
   const handleSave = async () => {
     const normalized = normalizeWhatsAppPhone(phone);
@@ -117,14 +139,26 @@ export function WhatsAppLinkCard({ currentPhone, onSaved }: Props) {
             />
           </div>
 
-          <Button
-            onClick={handleSave}
-            disabled={saving || phone.trim().length === 0}
-            className="gap-2"
-          >
-            <Save className="size-4" />
-            {saving ? "Salvando..." : "Salvar número"}
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              onClick={handleSave}
+              disabled={saving || phone.trim().length === 0}
+              className="gap-2"
+            >
+              <Save className="size-4" />
+              {saving ? "Salvando..." : "Salvar número"}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleSendWelcome}
+              disabled={sending || phone.trim().length === 0}
+              className="gap-2"
+            >
+              <Send className="size-4" />
+              {sending ? "Enviando..." : "Enviar boas-vindas"}
+            </Button>
+          </div>
 
           {diagnostic && (
             <div className="rounded-md border border-border bg-secondary/60 p-3 text-xs leading-relaxed text-muted-foreground">
