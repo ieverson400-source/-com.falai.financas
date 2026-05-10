@@ -20,6 +20,7 @@ export function WhatsAppLinkCard({ currentPhone, onSaved }: Props) {
   const [saving, setSaving] = useState(false);
   const [sending, setSending] = useState(false);
   const [diagnostic, setDiagnostic] = useState<string | null>(null);
+  const [sendHint, setSendHint] = useState<string | null>(null);
   const sendWelcome = useServerFn(sendWhatsAppWelcome);
 
   const handleSendWelcome = async () => {
@@ -29,12 +30,33 @@ export function WhatsAppLinkCard({ currentPhone, onSaved }: Props) {
       return;
     }
     setSending(true);
+    setSendHint(null);
     try {
-      await sendWelcome({ data: { phone: normalized } });
-      toast.success("Mensagem de boas-vindas enviada via WhatsApp.");
+      const result = await sendWelcome({ data: { phone: normalized } });
+      if (result.mode === "template") {
+        toast.success("Mensagem enviada via template aprovado (HSM).");
+      } else if (result.sandbox) {
+        toast.success(
+          "Mensagem enviada pelo sandbox do Twilio. Se não chegar, o destinatário precisa fazer o opt-in (join).",
+        );
+      } else {
+        toast.success("Mensagem de boas-vindas enviada via WhatsApp.");
+      }
     } catch (error) {
       const message = error instanceof Error ? error.message : "Falha desconhecida.";
-      toast.error(`Não foi possível enviar a mensagem de boas-vindas. ${message}`);
+      toast.error("Não foi possível enviar a mensagem de boas-vindas.");
+      // Detecta cenário de opt-in do sandbox e oferece guia.
+      if (/63015|63016|opt-in|join /i.test(message)) {
+        setSendHint(
+          'Sandbox do Twilio: peça que o destinatário envie no WhatsApp a mensagem "join <sua-palavra-chave>" para +1 415 523 8886. A palavra-chave aparece no console do Twilio em Messaging → Try it out → WhatsApp sandbox.',
+        );
+      } else if (/63018|63003|template|HSM|ContentSid/i.test(message)) {
+        setSendHint(
+          'Para enviar fora da janela de 24h, configure um template HSM aprovado no Twilio (ex: nome "bem_vindo", categoria UTILITY, variável {{1}} para o nome) e salve o ContentSid em TWILIO_WELCOME_CONTENT_SID.',
+        );
+      } else {
+        setSendHint(message);
+      }
     } finally {
       setSending(false);
     }
