@@ -188,6 +188,13 @@ export function WhatsAppLinkCard({ currentPhone, onSaved }: Props) {
               {diagnostic}
             </div>
           )}
+
+          {sendHint && (
+            <div className="rounded-md border border-amber-500/40 bg-amber-500/10 p-3 text-xs leading-relaxed text-foreground">
+              <span className="font-medium">Como resolver: </span>
+              {sendHint}
+            </div>
+          )}
         </div>
       </div>
     </Card>
