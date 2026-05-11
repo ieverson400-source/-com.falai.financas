@@ -235,7 +235,51 @@ export function WhatsAppLinkCard({ currentPhone, onSaved }: Props) {
               <Send className="size-4" />
               {sending ? "Enviando..." : "Enviar boas-vindas"}
             </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={handleTestRealSend}
+              disabled={testing || (!currentPhone && phone.trim().length === 0)}
+              className="gap-2"
+              title="Envia usando o template HSM quando o remetente não é o sandbox"
+            >
+              <Zap className="size-4" />
+              {testing ? "Testando..." : "Testar envio real"}
+            </Button>
           </div>
+
+          {sendLog.length > 0 && (
+            <div className="rounded-md border border-border bg-background/60 p-3">
+              <div className="mb-2 flex items-center justify-between">
+                <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Log de envio
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setSendLog([])}
+                  className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+                >
+                  <Trash2 className="size-3" /> limpar
+                </button>
+              </div>
+              <ul className="space-y-1 font-mono text-[11px] leading-relaxed">
+                {sendLog.map((entry, i) => (
+                  <li
+                    key={i}
+                    className={
+                      entry.level === "error"
+                        ? "text-destructive"
+                        : entry.level === "success"
+                          ? "text-primary"
+                          : "text-muted-foreground"
+                    }
+                  >
+                    <span className="opacity-60">[{entry.ts}]</span> {entry.message}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {diagnostic && (
             <div className="rounded-md border border-border bg-secondary/60 p-3 text-xs leading-relaxed text-muted-foreground">
