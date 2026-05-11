@@ -19,9 +19,64 @@ export function WhatsAppLinkCard({ currentPhone, onSaved }: Props) {
   const [phone, setPhone] = useState(currentPhone ?? "");
   const [saving, setSaving] = useState(false);
   const [sending, setSending] = useState(false);
+  const [testing, setTesting] = useState(false);
   const [diagnostic, setDiagnostic] = useState<string | null>(null);
   const [sendHint, setSendHint] = useState<string | null>(null);
+  const [sendLog, setSendLog] = useState<
+    { ts: string; level: "info" | "success" | "error"; message: string }[]
+  >([]);
   const sendWelcome = useServerFn(sendWhatsAppWelcome);
+
+  const appendLog = (level: "info" | "success" | "error", message: string) => {
+    setSendLog((prev) =>
+      [{ ts: new Date().toLocaleTimeString(), level, message }, ...prev].slice(0, 20),
+    );
+  };
+
+  const handleTestRealSend = async () => {
+    const target = currentPhone ?? normalizeWhatsAppPhone(phone);
+    if (!target) {
+      const msg = "Salve um número antes de testar o envio real, ou digite um válido.";
+      appendLog("error", msg);
+      toast.error(msg);
+      return;
+    }
+    setTesting(true);
+    setSendHint(null);
+    appendLog("info", `Iniciando envio real (sem sandbox) para ${target}...`);
+    try {
+      const result = await sendWelcome({ data: { phone: target } });
+      const tag = result.mode === "template" ? "template HSM" : "texto livre";
+      const sandboxNote = result.sandbox ? " (remetente é o sandbox do Twilio)" : "";
+      appendLog(
+        "success",
+        `OK via ${tag}${sandboxNote}. SID: ${result.sid ?? "—"} • From: ${result.from} • To: ${result.to}`,
+      );
+      toast.success(`Mensagem enviada (${tag}).`);
+      if (result.sandbox) {
+        setSendHint(
+          "O remetente configurado ainda é o sandbox (+14155238886). Para um teste 100% sem sandbox, configure TWILIO_WHATSAPP_FROM com o seu número WhatsApp aprovado, ou use TWILIO_MESSAGING_SERVICE_SID.",
+        );
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Falha desconhecida.";
+      appendLog("error", message);
+      toast.error("Falha no envio real.");
+      if (/63015|63016|opt-in|join /i.test(message)) {
+        setSendHint(
+          'Sandbox: peça que o destinatário envie "join <palavra>" para +1 415 523 8886 no WhatsApp.',
+        );
+      } else if (/63018|63003|template|HSM|ContentSid/i.test(message)) {
+        setSendHint(
+          "Template HSM não aprovado/encontrado. Verifique o ContentSid em TWILIO_WELCOME_CONTENT_SID.",
+        );
+      } else {
+        setSendHint(message);
+      }
+    } finally {
+      setTesting(false);
+    }
+  };
 
   const handleSendWelcome = async () => {
     const normalized = normalizeWhatsAppPhone(phone);
