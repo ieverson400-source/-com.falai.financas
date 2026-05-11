@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MessageCircle, Save, Send } from "lucide-react";
+import { MessageCircle, Save, Send, Zap, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { Card } from "@/components/ui/card";
@@ -19,9 +19,64 @@ export function WhatsAppLinkCard({ currentPhone, onSaved }: Props) {
   const [phone, setPhone] = useState(currentPhone ?? "");
   const [saving, setSaving] = useState(false);
   const [sending, setSending] = useState(false);
+  const [testing, setTesting] = useState(false);
   const [diagnostic, setDiagnostic] = useState<string | null>(null);
   const [sendHint, setSendHint] = useState<string | null>(null);
+  const [sendLog, setSendLog] = useState<
+    { ts: string; level: "info" | "success" | "error"; message: string }[]
+  >([]);
   const sendWelcome = useServerFn(sendWhatsAppWelcome);
+
+  const appendLog = (level: "info" | "success" | "error", message: string) => {
+    setSendLog((prev) =>
+      [{ ts: new Date().toLocaleTimeString(), level, message }, ...prev].slice(0, 20),
+    );
+  };
+
+  const handleTestRealSend = async () => {
+    const target = currentPhone ?? normalizeWhatsAppPhone(phone);
+    if (!target) {
+      const msg = "Salve um número antes de testar o envio real, ou digite um válido.";
+      appendLog("error", msg);
+      toast.error(msg);
+      return;
+    }
+    setTesting(true);
+    setSendHint(null);
+    appendLog("info", `Iniciando envio real (sem sandbox) para ${target}...`);
+    try {
+      const result = await sendWelcome({ data: { phone: target } });
+      const tag = result.mode === "template" ? "template HSM" : "texto livre";
+      const sandboxNote = result.sandbox ? " (remetente é o sandbox do Twilio)" : "";
+      appendLog(
+        "success",
+        `OK via ${tag}${sandboxNote}. SID: ${result.sid ?? "—"} • From: ${result.from} • To: ${result.to}`,
+      );
+      toast.success(`Mensagem enviada (${tag}).`);
+      if (result.sandbox) {
+        setSendHint(
+          "O remetente configurado ainda é o sandbox (+14155238886). Para um teste 100% sem sandbox, configure TWILIO_WHATSAPP_FROM com o seu número WhatsApp aprovado, ou use TWILIO_MESSAGING_SERVICE_SID.",
+        );
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Falha desconhecida.";
+      appendLog("error", message);
+      toast.error("Falha no envio real.");
+      if (/63015|63016|opt-in|join /i.test(message)) {
+        setSendHint(
+          'Sandbox: peça que o destinatário envie "join <palavra>" para +1 415 523 8886 no WhatsApp.',
+        );
+      } else if (/63018|63003|template|HSM|ContentSid/i.test(message)) {
+        setSendHint(
+          "Template HSM não aprovado/encontrado. Verifique o ContentSid em TWILIO_WELCOME_CONTENT_SID.",
+        );
+      } else {
+        setSendHint(message);
+      }
+    } finally {
+      setTesting(false);
+    }
+  };
 
   const handleSendWelcome = async () => {
     const normalized = normalizeWhatsAppPhone(phone);
@@ -180,7 +235,51 @@ export function WhatsAppLinkCard({ currentPhone, onSaved }: Props) {
               <Send className="size-4" />
               {sending ? "Enviando..." : "Enviar boas-vindas"}
             </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={handleTestRealSend}
+              disabled={testing || (!currentPhone && phone.trim().length === 0)}
+              className="gap-2"
+              title="Envia usando o template HSM quando o remetente não é o sandbox"
+            >
+              <Zap className="size-4" />
+              {testing ? "Testando..." : "Testar envio real"}
+            </Button>
           </div>
+
+          {sendLog.length > 0 && (
+            <div className="rounded-md border border-border bg-background/60 p-3">
+              <div className="mb-2 flex items-center justify-between">
+                <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Log de envio
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setSendLog([])}
+                  className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+                >
+                  <Trash2 className="size-3" /> limpar
+                </button>
+              </div>
+              <ul className="space-y-1 font-mono text-[11px] leading-relaxed">
+                {sendLog.map((entry, i) => (
+                  <li
+                    key={i}
+                    className={
+                      entry.level === "error"
+                        ? "text-destructive"
+                        : entry.level === "success"
+                          ? "text-primary"
+                          : "text-muted-foreground"
+                    }
+                  >
+                    <span className="opacity-60">[{entry.ts}]</span> {entry.message}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {diagnostic && (
             <div className="rounded-md border border-border bg-secondary/60 p-3 text-xs leading-relaxed text-muted-foreground">
