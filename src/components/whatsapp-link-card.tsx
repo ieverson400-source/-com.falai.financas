@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MessageCircle, Save, Send } from "lucide-react";
+import { MessageCircle, Save, Send, Zap, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { Card } from "@/components/ui/card";
