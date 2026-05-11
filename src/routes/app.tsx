@@ -9,6 +9,7 @@ import { ExpenseCharts } from "@/components/expense-charts";
 import { ManualExpenseDialog } from "@/components/manual-expense-dialog";
 import { ReceiptScanner } from "@/components/receipt-scanner";
 import { WhatsAppLinkCard } from "@/components/whatsapp-link-card";
+import { WhatsAppDiagnosticsCard } from "@/components/whatsapp-diagnostics-card";
 import { WhatsAppInboxCard, type WhatsAppInboxItem } from "@/components/whatsapp-inbox-card";
 import { Toaster } from "@/components/ui/sonner";
 import { ChatBot } from "@/components/chat-bot";
@@ -188,8 +189,9 @@ function AppDashboard() {
                   <p className="text-[11px] uppercase tracking-wider text-muted-foreground">Total geral</p>
                   <p className="font-display text-xl sm:text-2xl font-semibold mt-1 break-words">{formatBRL(totalAll)}</p>
                 </Card>
-                <div className="col-span-2 lg:col-span-1">
+                <div className="col-span-2 lg:col-span-1 space-y-4">
                   <WhatsAppLinkCard currentPhone={whatsAppPhone} onSaved={setWhatsAppPhone} />
+                  <WhatsAppDiagnosticsCard />
                 </div>
               </div>
             </div>
