@@ -145,7 +145,7 @@ export function WhatsAppDiagnosticsCard({ currentPhone }: Props) {
   useEffect(() => {
     refresh();
     // Re-tenta quando o auth muda (signin/refresh).
-    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
+    const { data: sub } = supabase.auth.onAuthStateChange((event: string) => {
       if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
         refresh();
       }
