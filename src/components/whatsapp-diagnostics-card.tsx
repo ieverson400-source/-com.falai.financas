@@ -235,11 +235,16 @@ export function WhatsAppDiagnosticsCard({ currentPhone }: Props) {
             <p className="text-sm text-muted-foreground">Verificando...</p>
           ) : data ? (
             <>
-              <div
-                className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium ${MODE_LABEL[data.mode].tone}`}
-              >
-                {MODE_LABEL[data.mode].label}
-              </div>
+              {(() => {
+                const m = MODE_LABEL[data.mode] ?? MODE_LABEL.incomplete;
+                return (
+                  <div
+                    className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium ${m.tone}`}
+                  >
+                    {m.label}
+                  </div>
+                );
+              })()}
 
               <div className="space-y-2 rounded-lg border border-border bg-secondary/40 p-4">
                 <Row ok={data.hasAccountSid} label="TWILIO_ACCOUNT_SID" />
