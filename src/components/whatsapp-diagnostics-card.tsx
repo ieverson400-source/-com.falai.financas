@@ -19,6 +19,7 @@ import {
 } from "@/server/whatsapp-diagnostics.functions";
 import { sendWhatsAppWelcome } from "@/server/whatsapp-send.functions";
 import { normalizeWhatsAppPhone } from "@/lib/phone";
+import { supabase } from "@/integrations/supabase/client";
 
 const MODE_LABEL: Record<WhatsAppDiagnostics["mode"], { label: string; tone: string }> = {
   "sandbox-freeform": {
@@ -113,10 +114,19 @@ export function WhatsAppDiagnosticsCard({ currentPhone }: Props) {
   const refresh = async () => {
     setLoading(true);
     try {
+      // Aguarda a sessão do Supabase estar hidratada antes de chamar a server fn
+      // (caso contrário a primeira chamada vai sem Authorization e retorna 401).
+      const { data: sessionData } = await supabase.auth.getSession();
+      if (!sessionData.session) {
+        setLoading(false);
+        return;
+      }
       const res = await fetchDiag();
       setData(res as WhatsAppDiagnostics);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao verificar configuração");
+      // Não estoura toast aqui — durante o boot a sessão pode não estar pronta
+      // e não queremos quebrar a UI. O usuário pode clicar em "Revalidar".
+      console.warn("Diagnóstico WhatsApp falhou:", err);
     } finally {
       setLoading(false);
     }
@@ -134,6 +144,13 @@ export function WhatsAppDiagnosticsCard({ currentPhone }: Props) {
 
   useEffect(() => {
     refresh();
+    // Re-tenta quando o auth muda (signin/refresh).
+    const { data: sub } = supabase.auth.onAuthStateChange((event: string) => {
+      if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
+        refresh();
+      }
+    });
+    return () => sub.subscription.unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
