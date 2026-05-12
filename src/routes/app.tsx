@@ -191,7 +191,7 @@ function AppDashboard() {
                 </Card>
                 <div className="col-span-2 lg:col-span-1 space-y-4">
                   <WhatsAppLinkCard currentPhone={whatsAppPhone} onSaved={setWhatsAppPhone} />
-                  <WhatsAppDiagnosticsCard />
+                  <WhatsAppDiagnosticsCard currentPhone={whatsAppPhone} />
                 </div>
               </div>
             </div>
