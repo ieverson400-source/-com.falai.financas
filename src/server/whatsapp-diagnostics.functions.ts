@@ -16,6 +16,12 @@ export type WhatsAppDiagnostics = {
   // Validação contra a API do Twilio (quando credenciais existem).
   senderVerified: boolean;
   senderError: string | null;
+  // Validação do template HSM (Content API).
+  templateExists: boolean;
+  templateApproved: boolean;
+  templateName: string | null;
+  templateStatus: string | null;
+  templateError: string | null;
   // Sumário acionável.
   mode: "sandbox-freeform" | "production-template" | "production-freeform" | "incomplete";
   recommendations: string[];
@@ -50,10 +56,20 @@ export const getWhatsAppDiagnostics = createServerFn({ method: "GET" })
     let senderVerified = false;
     let senderError: string | null = null;
 
-    // Se credenciais existem, valida o remetente direto na API do Twilio.
-    if (accountSid && authToken && (fromNumber || messagingServiceSid)) {
+    let templateExists = false;
+    let templateApproved = false;
+    let templateName: string | null = null;
+    let templateStatus: string | null = null;
+    let templateError: string | null = null;
+
+    const auth =
+      accountSid && authToken
+        ? Buffer.from(`${accountSid}:${authToken}`).toString("base64")
+        : null;
+
+    // Valida o remetente.
+    if (auth && (fromNumber || messagingServiceSid)) {
       try {
-        const auth = Buffer.from(`${accountSid}:${authToken}`).toString("base64");
         if (messagingServiceSid) {
           const res = await fetch(
             `https://messaging.twilio.com/v1/Services/${messagingServiceSid}`,
@@ -66,15 +82,12 @@ export const getWhatsAppDiagnostics = createServerFn({ method: "GET" })
             senderError = `Messaging Service inválido (${res.status}): ${body.message ?? "verifique o SID"}`;
           }
         } else if (fromNumber) {
-          // Lista os senders WhatsApp da conta e confere se o número está habilitado.
           const res = await fetch(
             `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/IncomingPhoneNumbers.json?PhoneNumber=${encodeURIComponent(fromNumber)}`,
             { headers: { Authorization: `Basic ${auth}` } },
           );
           if (res.ok) {
             const body = (await res.json()) as { incoming_phone_numbers?: unknown[] };
-            // Sandbox não aparece em IncomingPhoneNumbers — então se for sandbox e
-            // as credenciais funcionam, considera verificado.
             if (isSandbox) {
               senderVerified = true;
             } else if ((body.incoming_phone_numbers ?? []).length > 0) {
@@ -89,6 +102,57 @@ export const getWhatsAppDiagnostics = createServerFn({ method: "GET" })
         }
       } catch (err) {
         senderError = err instanceof Error ? err.message : "Falha ao consultar Twilio";
+      }
+    }
+
+    // Valida o template HSM via Content API.
+    if (auth && contentSid) {
+      try {
+        const res = await fetch(`https://content.twilio.com/v1/Content/${contentSid}`, {
+          headers: { Authorization: `Basic ${auth}` },
+        });
+        if (res.ok) {
+          templateExists = true;
+          const body = (await res.json()) as {
+            friendly_name?: string;
+            sid?: string;
+          };
+          templateName = body.friendly_name ?? null;
+
+          // Consulta status de aprovação para WhatsApp.
+          const aprRes = await fetch(
+            `https://content.twilio.com/v1/Content/${contentSid}/ApprovalRequests`,
+            { headers: { Authorization: `Basic ${auth}` } },
+          );
+          if (aprRes.ok) {
+            const aprBody = (await aprRes.json()) as {
+              whatsapp?: { status?: string; rejection_reason?: string };
+            };
+            const status = aprBody.whatsapp?.status ?? null;
+            templateStatus = status;
+            if (status === "approved") {
+              templateApproved = true;
+            } else if (status) {
+              templateError = `Template existe mas o status no WhatsApp é "${status}"${
+                aprBody.whatsapp?.rejection_reason
+                  ? ` — ${aprBody.whatsapp.rejection_reason}`
+                  : ""
+              }.`;
+            } else {
+              templateError =
+                "Template existe mas ainda não foi submetido para aprovação no WhatsApp.";
+            }
+          } else {
+            templateError = `Não foi possível consultar o status de aprovação (${aprRes.status}).`;
+          }
+        } else if (res.status === 404) {
+          templateError = `ContentSid "${maskSid(contentSid)}" não existe nesta conta Twilio.`;
+        } else {
+          const body = (await res.json().catch(() => ({}))) as { message?: string };
+          templateError = `Falha ao consultar template (${res.status}): ${body.message ?? "desconhecido"}`;
+        }
+      } catch (err) {
+        templateError = err instanceof Error ? err.message : "Falha ao consultar Content API";
       }
     }
 
@@ -120,6 +184,15 @@ export const getWhatsAppDiagnostics = createServerFn({ method: "GET" })
         "Sem ContentSid: fora da janela de 24h o envio falhará. Crie o template HSM 'bem_vindo' com {{1}} e salve em TWILIO_WELCOME_CONTENT_SID.",
       );
     }
+    if (contentSid && !templateExists && templateError) {
+      recommendations.push(templateError);
+    }
+    if (contentSid && templateExists && !templateApproved) {
+      recommendations.push(
+        templateError ??
+          "Template ainda não está aprovado para WhatsApp — aguarde aprovação ou submeta novamente.",
+      );
+    }
     if (senderError) recommendations.push(senderError);
 
     return {
@@ -134,6 +207,11 @@ export const getWhatsAppDiagnostics = createServerFn({ method: "GET" })
       messagingServicePreview: maskSid(messagingServiceSid),
       senderVerified,
       senderError,
+      templateExists,
+      templateApproved,
+      templateName,
+      templateStatus,
+      templateError,
       mode,
       recommendations,
     };
