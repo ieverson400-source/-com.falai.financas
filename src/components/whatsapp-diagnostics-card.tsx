@@ -19,6 +19,7 @@ import {
 } from "@/server/whatsapp-diagnostics.functions";
 import { sendWhatsAppWelcome } from "@/server/whatsapp-send.functions";
 import { normalizeWhatsAppPhone } from "@/lib/phone";
+import { supabase } from "@/integrations/supabase/client";
 
 const MODE_LABEL: Record<WhatsAppDiagnostics["mode"], { label: string; tone: string }> = {
   "sandbox-freeform": {
