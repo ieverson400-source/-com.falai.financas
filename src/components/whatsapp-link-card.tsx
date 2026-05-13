@@ -182,6 +182,36 @@ export function WhatsAppLinkCard({ currentPhone, onSaved }: Props) {
       onSaved(normalized);
       setDiagnostic(`Sucesso: número ${normalized} salvo no seu perfil.`);
       toast.success("Número do WhatsApp salvo.");
+
+      // Dispara automaticamente a mensagem de boas-vindas após salvar.
+      // Falhas no envio NÃO revertem o salvamento — apenas avisam o usuário
+      // e o botão "Enviar boas-vindas" continua disponível como reenvio manual.
+      setSending(true);
+      setSendHint(null);
+      appendLog("info", `Salvo com sucesso. Enviando boas-vindas para ${normalized}...`);
+      try {
+        const result = await sendWelcome({ data: { phone: normalized } });
+        const tag = result.mode === "template" ? "template HSM" : "texto livre";
+        appendLog("success", `Boas-vindas enviada via ${tag}. SID: ${result.sid ?? "—"}`);
+        toast.success("Mensagem de boas-vindas enviada.");
+      } catch (sendError) {
+        const message = sendError instanceof Error ? sendError.message : "Falha desconhecida.";
+        appendLog("error", `Boas-vindas falhou: ${message}`);
+        toast.error("Número salvo, mas o envio das boas-vindas falhou. Use 'Enviar boas-vindas' para tentar de novo.");
+        if (/63015|63016|opt-in|join /i.test(message)) {
+          setSendHint(
+            'Sandbox do Twilio: peça que o destinatário envie "join <sua-palavra>" para +1 415 523 8886 no WhatsApp e clique em "Enviar boas-vindas".',
+          );
+        } else if (/63018|63003|template|HSM|ContentSid/i.test(message)) {
+          setSendHint(
+            "Template HSM não aprovado/encontrado. Verifique TWILIO_WELCOME_CONTENT_SID e clique em 'Enviar boas-vindas' para reenviar.",
+          );
+        } else {
+          setSendHint(message);
+        }
+      } finally {
+        setSending(false);
+      }
     } catch (error) {
       const message = error instanceof Error ? error.message : "Não foi possível salvar o número.";
       setDiagnostic(message);
