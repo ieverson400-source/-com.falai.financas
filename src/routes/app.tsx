@@ -428,8 +428,12 @@ function ProfileTab({
     <div className="space-y-6 animate-in fade-in duration-300">
       {/* Profile header */}
       <Card className="p-5 sm:p-6 bg-card shadow-soft flex items-center gap-4">
-        <div className="size-14 rounded-2xl bg-gradient-hero flex items-center justify-center text-primary-foreground font-display font-bold text-lg shrink-0">
-          {(user.email ?? "?").slice(0, 1).toUpperCase()}
+        <div className="size-14 rounded-2xl bg-gradient-hero flex items-center justify-center text-primary-foreground font-display font-bold text-lg shrink-0 overflow-hidden">
+          {avatarUrl ? (
+            <img src={avatarUrl} alt="" className="size-full object-cover" />
+          ) : (
+            (user.email ?? "?").slice(0, 1).toUpperCase()
+          )}
         </div>
         <div className="flex-1 min-w-0">
           <p className="font-display font-semibold truncate">
