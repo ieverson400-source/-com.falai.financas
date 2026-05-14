@@ -68,7 +68,7 @@ function AppDashboard() {
         .select("*")
         .order("expense_date", { ascending: false })
         .order("created_at", { ascending: false }),
-      supabase.from("profiles").select("whatsapp_phone").eq("user_id", user.id).maybeSingle(),
+      supabase.from("profiles").select("whatsapp_phone, avatar_url").eq("user_id", user.id).maybeSingle(),
       supabase
         .from("whatsapp_inbox")
         .select("id, from_phone, transcript, processing_status, error_message, created_at")
@@ -87,6 +87,7 @@ function AppDashboard() {
     }
     setExpenses((expensesRes.data ?? []) as Expense[]);
     setWhatsAppPhone(profileRes.data?.whatsapp_phone ?? null);
+    setAvatarUrl(profileRes.data?.avatar_url ?? user.user_metadata?.avatar_url ?? null);
     setWhatsAppInbox((inboxRes.data ?? []) as WhatsAppInboxItem[]);
   }, [user]);
 
