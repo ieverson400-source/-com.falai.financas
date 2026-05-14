@@ -76,6 +76,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_url: string | null
           created_at: string
           display_name: string | null
           id: string
@@ -84,6 +85,7 @@ export type Database = {
           whatsapp_phone: string | null
         }
         Insert: {
+          avatar_url?: string | null
           created_at?: string
           display_name?: string | null
           id?: string
@@ -92,6 +94,7 @@ export type Database = {
           whatsapp_phone?: string | null
         }
         Update: {
+          avatar_url?: string | null
           created_at?: string
           display_name?: string | null
           id?: string

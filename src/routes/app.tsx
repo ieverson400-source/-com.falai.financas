@@ -13,6 +13,8 @@ import { WhatsAppDiagnosticsCard } from "@/components/whatsapp-diagnostics-card"
 import { WhatsAppInboxCard, type WhatsAppInboxItem } from "@/components/whatsapp-inbox-card";
 import { Toaster } from "@/components/ui/sonner";
 import { ChatBot } from "@/components/chat-bot";
+import { NotificationsButton } from "@/components/notifications-button";
+import { ProfileEditDialog } from "@/components/profile-edit-dialog";
 import { toast } from "sonner";
 import { Trash2, Mic, Hand, Home, Wallet, ArrowLeftRight, BarChart3, User as UserIcon, Building2, PiggyBank, CreditCard, ArrowUpRight, ArrowDownRight, Sparkles, Construction, Crown, Check, Zap, Star, Shield, Calendar as CalendarIcon, TrendingUp, Heart, Share2, Moon, Sun } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
@@ -48,6 +50,7 @@ function AppDashboard() {
   const navigate = useNavigate();
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [whatsAppPhone, setWhatsAppPhone] = useState<string | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [whatsAppInbox, setWhatsAppInbox] = useState<WhatsAppInboxItem[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState<TabKey>("inicio");
@@ -65,7 +68,7 @@ function AppDashboard() {
         .select("*")
         .order("expense_date", { ascending: false })
         .order("created_at", { ascending: false }),
-      supabase.from("profiles").select("whatsapp_phone").eq("user_id", user.id).maybeSingle(),
+      supabase.from("profiles").select("whatsapp_phone, avatar_url").eq("user_id", user.id).maybeSingle(),
       supabase
         .from("whatsapp_inbox")
         .select("id, from_phone, transcript, processing_status, error_message, created_at")
@@ -84,6 +87,7 @@ function AppDashboard() {
     }
     setExpenses((expensesRes.data ?? []) as Expense[]);
     setWhatsAppPhone(profileRes.data?.whatsapp_phone ?? null);
+    setAvatarUrl(profileRes.data?.avatar_url ?? user.user_metadata?.avatar_url ?? null);
     setWhatsAppInbox((inboxRes.data ?? []) as WhatsAppInboxItem[]);
   }, [user]);
 
@@ -125,23 +129,26 @@ function AppDashboard() {
             </div>
             <span className="font-display font-semibold truncate">Falaí</span>
           </Link>
-          <button
-            onClick={() => setActiveTab("perfil")}
-            className="flex items-center gap-2 min-w-0 rounded-full hover:bg-muted/40 pl-2 pr-1 py-1 transition-colors"
-          >
-            <span className="text-sm font-medium truncate max-w-[140px] hidden sm:inline">
-              {user.user_metadata?.display_name || user.email?.split("@")[0]}
-            </span>
-            <div className="size-8 rounded-full bg-gradient-hero flex items-center justify-center shadow-soft shrink-0 overflow-hidden">
-              {user.user_metadata?.avatar_url ? (
-                <img src={user.user_metadata.avatar_url} alt="" className="size-full object-cover" />
-              ) : (
-                <span className="text-sm font-semibold text-primary-foreground">
-                  {(user.email?.[0] || "U").toUpperCase()}
-                </span>
-              )}
-            </div>
-          </button>
+          <div className="flex items-center gap-1">
+            <NotificationsButton userId={user.id} />
+            <button
+              onClick={() => setActiveTab("perfil")}
+              className="flex items-center gap-2 min-w-0 rounded-full hover:bg-muted/40 pl-2 pr-1 py-1 transition-colors"
+            >
+              <span className="text-sm font-medium truncate max-w-[140px] hidden sm:inline">
+                {user.user_metadata?.display_name || user.email?.split("@")[0]}
+              </span>
+              <div className="size-8 rounded-full bg-gradient-hero flex items-center justify-center shadow-soft shrink-0 overflow-hidden">
+                {avatarUrl ? (
+                  <img src={avatarUrl} alt="" className="size-full object-cover" />
+                ) : (
+                  <span className="text-sm font-semibold text-primary-foreground">
+                    {(user.email?.[0] || "U").toUpperCase()}
+                  </span>
+                )}
+              </div>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -319,7 +326,7 @@ function AppDashboard() {
         )}
 
         {activeTab === "perfil" && (
-          <ProfileTab user={user} />
+          <ProfileTab user={user} avatarUrl={avatarUrl} onAvatarChange={setAvatarUrl} />
         )}
 
         {activeTab === "relatorios" && (
@@ -377,8 +384,12 @@ function AppDashboard() {
 
 function ProfileTab({
   user,
+  avatarUrl,
+  onAvatarChange,
 }: {
   user: { email?: string | null; id: string };
+  avatarUrl: string | null;
+  onAvatarChange: (url: string | null) => void;
 }) {
   const [plan, setPlan] = useState<"free" | "pro" | "premium">("free");
   const isSubscriber = plan !== "free";
@@ -417,8 +428,12 @@ function ProfileTab({
     <div className="space-y-6 animate-in fade-in duration-300">
       {/* Profile header */}
       <Card className="p-5 sm:p-6 bg-card shadow-soft flex items-center gap-4">
-        <div className="size-14 rounded-2xl bg-gradient-hero flex items-center justify-center text-primary-foreground font-display font-bold text-lg shrink-0">
-          {(user.email ?? "?").slice(0, 1).toUpperCase()}
+        <div className="size-14 rounded-2xl bg-gradient-hero flex items-center justify-center text-primary-foreground font-display font-bold text-lg shrink-0 overflow-hidden">
+          {avatarUrl ? (
+            <img src={avatarUrl} alt="" className="size-full object-cover" />
+          ) : (
+            (user.email ?? "?").slice(0, 1).toUpperCase()
+          )}
         </div>
         <div className="flex-1 min-w-0">
           <p className="font-display font-semibold truncate">
@@ -606,10 +621,12 @@ function ProfileTab({
           Conta
         </h3>
         <Card className="bg-card shadow-soft overflow-hidden divide-y divide-border">
-          <button className="w-full px-4 py-3.5 flex items-center gap-3 text-left hover:bg-muted/40 transition-colors">
-            <UserIcon className="size-4 text-muted-foreground" />
-            <span className="text-sm font-medium flex-1">Editar perfil</span>
-          </button>
+          <ProfileEditDialog
+            userId={user.id}
+            email={user.email}
+            currentAvatarUrl={avatarUrl}
+            onAvatarChange={onAvatarChange}
+          />
           <ConfigThemeRow />
           <button className="w-full px-4 py-3.5 flex items-center gap-3 text-left hover:bg-muted/40 transition-colors">
             <Shield className="size-4 text-muted-foreground" />
