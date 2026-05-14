@@ -384,8 +384,12 @@ function AppDashboard() {
 
 function ProfileTab({
   user,
+  avatarUrl,
+  onAvatarChange,
 }: {
   user: { email?: string | null; id: string };
+  avatarUrl: string | null;
+  onAvatarChange: (url: string | null) => void;
 }) {
   const [plan, setPlan] = useState<"free" | "pro" | "premium">("free");
   const isSubscriber = plan !== "free";
