@@ -621,10 +621,12 @@ function ProfileTab({
           Conta
         </h3>
         <Card className="bg-card shadow-soft overflow-hidden divide-y divide-border">
-          <button className="w-full px-4 py-3.5 flex items-center gap-3 text-left hover:bg-muted/40 transition-colors">
-            <UserIcon className="size-4 text-muted-foreground" />
-            <span className="text-sm font-medium flex-1">Editar perfil</span>
-          </button>
+          <ProfileEditDialog
+            userId={user.id}
+            email={user.email}
+            currentAvatarUrl={avatarUrl}
+            onAvatarChange={onAvatarChange}
+          />
           <ConfigThemeRow />
           <button className="w-full px-4 py-3.5 flex items-center gap-3 text-left hover:bg-muted/40 transition-colors">
             <Shield className="size-4 text-muted-foreground" />
