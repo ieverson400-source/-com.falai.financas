@@ -129,23 +129,26 @@ function AppDashboard() {
             </div>
             <span className="font-display font-semibold truncate">Falaí</span>
           </Link>
-          <button
-            onClick={() => setActiveTab("perfil")}
-            className="flex items-center gap-2 min-w-0 rounded-full hover:bg-muted/40 pl-2 pr-1 py-1 transition-colors"
-          >
-            <span className="text-sm font-medium truncate max-w-[140px] hidden sm:inline">
-              {user.user_metadata?.display_name || user.email?.split("@")[0]}
-            </span>
-            <div className="size-8 rounded-full bg-gradient-hero flex items-center justify-center shadow-soft shrink-0 overflow-hidden">
-              {user.user_metadata?.avatar_url ? (
-                <img src={user.user_metadata.avatar_url} alt="" className="size-full object-cover" />
-              ) : (
-                <span className="text-sm font-semibold text-primary-foreground">
-                  {(user.email?.[0] || "U").toUpperCase()}
-                </span>
-              )}
-            </div>
-          </button>
+          <div className="flex items-center gap-1">
+            <NotificationsButton userId={user.id} />
+            <button
+              onClick={() => setActiveTab("perfil")}
+              className="flex items-center gap-2 min-w-0 rounded-full hover:bg-muted/40 pl-2 pr-1 py-1 transition-colors"
+            >
+              <span className="text-sm font-medium truncate max-w-[140px] hidden sm:inline">
+                {user.user_metadata?.display_name || user.email?.split("@")[0]}
+              </span>
+              <div className="size-8 rounded-full bg-gradient-hero flex items-center justify-center shadow-soft shrink-0 overflow-hidden">
+                {avatarUrl ? (
+                  <img src={avatarUrl} alt="" className="size-full object-cover" />
+                ) : (
+                  <span className="text-sm font-semibold text-primary-foreground">
+                    {(user.email?.[0] || "U").toUpperCase()}
+                  </span>
+                )}
+              </div>
+            </button>
+          </div>
         </div>
       </header>
 
