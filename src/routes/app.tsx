@@ -326,7 +326,7 @@ function AppDashboard() {
         )}
 
         {activeTab === "perfil" && (
-          <ProfileTab user={user} />
+          <ProfileTab user={user} avatarUrl={avatarUrl} onAvatarChange={setAvatarUrl} />
         )}
 
         {activeTab === "relatorios" && (
