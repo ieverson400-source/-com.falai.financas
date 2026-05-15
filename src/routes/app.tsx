@@ -15,6 +15,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { ChatBot } from "@/components/chat-bot";
 import { NotificationsButton } from "@/components/notifications-button";
 import { ProfileEditDialog } from "@/components/profile-edit-dialog";
+import { GoalHighlight } from "@/components/goal-highlight";
 import { toast } from "sonner";
 import { Trash2, Mic, Hand, Home, Wallet, ArrowLeftRight, BarChart3, User as UserIcon, Building2, PiggyBank, CreditCard, ArrowUpRight, ArrowDownRight, Sparkles, Construction, Crown, Check, Zap, Star, Shield, Calendar as CalendarIcon, TrendingUp, Heart, Share2, Moon, Sun } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
@@ -163,6 +164,9 @@ function AppDashboard() {
               </p>
               <p className="text-xs opacity-80 mt-2">Atualizado agora</p>
             </Card>
+
+            {/* Destaque de objetivo */}
+            <GoalHighlight />
 
             {/* Conexão Bancária */}
             <Card className="p-5 sm:p-6 bg-card shadow-soft flex items-center gap-4">
