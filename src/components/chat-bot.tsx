@@ -38,8 +38,8 @@ export function ChatBot() {
     })();
   }, [isOpen, historyLoaded]);
 
-  const send = async () => {
-    const text = input.trim();
+  const send = async (override?: string) => {
+    const text = (override ?? input).trim();
     if (!text || isLoading) return;
     const userMsg: Msg = { role: "user", content: text };
     const next = [...messages, userMsg];
