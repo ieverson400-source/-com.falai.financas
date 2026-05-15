@@ -7,7 +7,12 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-interface Msg { role: "user" | "assistant"; content: string }
+interface Msg { role: "user" | "assistant" | "tool"; content: string; tool_call_id?: string; tool_calls?: any[] }
+
+const CATEGORIES = [
+  "Conta de luz","Internet","Água","Aluguel","Supermercado","Restaurante",
+  "Transporte","Combustível","Saúde","Educação","Lazer","Assinaturas","Outros",
+];
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -45,77 +50,149 @@ Deno.serve(async (req) => {
       user_id: userId, role: "user", content: userMessage.content,
     });
 
-    // Build expense context
-    const since = new Date();
-    since.setDate(since.getDate() - 30);
+    // Build expense context (last 30 days + current month)
+    const now = new Date();
+    const since30 = new Date(); since30.setDate(since30.getDate() - 30);
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
     const { data: expenses } = await supabase
       .from("expenses")
       .select("amount, category, description, expense_date")
-      .gte("expense_date", since.toISOString().slice(0, 10))
+      .gte("expense_date", since30.toISOString().slice(0, 10))
       .order("expense_date", { ascending: false })
-      .limit(50);
+      .limit(200);
 
-    const total = (expenses ?? []).reduce((s, e: any) => s + Number(e.amount), 0);
-    const byCat: Record<string, number> = {};
-    for (const e of expenses ?? []) {
-      const c = (e as any).category ?? "outros";
-      byCat[c] = (byCat[c] ?? 0) + Number((e as any).amount);
-    }
-    const catSummary = Object.entries(byCat)
-      .sort((a, b) => b[1] - a[1])
-      .map(([c, v]) => `${c}: R$ ${v.toFixed(2)}`)
-      .join(", ") || "nenhum gasto registrado";
+    const all = expenses ?? [];
+    const monthExp = all.filter((e: any) => new Date(e.expense_date) >= monthStart);
+    const total30 = all.reduce((s, e: any) => s + Number(e.amount), 0);
+    const totalMonth = monthExp.reduce((s, e: any) => s + Number(e.amount), 0);
 
-    const recent = (expenses ?? []).slice(0, 8)
+    const byCat = (arr: any[]) => {
+      const m: Record<string, number> = {};
+      for (const e of arr) m[e.category ?? "Outros"] = (m[e.category ?? "Outros"] ?? 0) + Number(e.amount);
+      return Object.entries(m).sort((a, b) => b[1] - a[1]);
+    };
+    const catMonthList = byCat(monthExp);
+    const catSummary = catMonthList.map(([c, v]) => `${c}: R$ ${v.toFixed(2)}`).join(", ") || "nenhum gasto no mês";
+    const topCat = catMonthList[0];
+
+    const recent = all.slice(0, 8)
       .map((e: any) => `- ${e.expense_date}: R$ ${Number(e.amount).toFixed(2)} (${e.category})${e.description ? " — " + e.description : ""}`)
       .join("\n") || "(sem transações recentes)";
 
-    const systemPrompt = `Você é o "Amigo Financeiro" do app Falaí Finanças. Tom amigável, positivo, breve e útil. Use emojis com moderação. Responda em português brasileiro.
+    const todayISO = now.toISOString().slice(0, 10);
 
-Contexto financeiro do usuário (últimos 30 dias):
-- Total gasto: R$ ${total.toFixed(2)}
-- Por categoria: ${catSummary}
+    const systemPrompt = `Você é o "Amigo Financeiro" do app Falaí Finanças. Tom amigável, positivo, breve e útil. Use emojis com moderação. Responda em português brasileiro com formatação markdown (use **negrito**, listas e títulos curtos quando ajudar).
+
+Hoje é ${todayISO}.
+
+CONTEXTO FINANCEIRO DO USUÁRIO:
+- Total no mês atual: R$ ${totalMonth.toFixed(2)} (${monthExp.length} lançamentos)
+- Total nos últimos 30 dias: R$ ${total30.toFixed(2)}
+- Gastos por categoria no mês: ${catSummary}
+- Maior categoria do mês: ${topCat ? `${topCat[0]} (R$ ${topCat[1].toFixed(2)})` : "—"}
 - Transações recentes:
 ${recent}
 
-Use esses dados para dar conselhos personalizados quando fizer sentido. Se o usuário só quiser bater papo, seja acolhedor.`;
+CAPACIDADES:
+1. **Registrar gastos**: quando o usuário disser algo como "gastei 30 no almoço" ou "anota 50 reais de uber hoje", chame a função register_expense para criar a despesa. Categorias permitidas: ${CATEGORIES.join(", ")}.
+2. **Análise & insights**: identifique categorias acima do normal, padrões de gasto e sugira economias concretas (com valor estimado em reais).
+3. **Resumo mensal/semanal**: quando pedido, gere um resumo estruturado (total, top 3 categorias, comparações, 1-2 dicas).
+4. **Sugestões para metas**: se o usuário falar de uma meta (viagem, carro, moto, celular), sugira um valor mensal viável com base nos gastos atuais.
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
+Seja direto, sem repetir os números brutos sem agregar valor. Quando registrar um gasto via tool, confirme em uma frase curta.`;
+
+    const tools = [{
+      type: "function",
+      function: {
+        name: "register_expense",
+        description: "Registra um gasto novo do usuário a partir da conversa.",
+        parameters: {
+          type: "object",
+          properties: {
+            amount: { type: "number", description: "Valor em reais" },
+            category: { type: "string", enum: CATEGORIES },
+            description: { type: "string", description: "Descrição curta (opcional)" },
+            expense_date: { type: "string", description: "Data YYYY-MM-DD; use a data de hoje se não mencionado" },
+          },
+          required: ["amount", "category", "expense_date"],
+          additionalProperties: false,
+        },
       },
+    }];
+
+    // First call: non-streaming to detect tool calls
+    const initial = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
-        stream: true,
-        messages: [
-          { role: "system", content: systemPrompt },
-          ...messages,
-        ],
+        model: "google/gemini-2.5-flash",
+        messages: [{ role: "system", content: systemPrompt }, ...messages],
+        tools,
       }),
     });
 
-    if (!response.ok) {
-      if (response.status === 429) {
-        return new Response(JSON.stringify({ error: "Muitas requisições, tente novamente em instantes." }), {
-          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-      if (response.status === 402) {
-        return new Response(JSON.stringify({ error: "Créditos de IA esgotados. Adicione créditos no workspace." }), {
-          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-      const t = await response.text();
-      console.error("AI gateway error:", response.status, t);
-      return new Response(JSON.stringify({ error: "AI gateway error" }), {
-        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+    if (!initial.ok) {
+      if (initial.status === 429) return new Response(JSON.stringify({ error: "Muitas requisições, tente novamente em instantes." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      if (initial.status === 402) return new Response(JSON.stringify({ error: "Créditos de IA esgotados." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      const t = await initial.text();
+      console.error("AI gateway error:", initial.status, t);
+      return new Response(JSON.stringify({ error: "AI gateway error" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    // Tee the stream: forward to client and collect for persistence
-    const [forward, persist] = response.body!.tee();
+    const initialJson = await initial.json();
+    const choice = initialJson.choices?.[0]?.message;
+    const toolCalls = choice?.tool_calls;
+
+    let finalMessages = [{ role: "system", content: systemPrompt }, ...messages] as any[];
+
+    if (toolCalls && toolCalls.length > 0) {
+      finalMessages.push(choice);
+      for (const tc of toolCalls) {
+        let result: any;
+        try {
+          if (tc.function?.name === "register_expense") {
+            const args = JSON.parse(tc.function.arguments || "{}");
+            const dateStr = args.expense_date && args.expense_date !== "today" ? args.expense_date : todayISO;
+            const { data: ins, error: insErr } = await supabase.from("expenses").insert({
+              user_id: userId,
+              amount: Number(args.amount),
+              category: String(args.category),
+              description: args.description ?? null,
+              expense_date: dateStr,
+              source: "chat",
+            }).select().single();
+            if (insErr) throw new Error(insErr.message);
+            result = { ok: true, expense: { id: ins.id, amount: ins.amount, category: ins.category, date: ins.expense_date } };
+          } else {
+            result = { error: "Tool desconhecida" };
+          }
+        } catch (e) {
+          result = { error: e instanceof Error ? e.message : "Erro" };
+        }
+        finalMessages.push({ role: "tool", tool_call_id: tc.id, content: JSON.stringify(result) });
+      }
+    } else if (choice?.content) {
+      // No tool call — return content as a streaming-style response directly
+      await supabase.from("chat_messages").insert({ user_id: userId, role: "assistant", content: choice.content });
+      const sse = `data: ${JSON.stringify({ choices: [{ delta: { content: choice.content } }] })}\n\ndata: [DONE]\n\n`;
+      return new Response(sse, { headers: { ...corsHeaders, "Content-Type": "text/event-stream" } });
+    }
+
+    // Streamed follow-up (after tool execution, or first call had no content but had tool calls)
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ model: "google/gemini-2.5-flash", stream: true, messages: finalMessages }),
+    });
+
+    if (!response.ok || !response.body) {
+      const t = await response.text();
+      console.error("AI follow-up error:", response.status, t);
+      return new Response(JSON.stringify({ error: "AI gateway error" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    const [forward, persist] = response.body.tee();
 
     (async () => {
       try {
@@ -143,18 +220,12 @@ Use esses dados para dar conselhos personalizados quando fizer sentido. Se o usu
           }
         }
         if (assistantText.trim()) {
-          await supabase.from("chat_messages").insert({
-            user_id: userId, role: "assistant", content: assistantText,
-          });
+          await supabase.from("chat_messages").insert({ user_id: userId, role: "assistant", content: assistantText });
         }
-      } catch (e) {
-        console.error("persist error:", e);
-      }
+      } catch (e) { console.error("persist error:", e); }
     })();
 
-    return new Response(forward, {
-      headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
-    });
+    return new Response(forward, { headers: { ...corsHeaders, "Content-Type": "text/event-stream" } });
   } catch (e) {
     console.error("chat-assistant error:", e);
     return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown" }), {
