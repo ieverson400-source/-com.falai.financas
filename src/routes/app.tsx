@@ -165,6 +165,9 @@ function AppDashboard() {
               <p className="text-xs opacity-80 mt-2">Atualizado agora</p>
             </Card>
 
+            {/* Destaque de objetivo */}
+            <GoalHighlight />
+
             {/* Conexão Bancária */}
             <Card className="p-5 sm:p-6 bg-card shadow-soft flex items-center gap-4">
               <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
