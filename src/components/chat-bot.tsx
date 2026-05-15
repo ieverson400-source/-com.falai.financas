@@ -156,6 +156,24 @@ export function ChatBot() {
           </div>
 
           <div className="flex-1 overflow-y-auto p-3 space-y-2 bg-muted/30">
+            {messages.length <= 1 && !isLoading && (
+              <div className="flex flex-wrap gap-1.5 pb-1">
+                {[
+                  "Resumo do mês",
+                  "Onde posso economizar?",
+                  "Quanto guardar pra minha meta?",
+                  "Anota R$ 25 de almoço hoje",
+                ].map((q) => (
+                  <button
+                    key={q}
+                    onClick={() => { setInput(q); setTimeout(() => send(), 0); }}
+                    className="text-xs px-2.5 py-1 rounded-full border border-border bg-card hover:bg-muted transition"
+                  >
+                    {q}
+                  </button>
+                ))}
+              </div>
+            )}
             {messages.map((m, i) => (
               <div key={i} className={cn("flex", m.role === "user" ? "justify-end" : "justify-start")}>
                 <div
