@@ -166,7 +166,7 @@ export function ChatBot() {
                 ].map((q) => (
                   <button
                     key={q}
-                    onClick={() => { setInput(q); setTimeout(() => send(), 0); }}
+                    onClick={() => send(q)}
                     className="text-xs px-2.5 py-1 rounded-full border border-border bg-card hover:bg-muted transition"
                   >
                     {q}
