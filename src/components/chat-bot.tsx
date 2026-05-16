@@ -150,7 +150,7 @@ export function ChatBot() {
       </button>
 
       {isOpen && (
-        <div className="fixed bottom-44 right-4 z-50 w-[min(92vw,380px)] h-[60vh] max-h-[560px] rounded-2xl bg-card border border-border shadow-elevated flex flex-col overflow-hidden">
+        <div className="fixed inset-0 z-50 bg-card flex flex-col overflow-hidden">
           <div className="px-4 py-3 bg-gradient-hero text-primary-foreground flex items-center justify-between">
             <div>
               <p className="font-semibold text-sm">Falaí Finanças</p>
