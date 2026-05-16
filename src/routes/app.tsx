@@ -17,7 +17,7 @@ import { NotificationsButton } from "@/components/notifications-button";
 import { ProfileEditDialog } from "@/components/profile-edit-dialog";
 import { GoalHighlight } from "@/components/goal-highlight";
 import { toast } from "sonner";
-import { Trash2, Mic, Hand, Home, Wallet, ArrowLeftRight, BarChart3, User as UserIcon, Building2, PiggyBank, CreditCard, ArrowUpRight, ArrowDownRight, Sparkles, Construction, Crown, Check, Zap, Star, Shield, Calendar as CalendarIcon, TrendingUp, Heart, Share2, Moon, Sun } from "lucide-react";
+import { Trash2, Mic, Hand, Home, Wallet, MessageCircle, BarChart3, User as UserIcon, Building2, PiggyBank, CreditCard, ArrowUpRight, ArrowDownRight, Sparkles, Construction, Crown, Check, Zap, Star, Shield, Calendar as CalendarIcon, TrendingUp, Heart, Share2, Moon, Sun } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
 import { categoryColor, formatBRL } from "@/lib/categories";
 import { format, parseISO, startOfMonth } from "date-fns";
