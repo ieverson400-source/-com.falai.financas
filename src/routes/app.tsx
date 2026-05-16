@@ -358,7 +358,7 @@ function AppDashboard() {
             [
               { key: "inicio", label: "Início", icon: Home },
               { key: "contas", label: "Contas", icon: Wallet },
-              { key: "transacoes", label: "Transações", icon: ArrowLeftRight },
+              { key: "chat", label: "Chat", icon: MessageCircle },
               { key: "relatorios", label: "Relatórios", icon: BarChart3 },
               { key: "perfil", label: "Perfil", icon: UserIcon },
             ] as { key: TabKey; label: string; icon: typeof Home }[]
@@ -367,7 +367,13 @@ function AppDashboard() {
             return (
               <button
                 key={key}
-                onClick={() => setActiveTab(key)}
+                onClick={() => {
+                  if (key === "chat") {
+                    window.dispatchEvent(new Event("falai:toggle-chat"));
+                    return;
+                  }
+                  setActiveTab(key);
+                }}
                 aria-current={active ? "page" : undefined}
                 className={`min-h-[56px] flex flex-col items-center justify-center gap-0.5 text-[11px] font-medium transition-colors ${
                   active ? "text-primary" : "text-muted-foreground hover:text-foreground"
