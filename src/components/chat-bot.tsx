@@ -153,7 +153,7 @@ export function ChatBot() {
         <div className="fixed bottom-44 right-4 z-50 w-[min(92vw,380px)] h-[60vh] max-h-[560px] rounded-2xl bg-card border border-border shadow-elevated flex flex-col overflow-hidden">
           <div className="px-4 py-3 bg-gradient-hero text-primary-foreground flex items-center justify-between">
             <div>
-              <p className="font-semibold text-sm">Amigo Financeiro</p>
+              <p className="font-semibold text-sm">Falaí Finanças</p>
               <p className="text-xs opacity-80">Assistente IA · seus gastos</p>
             </div>
             <button onClick={() => setIsOpen(false)} aria-label="Fechar" className="opacity-80 hover:opacity-100">
