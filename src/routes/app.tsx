@@ -17,7 +17,7 @@ import { NotificationsButton } from "@/components/notifications-button";
 import { ProfileEditDialog } from "@/components/profile-edit-dialog";
 import { GoalHighlight } from "@/components/goal-highlight";
 import { toast } from "sonner";
-import { Trash2, Mic, Hand, Home, Wallet, ArrowLeftRight, BarChart3, User as UserIcon, Building2, PiggyBank, CreditCard, ArrowUpRight, ArrowDownRight, Sparkles, Construction, Crown, Check, Zap, Star, Shield, Calendar as CalendarIcon, TrendingUp, Heart, Share2, Moon, Sun } from "lucide-react";
+import { Trash2, Mic, Hand, Home, Wallet, MessageCircle, BarChart3, User as UserIcon, Building2, PiggyBank, CreditCard, ArrowUpRight, ArrowDownRight, Sparkles, Construction, Crown, Check, Zap, Star, Shield, Calendar as CalendarIcon, TrendingUp, Heart, Share2, Moon, Sun } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
 import { categoryColor, formatBRL } from "@/lib/categories";
 import { format, parseISO, startOfMonth } from "date-fns";
@@ -44,7 +44,7 @@ interface Expense {
   created_at: string;
 }
 
-type TabKey = "inicio" | "contas" | "transacoes" | "relatorios" | "perfil";
+type TabKey = "inicio" | "contas" | "chat" | "relatorios" | "perfil";
 
 function AppDashboard() {
   const { user, loading } = useAuth();
@@ -358,7 +358,7 @@ function AppDashboard() {
             [
               { key: "inicio", label: "Início", icon: Home },
               { key: "contas", label: "Contas", icon: Wallet },
-              { key: "transacoes", label: "Transações", icon: ArrowLeftRight },
+              { key: "chat", label: "Chat", icon: MessageCircle },
               { key: "relatorios", label: "Relatórios", icon: BarChart3 },
               { key: "perfil", label: "Perfil", icon: UserIcon },
             ] as { key: TabKey; label: string; icon: typeof Home }[]
@@ -367,7 +367,13 @@ function AppDashboard() {
             return (
               <button
                 key={key}
-                onClick={() => setActiveTab(key)}
+                onClick={() => {
+                  if (key === "chat") {
+                    window.dispatchEvent(new Event("falai:toggle-chat"));
+                    return;
+                  }
+                  setActiveTab(key);
+                }}
                 aria-current={active ? "page" : undefined}
                 className={`min-h-[56px] flex flex-col items-center justify-center gap-0.5 text-[11px] font-medium transition-colors ${
                   active ? "text-primary" : "text-muted-foreground hover:text-foreground"
