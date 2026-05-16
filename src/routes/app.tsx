@@ -44,7 +44,7 @@ interface Expense {
   created_at: string;
 }
 
-type TabKey = "inicio" | "contas" | "transacoes" | "relatorios" | "perfil";
+type TabKey = "inicio" | "contas" | "chat" | "relatorios" | "perfil";
 
 function AppDashboard() {
   const { user, loading } = useAuth();
