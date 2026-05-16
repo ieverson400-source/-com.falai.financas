@@ -11,8 +11,14 @@ type Msg = { role: "user" | "assistant"; content: string };
 export function ChatBot() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([
-    { role: "assistant", content: "Olá! 👋 Sou seu Amigo Financeiro. Posso te ajudar a entender seus gastos, sugerir economias ou só bater um papo. Como posso ajudar?" },
+    { role: "assistant", content: "Olá! 👋 Sou o Falaí Finanças. Posso te ajudar a entender seus gastos, sugerir economias ou só bater um papo. Como posso ajudar?" },
   ]);
+
+  useEffect(() => {
+    const handler = () => setIsOpen((v) => !v);
+    window.addEventListener("falai:toggle-chat", handler);
+    return () => window.removeEventListener("falai:toggle-chat", handler);
+  }, []);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [historyLoaded, setHistoryLoaded] = useState(false);
