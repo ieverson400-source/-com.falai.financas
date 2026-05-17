@@ -107,7 +107,7 @@ export const saveAndSyncItem = createServerFn({ method: "POST" })
             number: acc.number ?? null,
             balance: acc.balance ?? null,
             currency_code: acc.currencyCode ?? "BRL",
-            raw: acc as unknown as Record<string, unknown>,
+            raw: acc as never,
           },
           { onConflict: "pluggy_account_id" },
         )
@@ -142,7 +142,7 @@ export const saveAndSyncItem = createServerFn({ method: "POST" })
             transaction_date: t.date,
             category: t.category ?? null,
             type: t.type ?? null,
-            raw: t as unknown as Record<string, unknown>,
+            raw: t as never,
           })),
           { onConflict: "pluggy_transaction_id" },
         );
