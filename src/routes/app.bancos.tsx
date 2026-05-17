@@ -203,9 +203,24 @@ function BancosPage() {
                           {it.last_synced_at ? new Date(it.last_synced_at).toLocaleString("pt-BR") : "—"}
                         </p>
                       </div>
-                      <Button variant="ghost" size="icon" onClick={() => handleDelete(it.id)} disabled={busy}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      <div className="flex gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleSync(it.pluggy_item_id)}
+                          disabled={busy || syncingId === it.pluggy_item_id}
+                          title="Sincronizar agora"
+                        >
+                          {syncingId === it.pluggy_item_id ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <RefreshCw className="h-4 w-4" />
+                          )}
+                        </Button>
+                        <Button variant="ghost" size="icon" onClick={() => handleDelete(it.id)} disabled={busy}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                     {itemAccounts.length > 0 && (
                       <div className="mt-3 space-y-1 border-t pt-3">
