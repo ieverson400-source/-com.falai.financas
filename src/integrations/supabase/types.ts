@@ -74,6 +74,154 @@ export type Database = {
         }
         Relationships: []
       }
+      pluggy_accounts: {
+        Row: {
+          balance: number | null
+          created_at: string
+          currency_code: string | null
+          id: string
+          item_id: string
+          name: string | null
+          number: string | null
+          pluggy_account_id: string
+          raw: Json | null
+          subtype: string | null
+          type: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance?: number | null
+          created_at?: string
+          currency_code?: string | null
+          id?: string
+          item_id: string
+          name?: string | null
+          number?: string | null
+          pluggy_account_id: string
+          raw?: Json | null
+          subtype?: string | null
+          type?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance?: number | null
+          created_at?: string
+          currency_code?: string | null
+          id?: string
+          item_id?: string
+          name?: string | null
+          number?: string | null
+          pluggy_account_id?: string
+          raw?: Json | null
+          subtype?: string | null
+          type?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pluggy_accounts_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "pluggy_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pluggy_items: {
+        Row: {
+          connector_id: number | null
+          created_at: string
+          id: string
+          institution_name: string | null
+          last_synced_at: string | null
+          pluggy_item_id: string
+          status: string
+          status_detail: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          connector_id?: number | null
+          created_at?: string
+          id?: string
+          institution_name?: string | null
+          last_synced_at?: string | null
+          pluggy_item_id: string
+          status?: string
+          status_detail?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          connector_id?: number | null
+          created_at?: string
+          id?: string
+          institution_name?: string | null
+          last_synced_at?: string | null
+          pluggy_item_id?: string
+          status?: string
+          status_detail?: Json | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      pluggy_transactions: {
+        Row: {
+          account_id: string
+          amount: number
+          category: string | null
+          created_at: string
+          currency_code: string | null
+          description: string | null
+          id: string
+          pluggy_transaction_id: string
+          raw: Json | null
+          transaction_date: string
+          type: string | null
+          user_id: string
+        }
+        Insert: {
+          account_id: string
+          amount: number
+          category?: string | null
+          created_at?: string
+          currency_code?: string | null
+          description?: string | null
+          id?: string
+          pluggy_transaction_id: string
+          raw?: Json | null
+          transaction_date: string
+          type?: string | null
+          user_id: string
+        }
+        Update: {
+          account_id?: string
+          amount?: number
+          category?: string | null
+          created_at?: string
+          currency_code?: string | null
+          description?: string | null
+          id?: string
+          pluggy_transaction_id?: string
+          raw?: Json | null
+          transaction_date?: string
+          type?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pluggy_transactions_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "pluggy_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
