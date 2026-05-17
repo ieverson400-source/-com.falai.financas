@@ -22,7 +22,7 @@ export const Route = createFileRoute("/app/bancos")({
   }),
 });
 
-type Item = { id: string; institution_name: string | null; status: string; last_synced_at: string | null };
+type Item = { id: string; pluggy_item_id: string; institution_name: string | null; status: string; last_synced_at: string | null };
 type Account = { id: string; item_id: string; name: string | null; number: string | null; balance: number | null; type: string | null };
 type Tx = { id: string; account_id: string; description: string | null; amount: number; transaction_date: string; category: string | null };
 
