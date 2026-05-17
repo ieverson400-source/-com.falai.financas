@@ -136,6 +136,20 @@ function BancosPage() {
     }
   };
 
+  const [syncingId, setSyncingId] = useState<string | null>(null);
+  const handleSync = async (pluggyItemId: string) => {
+    setSyncingId(pluggyItemId);
+    try {
+      const res = await saveItem({ data: { itemId: pluggyItemId } });
+      toast.success("Sincronizado!", { description: `${res.accountsCount} conta(s) atualizada(s)` });
+      await load();
+    } catch (e) {
+      toast.error("Erro ao sincronizar", { description: (e as Error).message });
+    } finally {
+      setSyncingId(null);
+    }
+  };
+
   if (loading || !user) return null;
 
   return (
