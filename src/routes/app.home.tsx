@@ -156,7 +156,7 @@ function HomeMobile() {
             label="Conectar"
             icon={Link2}
             active={tab === "conectar"}
-            onClick={() => setTab("conectar")}
+            onClick={() => navigate({ to: "/app/bancos" })}
           />
           <BottomTab label="Perfil" icon={User} active={tab === "perfil"} onClick={() => setTab("perfil")} />
         </ul>
