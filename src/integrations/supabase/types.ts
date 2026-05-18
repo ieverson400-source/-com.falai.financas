@@ -169,6 +169,42 @@ export type Database = {
         }
         Relationships: []
       }
+      pluggy_sync_logs: {
+        Row: {
+          accounts_count: number | null
+          created_at: string
+          error_message: string | null
+          id: string
+          item_id: string
+          pluggy_item_id: string | null
+          status: string
+          triggered_by: string
+          user_id: string
+        }
+        Insert: {
+          accounts_count?: number | null
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          item_id: string
+          pluggy_item_id?: string | null
+          status: string
+          triggered_by?: string
+          user_id: string
+        }
+        Update: {
+          accounts_count?: number | null
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          item_id?: string
+          pluggy_item_id?: string | null
+          status?: string
+          triggered_by?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       pluggy_transactions: {
         Row: {
           account_id: string

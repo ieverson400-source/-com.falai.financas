@@ -6,13 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
-import { ArrowLeft, Building2, Plus, Trash2, RefreshCw, Loader2 } from "lucide-react";
+import { ArrowLeft, Building2, Plus, Trash2, RefreshCw, Loader2, History, CheckCircle2, XCircle } from "lucide-react";
 import { formatBRL } from "@/lib/categories";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
   createPluggyConnectToken,
   saveAndSyncItem,
   listBankData,
   deletePluggyItem,
+  listSyncLogs,
 } from "@/lib/pluggy.functions";
 
 export const Route = createFileRoute("/app/bancos")({
@@ -70,6 +72,25 @@ function BancosPage() {
   const saveItem = useServerFn(saveAndSyncItem);
   const list = useServerFn(listBankData);
   const removeItem = useServerFn(deletePluggyItem);
+  const fetchLogs = useServerFn(listSyncLogs);
+
+  type SyncLog = { id: string; status: string; error_message: string | null; accounts_count: number | null; triggered_by: string; created_at: string };
+  const [historyItem, setHistoryItem] = useState<Item | null>(null);
+  const [historyLogs, setHistoryLogs] = useState<SyncLog[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
+
+  const openHistory = async (it: Item) => {
+    setHistoryItem(it);
+    setHistoryLoading(true);
+    try {
+      const res = await fetchLogs({ data: { itemId: it.id } });
+      setHistoryLogs(res.logs as SyncLog[]);
+    } catch (e) {
+      toast.error("Erro ao carregar histórico", { description: (e as Error).message });
+    } finally {
+      setHistoryLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth" });
@@ -217,6 +238,9 @@ function BancosPage() {
                             <RefreshCw className="h-4 w-4" />
                           )}
                         </Button>
+                        <Button variant="ghost" size="icon" onClick={() => openHistory(it)} title="Histórico de sincronizações">
+                          <History className="h-4 w-4" />
+                        </Button>
                         <Button variant="ghost" size="icon" onClick={() => handleDelete(it.id)} disabled={busy}>
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -266,6 +290,48 @@ function BancosPage() {
           </>
         )}
       </main>
+
+      <Dialog open={!!historyItem} onOpenChange={(o) => !o && setHistoryItem(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Histórico — {historyItem?.institution_name ?? "Banco"}</DialogTitle>
+          </DialogHeader>
+          {historyLoading ? (
+            <div className="flex justify-center py-8"><Loader2 className="h-5 w-5 animate-spin" /></div>
+          ) : historyLogs.length === 0 ? (
+            <p className="py-6 text-center text-sm text-muted-foreground">Nenhuma sincronização registrada ainda.</p>
+          ) : (
+            <div className="max-h-96 space-y-2 overflow-y-auto">
+              {historyLogs.map((log) => (
+                <div key={log.id} className="flex items-start gap-3 rounded-md border p-3">
+                  {log.status === "success" ? (
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+                  ) : (
+                    <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-sm font-medium">
+                        {log.status === "success" ? "Sucesso" : "Erro"}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {new Date(log.created_at).toLocaleString("pt-BR")}
+                      </span>
+                    </div>
+                    {log.status === "success" && log.accounts_count != null && (
+                      <p className="text-xs text-muted-foreground">{log.accounts_count} conta(s) atualizada(s)</p>
+                    )}
+                    {log.error_message && (
+                      <p className="mt-1 break-words text-xs text-destructive">{log.error_message}</p>
+                    )}
+                    <p className="mt-0.5 text-xs text-muted-foreground">Origem: {log.triggered_by}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
