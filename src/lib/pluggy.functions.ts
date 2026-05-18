@@ -82,6 +82,7 @@ export const saveAndSyncItem = createServerFn({ method: "POST" })
       .select()
       .single();
     if (itemErr || !itemRow) throw new Error(itemErr?.message ?? "Failed to save item");
+    itemRowId = itemRow.id;
 
     // Fetch accounts
     const accountsRes = await pluggyFetch(`/accounts?itemId=${data.itemId}`, apiKey);
