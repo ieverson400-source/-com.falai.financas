@@ -72,6 +72,25 @@ function BancosPage() {
   const saveItem = useServerFn(saveAndSyncItem);
   const list = useServerFn(listBankData);
   const removeItem = useServerFn(deletePluggyItem);
+  const fetchLogs = useServerFn(listSyncLogs);
+
+  type SyncLog = { id: string; status: string; error_message: string | null; accounts_count: number | null; triggered_by: string; created_at: string };
+  const [historyItem, setHistoryItem] = useState<Item | null>(null);
+  const [historyLogs, setHistoryLogs] = useState<SyncLog[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
+
+  const openHistory = async (it: Item) => {
+    setHistoryItem(it);
+    setHistoryLoading(true);
+    try {
+      const res = await fetchLogs({ data: { itemId: it.id } });
+      setHistoryLogs(res.logs as SyncLog[]);
+    } catch (e) {
+      toast.error("Erro ao carregar histórico", { description: (e as Error).message });
+    } finally {
+      setHistoryLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth" });
