@@ -238,6 +238,9 @@ function BancosPage() {
                             <RefreshCw className="h-4 w-4" />
                           )}
                         </Button>
+                        <Button variant="ghost" size="icon" onClick={() => openHistory(it)} title="Histórico de sincronizações">
+                          <History className="h-4 w-4" />
+                        </Button>
                         <Button variant="ghost" size="icon" onClick={() => handleDelete(it.id)} disabled={busy}>
                           <Trash2 className="h-4 w-4" />
                         </Button>
