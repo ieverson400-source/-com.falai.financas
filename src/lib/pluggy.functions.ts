@@ -152,7 +152,30 @@ export const saveAndSyncItem = createServerFn({ method: "POST" })
       }
     }
 
+    await supabase.from("pluggy_sync_logs").insert({
+      user_id: userId,
+      item_id: itemRow.id,
+      pluggy_item_id: data.itemId,
+      status: "success",
+      accounts_count: accounts.length,
+      triggered_by: "manual",
+    });
+
     return { ok: true, itemId: itemRow.id, accountsCount: accounts.length };
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      if (itemRowId) {
+        await supabase.from("pluggy_sync_logs").insert({
+          user_id: userId,
+          item_id: itemRowId,
+          pluggy_item_id: data.itemId,
+          status: "error",
+          error_message: message,
+          triggered_by: "manual",
+        });
+      }
+      throw err;
+    }
   });
 
 export const listBankData = createServerFn({ method: "GET" })
