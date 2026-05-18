@@ -260,8 +260,8 @@ function InicioTab({
             Sincronize seus bancos automaticamente.
           </p>
         </div>
-        <Button size="sm" className="h-9 rounded-full px-4 text-xs shrink-0">
-          Começar agora
+        <Button asChild size="sm" className="h-9 rounded-full px-4 text-xs shrink-0">
+          <Link to="/app/bancos">Começar agora</Link>
         </Button>
       </Card>
 
