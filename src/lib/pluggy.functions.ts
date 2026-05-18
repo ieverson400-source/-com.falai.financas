@@ -55,6 +55,8 @@ export const saveAndSyncItem = createServerFn({ method: "POST" })
   .inputValidator((input) => z.object({ itemId: z.string().min(1).max(100) }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
+    let itemRowId: string | null = null;
+    try {
     const apiKey = await getPluggyApiKey();
 
     // Fetch item details
