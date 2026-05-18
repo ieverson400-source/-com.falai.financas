@@ -198,6 +198,20 @@ export const listBankData = createServerFn({ method: "GET" })
     };
   });
 
+export const listSyncLogs = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) => z.object({ itemId: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    const { supabase } = context;
+    const { data: logs } = await supabase
+      .from("pluggy_sync_logs")
+      .select("*")
+      .eq("item_id", data.itemId)
+      .order("created_at", { ascending: false })
+      .limit(20);
+    return { logs: logs ?? [] };
+  });
+
 export const deletePluggyItem = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => z.object({ itemId: z.string().uuid() }).parse(input))
