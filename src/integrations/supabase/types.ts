@@ -288,6 +288,45 @@ export type Database = {
         }
         Relationships: []
       }
+      recargas: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          id: string
+          operadora: string
+          provider_response: Json | null
+          status: string
+          telefone: string
+          updated_at: string
+          user_id: string
+          valor: number
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          operadora: string
+          provider_response?: Json | null
+          status?: string
+          telefone: string
+          updated_at?: string
+          user_id: string
+          valor: number
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          operadora?: string
+          provider_response?: Json | null
+          status?: string
+          telefone?: string
+          updated_at?: string
+          user_id?: string
+          valor?: number
+        }
+        Relationships: []
+      }
       whatsapp_inbox: {
         Row: {
           created_at: string

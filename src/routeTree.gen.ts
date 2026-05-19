@@ -13,6 +13,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppWhatsappTestRouteImport } from './routes/app.whatsapp-test'
+import { Route as AppRecargaRouteImport } from './routes/app.recarga'
 import { Route as AppHomeRouteImport } from './routes/app.home'
 import { Route as AppBancosRouteImport } from './routes/app.bancos'
 import { Route as ApiPublicWhatsappRouteImport } from './routes/api/public/whatsapp'
@@ -37,6 +38,11 @@ const AppWhatsappTestRoute = AppWhatsappTestRouteImport.update({
   path: '/whatsapp-test',
   getParentRoute: () => AppRoute,
 } as any)
+const AppRecargaRoute = AppRecargaRouteImport.update({
+  id: '/recarga',
+  path: '/recarga',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppHomeRoute = AppHomeRouteImport.update({
   id: '/home',
   path: '/home',
@@ -59,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/app/bancos': typeof AppBancosRoute
   '/app/home': typeof AppHomeRoute
+  '/app/recarga': typeof AppRecargaRoute
   '/app/whatsapp-test': typeof AppWhatsappTestRoute
   '/api/public/whatsapp': typeof ApiPublicWhatsappRoute
 }
@@ -68,6 +75,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/app/bancos': typeof AppBancosRoute
   '/app/home': typeof AppHomeRoute
+  '/app/recarga': typeof AppRecargaRoute
   '/app/whatsapp-test': typeof AppWhatsappTestRoute
   '/api/public/whatsapp': typeof ApiPublicWhatsappRoute
 }
@@ -78,6 +86,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/app/bancos': typeof AppBancosRoute
   '/app/home': typeof AppHomeRoute
+  '/app/recarga': typeof AppRecargaRoute
   '/app/whatsapp-test': typeof AppWhatsappTestRoute
   '/api/public/whatsapp': typeof ApiPublicWhatsappRoute
 }
@@ -89,6 +98,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/app/bancos'
     | '/app/home'
+    | '/app/recarga'
     | '/app/whatsapp-test'
     | '/api/public/whatsapp'
   fileRoutesByTo: FileRoutesByTo
@@ -98,6 +108,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/app/bancos'
     | '/app/home'
+    | '/app/recarga'
     | '/app/whatsapp-test'
     | '/api/public/whatsapp'
   id:
@@ -107,6 +118,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/app/bancos'
     | '/app/home'
+    | '/app/recarga'
     | '/app/whatsapp-test'
     | '/api/public/whatsapp'
   fileRoutesById: FileRoutesById
@@ -148,6 +160,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppWhatsappTestRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/recarga': {
+      id: '/app/recarga'
+      path: '/recarga'
+      fullPath: '/app/recarga'
+      preLoaderRoute: typeof AppRecargaRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/home': {
       id: '/app/home'
       path: '/home'
@@ -175,12 +194,14 @@ declare module '@tanstack/react-router' {
 interface AppRouteChildren {
   AppBancosRoute: typeof AppBancosRoute
   AppHomeRoute: typeof AppHomeRoute
+  AppRecargaRoute: typeof AppRecargaRoute
   AppWhatsappTestRoute: typeof AppWhatsappTestRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppBancosRoute: AppBancosRoute,
   AppHomeRoute: AppHomeRoute,
+  AppRecargaRoute: AppRecargaRoute,
   AppWhatsappTestRoute: AppWhatsappTestRoute,
 }
 
