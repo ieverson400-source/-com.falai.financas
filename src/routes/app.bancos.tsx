@@ -40,6 +40,8 @@ declare global {
     PluggyConnect?: new (config: {
       connectToken: string;
       includeSandbox?: boolean;
+      connectorIds?: number[];
+      countries?: string[];
       onSuccess: (data: { item: { id: string } }) => void;
       onError?: (err: unknown) => void;
       onExit?: () => void;
