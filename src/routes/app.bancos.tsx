@@ -80,6 +80,7 @@ function BancosPage() {
   const list = useServerFn(listBankData);
   const removeItem = useServerFn(deletePluggyItem);
   const fetchLogs = useServerFn(listSyncLogs);
+  const fetchOpenFinanceIds = useServerFn(listOpenFinanceConnectorIds);
 
   type SyncLog = { id: string; status: string; error_message: string | null; accounts_count: number | null; triggered_by: string; created_at: string };
   const [historyItem, setHistoryItem] = useState<Item | null>(null);
