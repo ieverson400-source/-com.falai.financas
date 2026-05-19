@@ -121,19 +121,34 @@ function BancosPage() {
     if (user) load();
   }, [user, load]);
 
-  const handleConnect = async () => {
+  const handleConnect = async (mode: "openfinance" | "all" = "all") => {
     setConnecting(true);
     try {
       await loadPluggyScript();
+      let connectorIds: number[] | undefined;
+      if (mode === "openfinance") {
+        const { connectorIds: ids } = await fetchOpenFinanceIds();
+        if (!ids || ids.length === 0) {
+          toast.error("Nenhum conector Open Finance disponível no momento.");
+          setConnecting(false);
+          return;
+        }
+        connectorIds = ids;
+      }
       const { accessToken } = await createToken({ data: {} });
       const connect = new window.PluggyConnect!({
         connectToken: accessToken,
         includeSandbox: true,
+        countries: ["BR"],
+        ...(connectorIds ? { connectorIds } : {}),
         onSuccess: async ({ item }) => {
           setBusy(true);
           try {
             const res = await saveItem({ data: { itemId: item.id } });
-            toast.success("Banco conectado!", { description: `${res.accountsCount} conta(s) sincronizada(s)` });
+            toast.success(
+              mode === "openfinance" ? "Open Finance conectado!" : "Banco conectado!",
+              { description: `${res.accountsCount} conta(s) sincronizada(s)` },
+            );
             await load();
           } catch (e) {
             toast.error("Erro ao sincronizar", { description: (e as Error).message });
