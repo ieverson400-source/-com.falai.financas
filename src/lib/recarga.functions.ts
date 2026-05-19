@@ -87,7 +87,7 @@ export const fazerRecarga = createServerFn({ method: "POST" })
       .from("recargas")
       .update({
         status: success ? "success" : "failed",
-        provider_response: providerResponse,
+        provider_response: providerResponse as never,
         error_message: errorMsg,
       })
       .eq("id", recarga.id);
