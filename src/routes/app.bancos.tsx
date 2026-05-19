@@ -246,9 +246,9 @@ function BancosPage() {
             <p className="mb-4 text-sm text-muted-foreground">
               Conecte sua conta via Open Finance e veja seu saldo e transações automaticamente.
             </p>
-            <Button onClick={handleConnect} disabled={connecting}>
-              {connecting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}
-              Conectar primeiro banco
+            <Button onClick={() => handleConnect("openfinance")} disabled={connecting}>
+              {connecting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ShieldCheck className="mr-2 h-4 w-4" />}
+              Conectar via Open Finance
             </Button>
           </Card>
         ) : (
