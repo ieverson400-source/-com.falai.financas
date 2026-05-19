@@ -6,15 +6,22 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
-import { ArrowLeft, Building2, Plus, Trash2, RefreshCw, Loader2, History, CheckCircle2, XCircle } from "lucide-react";
+import { ArrowLeft, Building2, Plus, Trash2, RefreshCw, Loader2, History, CheckCircle2, XCircle, ShieldCheck, Globe } from "lucide-react";
 import { formatBRL } from "@/lib/categories";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   createPluggyConnectToken,
   saveAndSyncItem,
   listBankData,
   deletePluggyItem,
   listSyncLogs,
+  listOpenFinanceConnectorIds,
 } from "@/lib/pluggy.functions";
 
 export const Route = createFileRoute("/app/bancos")({
