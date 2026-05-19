@@ -207,10 +207,34 @@ function BancosPage() {
             <Link to="/app"><ArrowLeft className="h-5 w-5" /></Link>
           </Button>
           <h1 className="flex-1 text-lg font-bold">Meus bancos</h1>
-          <Button onClick={handleConnect} disabled={connecting || busy} size="sm">
-            {connecting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}
-            Conectar
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button disabled={connecting || busy} size="sm">
+                {connecting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}
+                Conectar
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-64">
+              <DropdownMenuItem onClick={() => handleConnect("openfinance")} className="flex-col items-start gap-0.5 py-2">
+                <div className="flex items-center gap-2 font-medium">
+                  <ShieldCheck className="h-4 w-4 text-emerald-600" />
+                  Open Finance
+                </div>
+                <span className="pl-6 text-xs text-muted-foreground">
+                  Regulado pelo Banco Central, mais seguro
+                </span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleConnect("all")} className="flex-col items-start gap-0.5 py-2">
+                <div className="flex items-center gap-2 font-medium">
+                  <Globe className="h-4 w-4" />
+                  Todas as instituições
+                </div>
+                <span className="pl-6 text-xs text-muted-foreground">
+                  Open Finance + login direto no banco
+                </span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </header>
 
