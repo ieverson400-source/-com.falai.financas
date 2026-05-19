@@ -49,6 +49,20 @@ export const createPluggyConnectToken = createServerFn({ method: "POST" })
     return { accessToken: res.accessToken as string };
   });
 
+// Lista conectores Open Finance (Brasil) para filtrar no widget Pluggy Connect
+export const listOpenFinanceConnectorIds = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async () => {
+    const apiKey = await getPluggyApiKey();
+    const res = await pluggyFetch(
+      `/connectors?countries=BR&isOpenFinance=true&sandbox=true`,
+      apiKey,
+    );
+    const connectors = (res?.results ?? []) as Array<{ id: number; isOpenFinance?: boolean }>;
+    const ids = connectors.filter((c) => c.isOpenFinance !== false).map((c) => c.id);
+    return { connectorIds: ids };
+  });
+
 // Save an item (bank connection) returned by the widget and sync its data
 export const saveAndSyncItem = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])

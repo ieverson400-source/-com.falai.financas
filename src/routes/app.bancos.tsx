@@ -6,15 +6,22 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
-import { ArrowLeft, Building2, Plus, Trash2, RefreshCw, Loader2, History, CheckCircle2, XCircle } from "lucide-react";
+import { ArrowLeft, Building2, Plus, Trash2, RefreshCw, Loader2, History, CheckCircle2, XCircle, ShieldCheck, Globe } from "lucide-react";
 import { formatBRL } from "@/lib/categories";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   createPluggyConnectToken,
   saveAndSyncItem,
   listBankData,
   deletePluggyItem,
   listSyncLogs,
+  listOpenFinanceConnectorIds,
 } from "@/lib/pluggy.functions";
 
 export const Route = createFileRoute("/app/bancos")({
@@ -33,6 +40,8 @@ declare global {
     PluggyConnect?: new (config: {
       connectToken: string;
       includeSandbox?: boolean;
+      connectorIds?: number[];
+      countries?: string[];
       onSuccess: (data: { item: { id: string } }) => void;
       onError?: (err: unknown) => void;
       onExit?: () => void;
@@ -73,6 +82,7 @@ function BancosPage() {
   const list = useServerFn(listBankData);
   const removeItem = useServerFn(deletePluggyItem);
   const fetchLogs = useServerFn(listSyncLogs);
+  const fetchOpenFinanceIds = useServerFn(listOpenFinanceConnectorIds);
 
   type SyncLog = { id: string; status: string; error_message: string | null; accounts_count: number | null; triggered_by: string; created_at: string };
   const [historyItem, setHistoryItem] = useState<Item | null>(null);
@@ -111,19 +121,34 @@ function BancosPage() {
     if (user) load();
   }, [user, load]);
 
-  const handleConnect = async () => {
+  const handleConnect = async (mode: "openfinance" | "all" = "all") => {
     setConnecting(true);
     try {
       await loadPluggyScript();
+      let connectorIds: number[] | undefined;
+      if (mode === "openfinance") {
+        const { connectorIds: ids } = await fetchOpenFinanceIds();
+        if (!ids || ids.length === 0) {
+          toast.error("Nenhum conector Open Finance disponível no momento.");
+          setConnecting(false);
+          return;
+        }
+        connectorIds = ids;
+      }
       const { accessToken } = await createToken({ data: {} });
       const connect = new window.PluggyConnect!({
         connectToken: accessToken,
         includeSandbox: true,
+        countries: ["BR"],
+        ...(connectorIds ? { connectorIds } : {}),
         onSuccess: async ({ item }) => {
           setBusy(true);
           try {
             const res = await saveItem({ data: { itemId: item.id } });
-            toast.success("Banco conectado!", { description: `${res.accountsCount} conta(s) sincronizada(s)` });
+            toast.success(
+              mode === "openfinance" ? "Open Finance conectado!" : "Banco conectado!",
+              { description: `${res.accountsCount} conta(s) sincronizada(s)` },
+            );
             await load();
           } catch (e) {
             toast.error("Erro ao sincronizar", { description: (e as Error).message });
@@ -182,10 +207,34 @@ function BancosPage() {
             <Link to="/app"><ArrowLeft className="h-5 w-5" /></Link>
           </Button>
           <h1 className="flex-1 text-lg font-bold">Meus bancos</h1>
-          <Button onClick={handleConnect} disabled={connecting || busy} size="sm">
-            {connecting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}
-            Conectar
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button disabled={connecting || busy} size="sm">
+                {connecting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}
+                Conectar
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-64">
+              <DropdownMenuItem onClick={() => handleConnect("openfinance")} className="flex-col items-start gap-0.5 py-2">
+                <div className="flex items-center gap-2 font-medium">
+                  <ShieldCheck className="h-4 w-4 text-emerald-600" />
+                  Open Finance
+                </div>
+                <span className="pl-6 text-xs text-muted-foreground">
+                  Regulado pelo Banco Central, mais seguro
+                </span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleConnect("all")} className="flex-col items-start gap-0.5 py-2">
+                <div className="flex items-center gap-2 font-medium">
+                  <Globe className="h-4 w-4" />
+                  Todas as instituições
+                </div>
+                <span className="pl-6 text-xs text-muted-foreground">
+                  Open Finance + login direto no banco
+                </span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </header>
 
@@ -197,9 +246,9 @@ function BancosPage() {
             <p className="mb-4 text-sm text-muted-foreground">
               Conecte sua conta via Open Finance e veja seu saldo e transações automaticamente.
             </p>
-            <Button onClick={handleConnect} disabled={connecting}>
-              {connecting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}
-              Conectar primeiro banco
+            <Button onClick={() => handleConnect("openfinance")} disabled={connecting}>
+              {connecting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ShieldCheck className="mr-2 h-4 w-4" />}
+              Conectar via Open Finance
             </Button>
           </Card>
         ) : (
