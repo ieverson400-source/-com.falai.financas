@@ -235,6 +235,20 @@ function AppDashboard() {
               </ul>
             </Card>
 
+            {/* Recarga de celular */}
+            <Link to="/app/recarga" className="block">
+              <Card className="p-4 sm:p-5 bg-card shadow-soft hover:shadow-md transition-shadow flex items-center gap-4">
+                <div className="size-11 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                  <Zap className="size-5 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium">Recarga de celular</p>
+                  <p className="text-xs text-muted-foreground">Claro, Vivo, Tim e Oi — a partir de R$10</p>
+                </div>
+                <ArrowUpRight className="size-4 text-muted-foreground" />
+              </Card>
+            </Link>
+
             {/* Fluxo de caixa */}
             <Card className="p-5 sm:p-6 bg-card shadow-soft">
               <h3 className="font-display text-base sm:text-lg font-semibold">Fluxo de caixa</h3>
