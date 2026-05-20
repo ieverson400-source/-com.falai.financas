@@ -107,7 +107,7 @@ export const fazerRecarga = createServerFn({ method: "POST" })
       ok: success,
       recargaId: recarga.id,
       message: success ? "Recarga concluída!" : errorMsg ?? "Falha na recarga",
-      simulated: !apiUrl || !apiKey,
+      simulated: !useReal,
     };
   });
 
