@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
-import { ArrowLeft, Smartphone, Loader2, CheckCircle2, XCircle } from "lucide-react";
+import { ArrowLeft, Smartphone, Loader2, CheckCircle2, XCircle, Settings } from "lucide-react";
 import { fazerRecarga, listarRecargas } from "@/lib/recarga.functions";
 import { formatBRL } from "@/lib/categories";
 import { format, parseISO } from "date-fns";
@@ -109,10 +109,15 @@ function RecargaPage() {
               <ArrowLeft className="h-5 w-5" />
             </Link>
           </Button>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-1">
             <Smartphone className="h-5 w-5 text-primary" />
             <h1 className="text-lg font-semibold">Recarga de celular</h1>
           </div>
+          <Button asChild variant="ghost" size="icon">
+            <Link to="/app/recarga/configuracoes">
+              <Settings className="h-5 w-5" />
+            </Link>
+          </Button>
         </div>
       </header>
 

@@ -38,15 +38,26 @@ export const fazerRecarga = createServerFn({ method: "POST" })
       throw new Error(insertErr?.message ?? "Falha ao criar recarga");
     }
 
-    // 2. Chama provedor (real ou simulado)
-    const apiUrl = process.env.RECHARGE_API_URL;
-    const apiKey = process.env.RECHARGE_API_KEY;
+    // 2. Carrega configurações do usuário
+    const { data: settings } = await supabase
+      .from("recarga_settings")
+      .select("provider, api_url, api_key, real_mode")
+      .eq("user_id", userId)
+      .maybeSingle();
+
+    const useReal =
+      settings?.real_mode &&
+      settings.provider !== "simulado" &&
+      settings.api_url &&
+      settings.api_key;
 
     let providerResponse: Record<string, unknown>;
     let success: boolean;
     let errorMsg: string | null = null;
 
-    if (apiUrl && apiKey) {
+    if (useReal) {
+      const apiUrl = settings!.api_url as string;
+      const apiKey = settings!.api_key as string;
       // TODO: ajustar payload/headers conforme contrato do provedor real
       try {
         const res = await fetch(apiUrl, {
@@ -96,7 +107,7 @@ export const fazerRecarga = createServerFn({ method: "POST" })
       ok: success,
       recargaId: recarga.id,
       message: success ? "Recarga concluída!" : errorMsg ?? "Falha na recarga",
-      simulated: !apiUrl || !apiKey,
+      simulated: !useReal,
     };
   });
 
