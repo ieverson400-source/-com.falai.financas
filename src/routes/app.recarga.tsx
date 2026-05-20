@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
-import { ArrowLeft, Smartphone, Loader2, CheckCircle2, XCircle } from "lucide-react";
+import { ArrowLeft, Smartphone, Loader2, CheckCircle2, XCircle, Settings } from "lucide-react";
 import { fazerRecarga, listarRecargas } from "@/lib/recarga.functions";
 import { formatBRL } from "@/lib/categories";
 import { format, parseISO } from "date-fns";
