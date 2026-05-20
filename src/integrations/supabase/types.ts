@@ -288,6 +288,48 @@ export type Database = {
         }
         Relationships: []
       }
+      recarga_settings: {
+        Row: {
+          api_key: string | null
+          api_url: string | null
+          created_at: string
+          id: string
+          last_test_at: string | null
+          last_test_message: string | null
+          last_test_ok: boolean | null
+          provider: string
+          real_mode: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          api_key?: string | null
+          api_url?: string | null
+          created_at?: string
+          id?: string
+          last_test_at?: string | null
+          last_test_message?: string | null
+          last_test_ok?: boolean | null
+          provider?: string
+          real_mode?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          api_key?: string | null
+          api_url?: string | null
+          created_at?: string
+          id?: string
+          last_test_at?: string | null
+          last_test_message?: string | null
+          last_test_ok?: boolean | null
+          provider?: string
+          real_mode?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       recargas: {
         Row: {
           created_at: string
