@@ -179,7 +179,9 @@ function AppDashboard() {
                   Conecte sua conta para sincronizar automaticamente.
                 </p>
               </div>
-              <Button size="sm" className="shrink-0">Começar agora</Button>
+              <Button asChild size="sm" className="shrink-0">
+                <Link to="/app/bancos">Começar agora</Link>
+              </Button>
             </Card>
 
             {/* Top stats + recorder */}
