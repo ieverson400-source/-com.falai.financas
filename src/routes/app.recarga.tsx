@@ -109,10 +109,15 @@ function RecargaPage() {
               <ArrowLeft className="h-5 w-5" />
             </Link>
           </Button>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-1">
             <Smartphone className="h-5 w-5 text-primary" />
             <h1 className="text-lg font-semibold">Recarga de celular</h1>
           </div>
+          <Button asChild variant="ghost" size="icon">
+            <Link to="/app/recarga/configuracoes">
+              <Settings className="h-5 w-5" />
+            </Link>
+          </Button>
         </div>
       </header>
 
