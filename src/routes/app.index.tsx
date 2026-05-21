@@ -9,6 +9,7 @@ import { ExpenseCharts } from "@/components/expense-charts";
 import { ManualExpenseDialog } from "@/components/manual-expense-dialog";
 import { ReceiptScanner } from "@/components/receipt-scanner";
 import { WhatsAppLinkCard } from "@/components/whatsapp-link-card";
+import { VerificacaoWhatsApp } from "@/components/verificacao-whatsapp";
 import { WhatsAppDiagnosticsCard } from "@/components/whatsapp-diagnostics-card";
 import { WhatsAppInboxCard, type WhatsAppInboxItem } from "@/components/whatsapp-inbox-card";
 import { Toaster } from "@/components/ui/sonner";
@@ -204,6 +205,7 @@ function AppDashboard() {
                 </Card>
                 <div className="col-span-2 lg:col-span-1 space-y-4">
                   <WhatsAppLinkCard currentPhone={whatsAppPhone} onSaved={setWhatsAppPhone} />
+                  <VerificacaoWhatsApp />
                   <WhatsAppDiagnosticsCard currentPhone={whatsAppPhone} />
                 </div>
               </div>

@@ -35,24 +35,24 @@ const AppIndexRoute = AppIndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppWhatsappTestRoute = AppWhatsappTestRouteImport.update({
-  id: '/whatsapp-test',
-  path: '/whatsapp-test',
-  getParentRoute: () => AppRoute,
+  id: '/app/whatsapp-test',
+  path: '/app/whatsapp-test',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AppRecargaRoute = AppRecargaRouteImport.update({
-  id: '/recarga',
-  path: '/recarga',
-  getParentRoute: () => AppRoute,
+  id: '/app/recarga',
+  path: '/app/recarga',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AppHomeRoute = AppHomeRouteImport.update({
-  id: '/home',
-  path: '/home',
-  getParentRoute: () => AppRoute,
+  id: '/app/home',
+  path: '/app/home',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AppBancosRoute = AppBancosRouteImport.update({
-  id: '/bancos',
-  path: '/bancos',
-  getParentRoute: () => AppRoute,
+  id: '/app/bancos',
+  path: '/app/bancos',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AppRecargaConfiguracoesRoute = AppRecargaConfiguracoesRouteImport.update({
   id: '/configuracoes',
@@ -138,6 +138,10 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
+  AppBancosRoute: typeof AppBancosRoute
+  AppHomeRoute: typeof AppHomeRoute
+  AppRecargaRoute: typeof AppRecargaRouteWithChildren
+  AppWhatsappTestRoute: typeof AppWhatsappTestRoute
   AppIndexRoute: typeof AppIndexRoute
   ApiPublicWhatsappRoute: typeof ApiPublicWhatsappRoute
 }
@@ -167,31 +171,31 @@ declare module '@tanstack/react-router' {
     }
     '/app/whatsapp-test': {
       id: '/app/whatsapp-test'
-      path: '/whatsapp-test'
+      path: '/app/whatsapp-test'
       fullPath: '/app/whatsapp-test'
       preLoaderRoute: typeof AppWhatsappTestRouteImport
-      parentRoute: typeof AppRoute
+      parentRoute: typeof rootRouteImport
     }
     '/app/recarga': {
       id: '/app/recarga'
-      path: '/recarga'
+      path: '/app/recarga'
       fullPath: '/app/recarga'
       preLoaderRoute: typeof AppRecargaRouteImport
-      parentRoute: typeof AppRoute
+      parentRoute: typeof rootRouteImport
     }
     '/app/home': {
       id: '/app/home'
-      path: '/home'
+      path: '/app/home'
       fullPath: '/app/home'
       preLoaderRoute: typeof AppHomeRouteImport
-      parentRoute: typeof AppRoute
+      parentRoute: typeof rootRouteImport
     }
     '/app/bancos': {
       id: '/app/bancos'
-      path: '/bancos'
+      path: '/app/bancos'
       fullPath: '/app/bancos'
       preLoaderRoute: typeof AppBancosRouteImport
-      parentRoute: typeof AppRoute
+      parentRoute: typeof rootRouteImport
     }
     '/app/recarga/configuracoes': {
       id: '/app/recarga/configuracoes'
@@ -210,21 +214,28 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AppRecargaRouteChildren {
+  AppRecargaConfiguracoesRoute: typeof AppRecargaConfiguracoesRoute
+}
+
+const AppRecargaRouteChildren: AppRecargaRouteChildren = {
+  AppRecargaConfiguracoesRoute: AppRecargaConfiguracoesRoute,
+}
+
+const AppRecargaRouteWithChildren = AppRecargaRoute._addFileChildren(
+  AppRecargaRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
+  AppBancosRoute: AppBancosRoute,
+  AppHomeRoute: AppHomeRoute,
+  AppRecargaRoute: AppRecargaRouteWithChildren,
+  AppWhatsappTestRoute: AppWhatsappTestRoute,
   AppIndexRoute: AppIndexRoute,
   ApiPublicWhatsappRoute: ApiPublicWhatsappRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
