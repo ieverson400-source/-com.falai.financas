@@ -23,7 +23,7 @@ import { categoryColor, formatBRL } from "@/lib/categories";
 import { format, parseISO, startOfMonth } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
-export const Route = createFileRoute("/app")({
+export const Route = createFileRoute("/app/")({
   component: AppDashboard,
   head: () => ({
     meta: [
