@@ -21,6 +21,7 @@ import {
   Building2,
   PiggyBank,
   CreditCard,
+  LogOut,
 } from "lucide-react";
 import { format, parseISO, startOfMonth } from "date-fns";
 import { ptBR } from "date-fns/locale";
