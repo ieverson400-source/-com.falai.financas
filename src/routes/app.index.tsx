@@ -155,6 +155,14 @@ function AppDashboard() {
                 )}
               </div>
             </button>
+            <button
+              onClick={handleLogout}
+              className="inline-flex items-center justify-center size-9 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+              aria-label="Sair"
+              title="Sair"
+            >
+              <LogOut className="size-4" />
+            </button>
           </div>
         </div>
       </header>
