@@ -84,7 +84,7 @@ export function VerificacaoWhatsApp() {
                   Abrir formulário no navegador
                   <ExternalLink className="size-3.5" />
                 </a>
-              </p>
+              </div>
 
               <p className="text-xs text-muted-foreground">
                 O código e o link do formulário vão aparecer automaticamente na mensagem.
