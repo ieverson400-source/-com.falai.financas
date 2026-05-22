@@ -85,6 +85,11 @@ function HomeMobile() {
     };
   }, [expenses]);
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate({ to: "/auth" });
+  };
+
   if (loading || !user) {
     return (
       <div className="min-h-screen flex items-center justify-center text-muted-foreground">
