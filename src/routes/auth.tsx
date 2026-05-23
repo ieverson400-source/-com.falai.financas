@@ -50,7 +50,25 @@ function AuthPage() {
           },
         });
         if (error) throw error;
-        toast.success("Conta criada! Você já pode entrar.");
+
+        // Envia mensagem de boas-vindas via WhatsApp (não bloqueia o cadastro em caso de falha)
+        const normalized = normalizeWhatsAppPhone(phone);
+        if (normalized) {
+          try {
+            await sendWelcome({
+              data: {
+                toNumber: `whatsapp:${normalized}`,
+                messageBody: "Olá! Seja bem-vindo ao Falai Finanças! 🚀",
+              },
+            });
+            toast.success("Conta criada! Enviamos uma mensagem no seu WhatsApp.");
+          } catch (waErr) {
+            console.error("Falha ao enviar WhatsApp de boas-vindas:", waErr);
+            toast.success("Conta criada! (Não foi possível enviar o WhatsApp de boas-vindas)");
+          }
+        } else {
+          toast.success("Conta criada! Você já pode entrar.");
+        }
         setMode("signin");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
