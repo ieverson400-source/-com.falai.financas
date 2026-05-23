@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,6 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
+import { sendWhatsAppMessage } from "@/server/twilio";
+import { normalizeWhatsAppPhone } from "@/lib/phone";
 
 export const Route = createFileRoute("/auth")({
   component: AuthPage,
@@ -23,7 +26,9 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
+  const sendWelcome = useServerFn(sendWhatsAppMessage);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -45,7 +50,25 @@ function AuthPage() {
           },
         });
         if (error) throw error;
-        toast.success("Conta criada! Você já pode entrar.");
+
+        // Envia mensagem de boas-vindas via WhatsApp (não bloqueia o cadastro em caso de falha)
+        const normalized = normalizeWhatsAppPhone(phone);
+        if (normalized) {
+          try {
+            await sendWelcome({
+              data: {
+                toNumber: `whatsapp:${normalized}`,
+                messageBody: "Olá! Seja bem-vindo ao Falai Finanças! 🚀",
+              },
+            });
+            toast.success("Conta criada! Enviamos uma mensagem no seu WhatsApp.");
+          } catch (waErr) {
+            console.error("Falha ao enviar WhatsApp de boas-vindas:", waErr);
+            toast.success("Conta criada! (Não foi possível enviar o WhatsApp de boas-vindas)");
+          }
+        } else {
+          toast.success("Conta criada! Você já pode entrar.");
+        }
         setMode("signin");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -73,10 +96,24 @@ function AuthPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {mode === "signup" && (
-            <div className="space-y-2">
-              <Label htmlFor="name">Nome</Label>
-              <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Seu nome" className="h-11" />
-            </div>
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="name">Nome</Label>
+                <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Seu nome" className="h-11" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="phone">WhatsApp</Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  inputMode="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="+5519996020358"
+                  className="h-11"
+                />
+              </div>
+            </>
           )}
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
