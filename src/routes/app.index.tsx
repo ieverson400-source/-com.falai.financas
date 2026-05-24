@@ -403,6 +403,10 @@ function AppDashboard() {
                     window.dispatchEvent(new Event("falai:toggle-chat"));
                     return;
                   }
+                  if (key === "contas") {
+                    navigate({ to: "/app/bancos" });
+                    return;
+                  }
                   setActiveTab(key);
                 }}
                 aria-current={active ? "page" : undefined}
