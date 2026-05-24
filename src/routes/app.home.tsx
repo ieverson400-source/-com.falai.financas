@@ -159,7 +159,12 @@ function HomeMobile() {
       >
         <ul className="mx-auto max-w-md grid grid-cols-5">
           <BottomTab label="Início" icon={Home} active={tab === "inicio"} onClick={() => setTab("inicio")} />
-          <BottomTab label="Contas" icon={Wallet} active={tab === "contas"} onClick={() => setTab("contas")} />
+          <BottomTab
+            label="Contas"
+            icon={Wallet}
+            active={tab === "contas"}
+            onClick={() => navigate({ to: "/app/bancos" })}
+          />
           <BottomTab
             label="Transações"
             icon={ArrowLeftRight}
@@ -263,21 +268,6 @@ function InicioTab({
         </div>
       </Card>
 
-      {/* Conexão Bancária CTA */}
-      <Card className="rounded-2xl border bg-card shadow-soft p-4 flex items-center gap-3">
-        <div className="size-11 rounded-xl bg-accent/20 flex items-center justify-center text-accent-foreground">
-          <Link2 className="size-5" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="font-semibold text-sm">Conexão Bancária</p>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Sincronize seus bancos automaticamente.
-          </p>
-        </div>
-        <Button asChild size="sm" className="h-9 rounded-full px-4 text-xs shrink-0">
-          <Link to="/app/bancos">Começar agora</Link>
-        </Button>
-      </Card>
 
       {/* Minhas contas */}
       <section aria-labelledby="minhas-contas">
