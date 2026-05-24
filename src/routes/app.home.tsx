@@ -159,7 +159,12 @@ function HomeMobile() {
       >
         <ul className="mx-auto max-w-md grid grid-cols-5">
           <BottomTab label="Início" icon={Home} active={tab === "inicio"} onClick={() => setTab("inicio")} />
-          <BottomTab label="Contas" icon={Wallet} active={tab === "contas"} onClick={() => setTab("contas")} />
+          <BottomTab
+            label="Contas"
+            icon={Wallet}
+            active={tab === "contas"}
+            onClick={() => navigate({ to: "/app/bancos" })}
+          />
           <BottomTab
             label="Transações"
             icon={ArrowLeftRight}
