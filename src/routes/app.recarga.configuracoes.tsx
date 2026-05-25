@@ -39,7 +39,8 @@ export const Route = createFileRoute("/app/recarga/configuracoes")({
 
 const PROVIDERS = [
   { id: "simulado", label: "Simulado (testes)" },
-  { id: "generico_http", label: "Provedor HTTP genérico" },
+  { id: "api3", label: "API3 (Brasil)" },
+  { id: "generico_http", label: "HTTP genérico" },
 ] as const;
 
 type Provider = (typeof PROVIDERS)[number]["id"];

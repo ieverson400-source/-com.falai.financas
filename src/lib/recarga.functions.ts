@@ -58,25 +58,65 @@ export const fazerRecarga = createServerFn({ method: "POST" })
     if (useReal) {
       const apiUrl = settings!.api_url as string;
       const apiKey = settings!.api_key as string;
-      // TODO: ajustar payload/headers conforme contrato do provedor real
+      const provider = settings!.provider as string;
+
       try {
-        const res = await fetch(apiUrl, {
-          method: "POST",
-          headers: {
+        let url: string;
+        let headers: Record<string, string>;
+        let body: string;
+
+        if (provider === "api3") {
+          // API3 (api3.com.br) — contrato REST padrão
+          // Docs: https://api3.com.br/documentacao
+          // POST {base}/recarga  (ou /v1/recharge conforme conta)
+          // Header: Authorization: Bearer <api_key>
+          // Body: { numero, operadora, valor, id_externo }
+          const base = apiUrl.replace(/\/$/, "");
+          url = base.endsWith("/recarga") ? base : `${base}/recarga`;
+          headers = {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${apiKey}`,
+          };
+          body = JSON.stringify({
+            numero: data.telefone,
+            operadora: data.operadora.toUpperCase(),
+            valor: data.valor,
+            id_externo: recarga.id,
+          });
+        } else {
+          // generico_http — contrato neutro
+          url = apiUrl;
+          headers = {
             "Content-Type": "application/json",
             Authorization: `Bearer ${apiKey}`,
-          },
-          body: JSON.stringify({
+          };
+          body = JSON.stringify({
             phone: data.telefone,
             carrier: data.operadora.toLowerCase(),
             amount: data.valor,
             reference: recarga.id,
-          }),
-        });
+          });
+        }
+
+        const res = await fetch(url, { method: "POST", headers, body });
         const json = (await res.json().catch(() => ({}))) as Record<string, unknown>;
-        providerResponse = { httpStatus: res.status, body: json };
-        success = res.ok;
-        if (!success) errorMsg = `Provedor retornou status ${res.status}`;
+        providerResponse = { provider, httpStatus: res.status, body: json };
+
+        // API3 retorna { status: "sucesso" | "erro", mensagem, transacao_id }
+        if (provider === "api3") {
+          const status = String(json.status ?? "").toLowerCase();
+          success = res.ok && (status === "sucesso" || status === "success" || status === "ok");
+          if (!success) {
+            errorMsg =
+              (typeof json.mensagem === "string" && json.mensagem) ||
+              (typeof json.message === "string" && json.message) ||
+              `API3 retornou HTTP ${res.status}`;
+          }
+        } else {
+          success = res.ok;
+          if (!success) errorMsg = `Provedor retornou status ${res.status}`;
+        }
       } catch (e) {
         providerResponse = { error: String(e) };
         success = false;
