@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-const PROVIDERS = ["simulado", "generico_http"] as const;
+const PROVIDERS = ["simulado", "generico_http", "api3"] as const;
 
 const settingsSchema = z.object({
   provider: z.enum(PROVIDERS),
