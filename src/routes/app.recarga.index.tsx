@@ -13,7 +13,7 @@ import { formatBRL } from "@/lib/categories";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
-export const Route = createFileRoute("/app/recarga")({
+export const Route = createFileRoute("/app/recarga/")({
   component: RecargaPage,
   head: () => ({
     meta: [
