@@ -55,9 +55,9 @@ const AppRecargaIndexRoute = AppRecargaIndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppRecargaConfiguracoesRoute = AppRecargaConfiguracoesRouteImport.update({
-  id: '/configuracoes',
-  path: '/configuracoes',
-  getParentRoute: () => AppRecargaRoute,
+  id: '/app/recarga/configuracoes',
+  path: '/app/recarga/configuracoes',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicWhatsappRoute = ApiPublicWhatsappRouteImport.update({
   id: '/api/public/whatsapp',
@@ -143,6 +143,7 @@ export interface RootRouteChildren {
   AppWhatsappTestRoute: typeof AppWhatsappTestRoute
   AppIndexRoute: typeof AppIndexRoute
   ApiPublicWhatsappRoute: typeof ApiPublicWhatsappRoute
+  AppRecargaConfiguracoesRoute: typeof AppRecargaConfiguracoesRoute
   AppRecargaIndexRoute: typeof AppRecargaIndexRoute
 }
 
@@ -199,10 +200,10 @@ declare module '@tanstack/react-router' {
     }
     '/app/recarga/configuracoes': {
       id: '/app/recarga/configuracoes'
-      path: '/configuracoes'
+      path: '/app/recarga/configuracoes'
       fullPath: '/app/recarga/configuracoes'
       preLoaderRoute: typeof AppRecargaConfiguracoesRouteImport
-      parentRoute: typeof AppRecargaRoute
+      parentRoute: typeof rootRouteImport
     }
     '/api/public/whatsapp': {
       id: '/api/public/whatsapp'
@@ -222,6 +223,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppWhatsappTestRoute: AppWhatsappTestRoute,
   AppIndexRoute: AppIndexRoute,
   ApiPublicWhatsappRoute: ApiPublicWhatsappRoute,
+  AppRecargaConfiguracoesRoute: AppRecargaConfiguracoesRoute,
   AppRecargaIndexRoute: AppRecargaIndexRoute,
 }
 export const routeTree = rootRouteImport
