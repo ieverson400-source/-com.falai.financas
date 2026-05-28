@@ -2,6 +2,8 @@ import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/r
 
 import appCss from "../styles.css?url";
 import "@/integrations/supabase/server-fn-fetch.client";
+import { InstallPWAButton } from "@/components/InstallPWAButton";
+
 
 function NotFoundComponent() {
   return (
@@ -29,10 +31,17 @@ export const Route = createRootRoute({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes, viewport-fit=cover" },
       { title: "Falaí Finanças" },
       { name: "description", content: "financas" },
       { name: "author", content: "Lovable" },
+      // PWA: cor da barra do navegador / splash screen
+      { name: "theme-color", content: "#0f1b2d" },
+      // PWA: iOS (Safari "Adicionar à Tela de Início")
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
+      { name: "apple-mobile-web-app-title", content: "Falaí" },
+      { name: "mobile-web-app-capable", content: "yes" },
       { property: "og:title", content: "Falaí Finanças" },
       { property: "og:description", content: "financas" },
       { property: "og:type", content: "website" },
@@ -44,10 +53,16 @@ export const Route = createRootRoute({
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/5b55cd14-b652-409a-b3fb-d257ac495cb1" },
     ],
     links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
+      { rel: "stylesheet", href: appCss },
+      // PWA manifest — descreve nome, ícones, cores e modo standalone
+      { rel: "manifest", href: "/manifest.webmanifest" },
+      // Ícone na home screen do iOS
+      { rel: "apple-touch-icon", href: "/icon-192.png" },
+      { rel: "apple-touch-icon", sizes: "152x152", href: "/icon-152.png" },
+      { rel: "apple-touch-icon", sizes: "192x192", href: "/icon-192.png" },
+      // Favicon
+      { rel: "icon", type: "image/png", sizes: "192x192", href: "/icon-192.png" },
+      { rel: "icon", type: "image/png", sizes: "512x512", href: "/icon-512.png" },
     ],
   }),
   shellComponent: RootShell,
@@ -75,5 +90,10 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
-  return <Outlet />;
+  return (
+    <>
+      <Outlet />
+      <InstallPWAButton />
+    </>
+  );
 }
