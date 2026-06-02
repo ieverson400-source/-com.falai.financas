@@ -436,13 +436,12 @@ function ProfileTab({
   avatarUrl: string | null;
   onAvatarChange: (url: string | null) => void;
 }) {
-  const [plan, setPlan] = useState<"free" | "pro" | "premium">("free");
-  const isSubscriber = plan !== "free";
+  const { plan, isActive, subscription, loading: subLoading, refresh } = useSubscription(user.id);
+  const isSubscriber = isActive;
+  const activatingRef = useState(false);
+  const [activating, setActivating] = activatingRef;
 
   // 🛒 Play Store / Google Play Billing
-  // Quando o app for publicado, troque PLAY_PACKAGE_NAME pelo package real
-  // (o mesmo usado na keystore/PWABuilder) e ajuste os SKUs criados na
-  // Play Console em "Monetização → Produtos → Assinaturas".
   const PLAY_PACKAGE_NAME = "br.com.falaifinancas.app";
   const PLAY_STORE_URL = `https://play.google.com/store/apps/details?id=${PLAY_PACKAGE_NAME}`;
 
@@ -478,10 +477,10 @@ function ProfileTab({
     },
   ];
 
-  // Detecta se o app está rodando dentro do TWA Android (instalado pela Play
-  // Store). Nesse caso, abrimos direto a página de gerenciamento de
-  // assinatura na Play Store, que aciona o fluxo de billing nativo.
-  function handleSubscribe(planKey: "pro" | "premium", planName: string, sku: string) {
+  const activateDev = useServerFn(activateDevSubscription);
+  const cancelDev = useServerFn(cancelDevSubscription);
+
+  async function handleSubscribe(planKey: "pro" | "premium", planName: string, sku: string) {
     if (typeof window === "undefined") return;
 
     const isTWA =
@@ -491,17 +490,38 @@ function ProfileTab({
     const playSubscriptionUrl = `https://play.google.com/store/account/subscriptions?sku=${sku}&package=${PLAY_PACKAGE_NAME}`;
 
     if (isTWA || /android/i.test(navigator.userAgent)) {
-      // Abre a Play Store (app nativo no Android, web em outros casos)
+      // Billing real: webhook do Play vai atualizar a tabela `subscriptions`
+      // e o hook useSubscription reflete via realtime.
       window.location.href = playSubscriptionUrl;
       return;
     }
 
-    // Fallback (desktop / iOS): manda para a página do app na Play Store
-    window.open(PLAY_STORE_URL, "_blank", "noopener,noreferrer");
-    toast.info("Assinatura disponível pelo app Android na Play Store");
-    // Mantém ativação local de demonstração até o billing estar ligado
-    setPlan(planKey);
+    // Fallback (desktop / iOS): ativação de demonstração imediata
+    try {
+      setActivating(true);
+      await activateDev({ data: { plan: planKey } });
+      await refresh();
+      toast.success(`Plano ${planName} ativado (modo demonstração)`);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Falha ao ativar";
+      toast.error(msg);
+      window.open(PLAY_STORE_URL, "_blank", "noopener,noreferrer");
+    } finally {
+      setActivating(false);
+    }
   }
+
+  async function handleCancel() {
+    try {
+      await cancelDev({ data: undefined });
+      await refresh();
+      toast.success("Assinatura cancelada");
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Falha ao cancelar";
+      toast.error(msg);
+    }
+  }
+
 
 
   return (
