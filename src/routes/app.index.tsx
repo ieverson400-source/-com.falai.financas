@@ -608,7 +608,7 @@ function ProfileTab({
                 variant="ghost"
                 size="sm"
                 className="flex-1 text-primary-foreground hover:bg-white/10"
-                onClick={() => setPlan("free")}
+                onClick={handleCancel}
               >
                 Cancelar
               </Button>
