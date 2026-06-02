@@ -68,18 +68,20 @@ export const Route = createFileRoute("/api/public/play-rtdn")({
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const { error } = await supabaseAdmin.from("subscriptions").upsert(
-          {
-            user_id: parsed.data.user_id,
-            plan: parsed.data.plan,
-            status: parsed.data.status,
-            provider: "play",
-            purchase_token: parsed.data.purchase_token,
-            provider_product_id: parsed.data.provider_product_id,
-            provider_subscription_id: parsed.data.provider_subscription_id,
-            current_period_end: parsed.data.current_period_end,
-            cancel_at_period_end: parsed.data.cancel_at_period_end ?? false,
-            raw: parsed.data as unknown as Record<string, unknown>,
-          },
+          [
+            {
+              user_id: parsed.data.user_id,
+              plan: parsed.data.plan,
+              status: parsed.data.status,
+              provider: "play",
+              purchase_token: parsed.data.purchase_token,
+              provider_product_id: parsed.data.provider_product_id,
+              provider_subscription_id: parsed.data.provider_subscription_id,
+              current_period_end: parsed.data.current_period_end,
+              cancel_at_period_end: parsed.data.cancel_at_period_end ?? false,
+              raw: parsed.data as unknown as Record<string, unknown>,
+            },
+          ],
           { onConflict: "user_id" },
         );
 
