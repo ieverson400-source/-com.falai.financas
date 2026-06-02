@@ -675,10 +675,15 @@ function ProfileTab({
                         : ""
                     }`}
                     variant={p.highlight ? "secondary" : "default"}
+                    disabled={activating}
                     onClick={() => handleSubscribe(p.key, p.name, p.playSku)}
                   >
-                    <Crown className="size-4" />
-                    Assinar {p.name} na Play Store
+                    {activating ? (
+                      <Loader2 className="size-4 animate-spin" />
+                    ) : (
+                      <Crown className="size-4" />
+                    )}
+                    Assinar {p.name}
                   </Button>
 
                 </Card>
