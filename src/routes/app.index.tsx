@@ -577,7 +577,11 @@ function ProfileTab({
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-display text-lg font-semibold capitalize">Plano {plan}</p>
-                <p className="text-xs opacity-80">Renovação automática mensal</p>
+                <p className="text-xs opacity-80">
+                  {subscription?.current_period_end
+                    ? `Renova em ${format(parseISO(subscription.current_period_end), "dd MMM yyyy", { locale: ptBR })}`
+                    : "Renovação automática mensal"}
+                </p>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-2 mt-5">
