@@ -18,6 +18,7 @@ import { Route as AppBancosRouteImport } from './routes/app.bancos'
 import { Route as AppRecargaIndexRouteImport } from './routes/app.recarga.index'
 import { Route as AppRecargaConfiguracoesRouteImport } from './routes/app.recarga.configuracoes'
 import { Route as ApiPublicWhatsappRouteImport } from './routes/api/public/whatsapp'
+import { Route as ApiPublicPlayRtdnRouteImport } from './routes/api/public/play-rtdn'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -64,6 +65,11 @@ const ApiPublicWhatsappRoute = ApiPublicWhatsappRouteImport.update({
   path: '/api/public/whatsapp',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicPlayRtdnRoute = ApiPublicPlayRtdnRouteImport.update({
+  id: '/api/public/play-rtdn',
+  path: '/api/public/play-rtdn',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -72,6 +78,7 @@ export interface FileRoutesByFullPath {
   '/app/home': typeof AppHomeRoute
   '/app/whatsapp-test': typeof AppWhatsappTestRoute
   '/app/': typeof AppIndexRoute
+  '/api/public/play-rtdn': typeof ApiPublicPlayRtdnRoute
   '/api/public/whatsapp': typeof ApiPublicWhatsappRoute
   '/app/recarga/configuracoes': typeof AppRecargaConfiguracoesRoute
   '/app/recarga/': typeof AppRecargaIndexRoute
@@ -83,6 +90,7 @@ export interface FileRoutesByTo {
   '/app/home': typeof AppHomeRoute
   '/app/whatsapp-test': typeof AppWhatsappTestRoute
   '/app': typeof AppIndexRoute
+  '/api/public/play-rtdn': typeof ApiPublicPlayRtdnRoute
   '/api/public/whatsapp': typeof ApiPublicWhatsappRoute
   '/app/recarga/configuracoes': typeof AppRecargaConfiguracoesRoute
   '/app/recarga': typeof AppRecargaIndexRoute
@@ -95,6 +103,7 @@ export interface FileRoutesById {
   '/app/home': typeof AppHomeRoute
   '/app/whatsapp-test': typeof AppWhatsappTestRoute
   '/app/': typeof AppIndexRoute
+  '/api/public/play-rtdn': typeof ApiPublicPlayRtdnRoute
   '/api/public/whatsapp': typeof ApiPublicWhatsappRoute
   '/app/recarga/configuracoes': typeof AppRecargaConfiguracoesRoute
   '/app/recarga/': typeof AppRecargaIndexRoute
@@ -108,6 +117,7 @@ export interface FileRouteTypes {
     | '/app/home'
     | '/app/whatsapp-test'
     | '/app/'
+    | '/api/public/play-rtdn'
     | '/api/public/whatsapp'
     | '/app/recarga/configuracoes'
     | '/app/recarga/'
@@ -119,6 +129,7 @@ export interface FileRouteTypes {
     | '/app/home'
     | '/app/whatsapp-test'
     | '/app'
+    | '/api/public/play-rtdn'
     | '/api/public/whatsapp'
     | '/app/recarga/configuracoes'
     | '/app/recarga'
@@ -130,6 +141,7 @@ export interface FileRouteTypes {
     | '/app/home'
     | '/app/whatsapp-test'
     | '/app/'
+    | '/api/public/play-rtdn'
     | '/api/public/whatsapp'
     | '/app/recarga/configuracoes'
     | '/app/recarga/'
@@ -142,6 +154,7 @@ export interface RootRouteChildren {
   AppHomeRoute: typeof AppHomeRoute
   AppWhatsappTestRoute: typeof AppWhatsappTestRoute
   AppIndexRoute: typeof AppIndexRoute
+  ApiPublicPlayRtdnRoute: typeof ApiPublicPlayRtdnRoute
   ApiPublicWhatsappRoute: typeof ApiPublicWhatsappRoute
   AppRecargaConfiguracoesRoute: typeof AppRecargaConfiguracoesRoute
   AppRecargaIndexRoute: typeof AppRecargaIndexRoute
@@ -212,6 +225,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicWhatsappRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/play-rtdn': {
+      id: '/api/public/play-rtdn'
+      path: '/api/public/play-rtdn'
+      fullPath: '/api/public/play-rtdn'
+      preLoaderRoute: typeof ApiPublicPlayRtdnRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -222,6 +242,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppHomeRoute: AppHomeRoute,
   AppWhatsappTestRoute: AppWhatsappTestRoute,
   AppIndexRoute: AppIndexRoute,
+  ApiPublicPlayRtdnRoute: ApiPublicPlayRtdnRoute,
   ApiPublicWhatsappRoute: ApiPublicWhatsappRoute,
   AppRecargaConfiguracoesRoute: AppRecargaConfiguracoesRoute,
   AppRecargaIndexRoute: AppRecargaIndexRoute,

@@ -1,7 +1,13 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, useCallback } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import { useSubscription } from "@/hooks/use-subscription";
+import {
+  activateDevSubscription,
+  cancelDevSubscription,
+} from "@/lib/subscription.functions";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { AudioRecorder } from "@/components/audio-recorder";
@@ -18,11 +24,12 @@ import { NotificationsButton } from "@/components/notifications-button";
 import { ProfileEditDialog } from "@/components/profile-edit-dialog";
 import { GoalHighlight } from "@/components/goal-highlight";
 import { toast } from "sonner";
-import { Trash2, Mic, Hand, Home, Wallet, MessageCircle, BarChart3, User as UserIcon, Building2, PiggyBank, CreditCard, ArrowUpRight, ArrowDownRight, Sparkles, Construction, Crown, Check, Zap, Star, Shield, Calendar as CalendarIcon, TrendingUp, Heart, Share2, Moon, Sun, LogOut } from "lucide-react";
+import { Trash2, Mic, Hand, Home, Wallet, MessageCircle, BarChart3, User as UserIcon, Building2, PiggyBank, CreditCard, ArrowUpRight, ArrowDownRight, Sparkles, Construction, Crown, Check, Zap, Star, Shield, Calendar as CalendarIcon, TrendingUp, Heart, Share2, Moon, Sun, LogOut, Loader2 } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
 import { categoryColor, formatBRL } from "@/lib/categories";
 import { format, parseISO, startOfMonth } from "date-fns";
 import { ptBR } from "date-fns/locale";
+
 
 export const Route = createFileRoute("/app/")({
   component: AppDashboard,
@@ -436,13 +443,11 @@ function ProfileTab({
   avatarUrl: string | null;
   onAvatarChange: (url: string | null) => void;
 }) {
-  const [plan, setPlan] = useState<"free" | "pro" | "premium">("free");
-  const isSubscriber = plan !== "free";
+  const { plan, isActive, subscription, refresh } = useSubscription(user.id);
+  const isSubscriber = isActive;
+  const [activating, setActivating] = useState(false);
 
   // 🛒 Play Store / Google Play Billing
-  // Quando o app for publicado, troque PLAY_PACKAGE_NAME pelo package real
-  // (o mesmo usado na keystore/PWABuilder) e ajuste os SKUs criados na
-  // Play Console em "Monetização → Produtos → Assinaturas".
   const PLAY_PACKAGE_NAME = "br.com.falaifinancas.app";
   const PLAY_STORE_URL = `https://play.google.com/store/apps/details?id=${PLAY_PACKAGE_NAME}`;
 
@@ -478,10 +483,10 @@ function ProfileTab({
     },
   ];
 
-  // Detecta se o app está rodando dentro do TWA Android (instalado pela Play
-  // Store). Nesse caso, abrimos direto a página de gerenciamento de
-  // assinatura na Play Store, que aciona o fluxo de billing nativo.
-  function handleSubscribe(planKey: "pro" | "premium", planName: string, sku: string) {
+  const activateDev = useServerFn(activateDevSubscription);
+  const cancelDev = useServerFn(cancelDevSubscription);
+
+  async function handleSubscribe(planKey: "pro" | "premium", planName: string, sku: string) {
     if (typeof window === "undefined") return;
 
     const isTWA =
@@ -491,17 +496,38 @@ function ProfileTab({
     const playSubscriptionUrl = `https://play.google.com/store/account/subscriptions?sku=${sku}&package=${PLAY_PACKAGE_NAME}`;
 
     if (isTWA || /android/i.test(navigator.userAgent)) {
-      // Abre a Play Store (app nativo no Android, web em outros casos)
+      // Billing real: webhook do Play vai atualizar a tabela `subscriptions`
+      // e o hook useSubscription reflete via realtime.
       window.location.href = playSubscriptionUrl;
       return;
     }
 
-    // Fallback (desktop / iOS): manda para a página do app na Play Store
-    window.open(PLAY_STORE_URL, "_blank", "noopener,noreferrer");
-    toast.info("Assinatura disponível pelo app Android na Play Store");
-    // Mantém ativação local de demonstração até o billing estar ligado
-    setPlan(planKey);
+    // Fallback (desktop / iOS): ativação de demonstração imediata
+    try {
+      setActivating(true);
+      await activateDev({ data: { plan: planKey } });
+      await refresh();
+      toast.success(`Plano ${planName} ativado (modo demonstração)`);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Falha ao ativar";
+      toast.error(msg);
+      window.open(PLAY_STORE_URL, "_blank", "noopener,noreferrer");
+    } finally {
+      setActivating(false);
+    }
   }
+
+  async function handleCancel() {
+    try {
+      await cancelDev({ data: undefined });
+      await refresh();
+      toast.success("Assinatura cancelada");
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Falha ao cancelar";
+      toast.error(msg);
+    }
+  }
+
 
 
   return (
@@ -551,7 +577,11 @@ function ProfileTab({
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-display text-lg font-semibold capitalize">Plano {plan}</p>
-                <p className="text-xs opacity-80">Renovação automática mensal</p>
+                <p className="text-xs opacity-80">
+                  {subscription?.current_period_end
+                    ? `Renova em ${format(parseISO(subscription.current_period_end), "dd MMM yyyy", { locale: ptBR })}`
+                    : "Renovação automática mensal"}
+                </p>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-2 mt-5">
@@ -581,7 +611,7 @@ function ProfileTab({
                 variant="ghost"
                 size="sm"
                 className="flex-1 text-primary-foreground hover:bg-white/10"
-                onClick={() => setPlan("free")}
+                onClick={handleCancel}
               >
                 Cancelar
               </Button>
@@ -645,10 +675,15 @@ function ProfileTab({
                         : ""
                     }`}
                     variant={p.highlight ? "secondary" : "default"}
+                    disabled={activating}
                     onClick={() => handleSubscribe(p.key, p.name, p.playSku)}
                   >
-                    <Crown className="size-4" />
-                    Assinar {p.name} na Play Store
+                    {activating ? (
+                      <Loader2 className="size-4 animate-spin" />
+                    ) : (
+                      <Crown className="size-4" />
+                    )}
+                    Assinar {p.name}
                   </Button>
 
                 </Card>
