@@ -79,7 +79,7 @@ export const Route = createFileRoute("/api/public/play-rtdn")({
               provider_subscription_id: parsed.data.provider_subscription_id,
               current_period_end: parsed.data.current_period_end,
               cancel_at_period_end: parsed.data.cancel_at_period_end ?? false,
-              raw: parsed.data as unknown as Record<string, unknown>,
+              raw: JSON.parse(JSON.stringify(parsed.data)),
             },
           ],
           { onConflict: "user_id" },
