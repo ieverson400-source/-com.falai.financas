@@ -1,7 +1,13 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, useCallback } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import { useSubscription } from "@/hooks/use-subscription";
+import {
+  activateDevSubscription,
+  cancelDevSubscription,
+} from "@/lib/subscription.functions";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { AudioRecorder } from "@/components/audio-recorder";
@@ -18,11 +24,12 @@ import { NotificationsButton } from "@/components/notifications-button";
 import { ProfileEditDialog } from "@/components/profile-edit-dialog";
 import { GoalHighlight } from "@/components/goal-highlight";
 import { toast } from "sonner";
-import { Trash2, Mic, Hand, Home, Wallet, MessageCircle, BarChart3, User as UserIcon, Building2, PiggyBank, CreditCard, ArrowUpRight, ArrowDownRight, Sparkles, Construction, Crown, Check, Zap, Star, Shield, Calendar as CalendarIcon, TrendingUp, Heart, Share2, Moon, Sun, LogOut } from "lucide-react";
+import { Trash2, Mic, Hand, Home, Wallet, MessageCircle, BarChart3, User as UserIcon, Building2, PiggyBank, CreditCard, ArrowUpRight, ArrowDownRight, Sparkles, Construction, Crown, Check, Zap, Star, Shield, Calendar as CalendarIcon, TrendingUp, Heart, Share2, Moon, Sun, LogOut, Loader2 } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
 import { categoryColor, formatBRL } from "@/lib/categories";
 import { format, parseISO, startOfMonth } from "date-fns";
 import { ptBR } from "date-fns/locale";
+
 
 export const Route = createFileRoute("/app/")({
   component: AppDashboard,
