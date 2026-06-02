@@ -45,14 +45,16 @@ export const activateDevSubscription = createServerFn({ method: "POST" })
     const { data: row, error } = await supabaseAdmin
       .from("subscriptions")
       .upsert(
-        {
-          user_id: userId,
-          plan: data.plan,
-          status: "active",
-          provider: "manual",
-          current_period_end: periodEnd.toISOString(),
-          cancel_at_period_end: false,
-        },
+        [
+          {
+            user_id: userId,
+            plan: data.plan,
+            status: "active",
+            provider: "manual",
+            current_period_end: periodEnd.toISOString(),
+            cancel_at_period_end: false,
+          },
+        ],
         { onConflict: "user_id" },
       )
       .select()
