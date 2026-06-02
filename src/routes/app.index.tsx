@@ -443,10 +443,9 @@ function ProfileTab({
   avatarUrl: string | null;
   onAvatarChange: (url: string | null) => void;
 }) {
-  const { plan, isActive, subscription, loading: subLoading, refresh } = useSubscription(user.id);
+  const { plan, isActive, subscription, refresh } = useSubscription(user.id);
   const isSubscriber = isActive;
-  const activatingRef = useState(false);
-  const [activating, setActivating] = activatingRef;
+  const [activating, setActivating] = useState(false);
 
   // 🛒 Play Store / Google Play Billing
   const PLAY_PACKAGE_NAME = "br.com.falaifinancas.app";
