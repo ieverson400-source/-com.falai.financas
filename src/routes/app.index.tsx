@@ -639,19 +639,18 @@ function ProfileTab({
                     ))}
                   </ul>
                   <Button
-                    className={`w-full mt-5 ${
+                    className={`w-full mt-5 gap-2 ${
                       p.highlight
                         ? "bg-white text-primary hover:bg-white/90"
                         : ""
                     }`}
                     variant={p.highlight ? "secondary" : "default"}
-                    onClick={() => {
-                      setPlan(p.key);
-                      toast.success(`Plano ${p.name} ativado!`);
-                    }}
+                    onClick={() => handleSubscribe(p.key, p.name, p.playSku)}
                   >
-                    Assinar {p.name}
+                    <Crown className="size-4" />
+                    Assinar {p.name} na Play Store
                   </Button>
+
                 </Card>
               );
             })}
