@@ -439,6 +439,13 @@ function ProfileTab({
   const [plan, setPlan] = useState<"free" | "pro" | "premium">("free");
   const isSubscriber = plan !== "free";
 
+  // 🛒 Play Store / Google Play Billing
+  // Quando o app for publicado, troque PLAY_PACKAGE_NAME pelo package real
+  // (o mesmo usado na keystore/PWABuilder) e ajuste os SKUs criados na
+  // Play Console em "Monetização → Produtos → Assinaturas".
+  const PLAY_PACKAGE_NAME = "br.com.falaifinancas.app";
+  const PLAY_STORE_URL = `https://play.google.com/store/apps/details?id=${PLAY_PACKAGE_NAME}`;
+
   const plans = [
     {
       key: "pro" as const,
@@ -447,6 +454,7 @@ function ProfileTab({
       period: "/mês",
       icon: Zap,
       highlight: false,
+      playSku: "falai_pro_monthly",
       features: [
         "Gastos ilimitados por áudio",
         "Conexão bancária automática",
@@ -460,6 +468,7 @@ function ProfileTab({
       period: "/mês",
       icon: Crown,
       highlight: true,
+      playSku: "falai_premium_monthly",
       features: [
         "Tudo do Pro",
         "IA financeira personalizada",
@@ -468,6 +477,32 @@ function ProfileTab({
       ],
     },
   ];
+
+  // Detecta se o app está rodando dentro do TWA Android (instalado pela Play
+  // Store). Nesse caso, abrimos direto a página de gerenciamento de
+  // assinatura na Play Store, que aciona o fluxo de billing nativo.
+  function handleSubscribe(planKey: "pro" | "premium", planName: string, sku: string) {
+    if (typeof window === "undefined") return;
+
+    const isTWA =
+      document.referrer.startsWith("android-app://") ||
+      window.matchMedia("(display-mode: standalone)").matches;
+
+    const playSubscriptionUrl = `https://play.google.com/store/account/subscriptions?sku=${sku}&package=${PLAY_PACKAGE_NAME}`;
+
+    if (isTWA || /android/i.test(navigator.userAgent)) {
+      // Abre a Play Store (app nativo no Android, web em outros casos)
+      window.location.href = playSubscriptionUrl;
+      return;
+    }
+
+    // Fallback (desktop / iOS): manda para a página do app na Play Store
+    window.open(PLAY_STORE_URL, "_blank", "noopener,noreferrer");
+    toast.info("Assinatura disponível pelo app Android na Play Store");
+    // Mantém ativação local de demonstração até o billing estar ligado
+    setPlan(planKey);
+  }
+
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
