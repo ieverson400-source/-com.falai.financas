@@ -565,67 +565,136 @@ function ProfileTab({
         )}
       </Card>
 
-      {/* Subscriber Area */}
+      {/* Minha Assinatura */}
       <section aria-labelledby="assinantes">
         <div className="flex items-center justify-between mb-3 px-1">
           <div>
             <h2 id="assinantes" className="font-display text-xl font-semibold flex items-center gap-2">
-              <Crown className="size-5 text-primary" /> Área de Assinantes
+              <Crown className="size-5 text-primary" /> Minha Assinatura
             </h2>
             <p className="text-xs text-muted-foreground mt-0.5">
               {isSubscriber
-                ? "Aproveite todos os benefícios exclusivos."
+                ? "Aproveite todos os benefícios exclusivos do seu plano."
                 : "Desbloqueie todo o potencial do Falaí Finanças."}
             </p>
           </div>
         </div>
 
         {isSubscriber ? (
-          <Card className="p-5 sm:p-6 bg-gradient-hero text-primary-foreground border-0 shadow-elevated">
-            <div className="flex items-center gap-3">
-              <div className="size-12 rounded-xl bg-white/15 backdrop-blur flex items-center justify-center shrink-0">
-                <Crown className="size-6" />
+          <Card className="overflow-hidden bg-card shadow-soft border-border">
+            {/* Header com gradiente */}
+            <div className="p-5 sm:p-6 bg-gradient-hero text-primary-foreground">
+              <div className="flex items-center gap-3">
+                <div className="size-12 rounded-xl bg-white/15 backdrop-blur flex items-center justify-center shrink-0">
+                  {plan === "premium" ? <Crown className="size-6" /> : <Zap className="size-6" />}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="font-display text-lg font-semibold capitalize">Plano {plan}</p>
+                    {(() => {
+                      const cfg = statusConfig[(subscription?.status as keyof typeof statusConfig) ?? "inactive"];
+                      const StatusIcon = cfg.icon;
+                      return (
+                        <Badge variant="outline" className={`${cfg.color} text-[11px] font-semibold border`}>
+                          <StatusIcon className="size-3 mr-1" />
+                          {cfg.label}
+                        </Badge>
+                      );
+                    })()}
+                  </div>
+                  <p className="text-xs opacity-80 mt-0.5">
+                    {subscription?.current_period_end
+                      ? `Renova em ${format(parseISO(subscription.current_period_end), "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}`
+                      : "Renovação automática mensal"}
+                  </p>
+                </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-display text-lg font-semibold capitalize">Plano {plan}</p>
-                <p className="text-xs opacity-80">
-                  {subscription?.current_period_end
-                    ? `Renova em ${format(parseISO(subscription.current_period_end), "dd MMM yyyy", { locale: ptBR })}`
-                    : "Renovação automática mensal"}
-                </p>
+
+              {/* Grid de detalhes */}
+              <div className="grid grid-cols-2 gap-2 mt-5">
+                <div className="rounded-xl bg-white/10 backdrop-blur px-3 py-2.5">
+                  <div className="flex items-center gap-1.5 text-[11px] opacity-80">
+                    <CalendarIcon className="size-3.5" /> Próxima cobrança
+                  </div>
+                  <p className="font-semibold mt-0.5 text-sm">
+                    {subscription?.current_period_end
+                      ? format(parseISO(subscription.current_period_end), "dd/MM/yyyy", { locale: ptBR })
+                      : "—"}
+                  </p>
+                </div>
+                <div className="rounded-xl bg-white/10 backdrop-blur px-3 py-2.5">
+                  <div className="flex items-center gap-1.5 text-[11px] opacity-80">
+                    <Shield className="size-3.5" /> Suporte
+                  </div>
+                  <p className="font-semibold mt-0.5 text-sm">
+                    {plan === "premium" ? "Prioritário 24/7" : "Prioritário"}
+                  </p>
+                </div>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-2 mt-5">
-              <div className="rounded-xl bg-white/10 backdrop-blur px-3 py-2.5">
-                <div className="flex items-center gap-1.5 text-[11px] opacity-80">
-                  <Star className="size-3.5" /> Status
+
+            {/* Aviso de cancelamento programado */}
+            {subscription?.cancel_at_period_end && (
+              <div className="mx-5 sm:mx-6 mt-4 rounded-lg border border-amber-500/20 bg-amber-500/10 px-3.5 py-3 text-sm text-amber-700 dark:text-amber-300 flex items-start gap-2.5">
+                <AlertTriangle className="size-4 shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-medium">Cancelamento programado</p>
+                  <p className="text-xs opacity-80 mt-0.5">
+                    Sua assinatura foi cancelada e não será renovada. Você mantém o acesso até{" "}
+                    {subscription.current_period_end
+                      ? format(parseISO(subscription.current_period_end), "dd 'de' MMMM 'de' yyyy", { locale: ptBR })
+                      : "o fim do período atual"}.
+                  </p>
                 </div>
-                <p className="font-semibold mt-0.5 text-sm">Ativo</p>
               </div>
-              <div className="rounded-xl bg-white/10 backdrop-blur px-3 py-2.5">
-                <div className="flex items-center gap-1.5 text-[11px] opacity-80">
-                  <Shield className="size-3.5" /> Suporte
+            )}
+
+            {/* Ações */}
+            <div className="p-5 sm:p-6 pt-4 sm:pt-4">
+              {!confirmCancel ? (
+                <div className="flex flex-col sm:flex-row gap-2.5">
+                  <Button
+                    variant="default"
+                    size="sm"
+                    className="flex-1 gap-2"
+                    onClick={() => {
+                      const manageUrl = `https://play.google.com/store/account/subscriptions?package=${PLAY_PACKAGE_NAME}`;
+                      window.open(manageUrl, "_blank", "noopener,noreferrer");
+                    }}
+                  >
+                    <ExternalLink className="size-4" />
+                    Gerenciar na Play Store
+                  </Button>
+                  {!subscription?.cancel_at_period_end && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex-1 gap-2 text-muted-foreground hover:text-destructive hover:border-destructive/30"
+                      onClick={() => setConfirmCancel(true)}
+                    >
+                      <RotateCcw className="size-4" />
+                      Cancelar assinatura
+                    </Button>
+                  )}
                 </div>
-                <p className="font-semibold mt-0.5 text-sm">Prioritário</p>
-              </div>
-            </div>
-            <div className="flex gap-2 mt-5">
-              <Button
-                variant="secondary"
-                size="sm"
-                className="flex-1"
-                onClick={() => toast.success("Gerenciar assinatura em breve")}
-              >
-                Gerenciar
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="flex-1 text-primary-foreground hover:bg-white/10"
-                onClick={handleCancel}
-              >
-                Cancelar
-              </Button>
+              ) : (
+                <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-4 space-y-3">
+                  <div className="flex items-start gap-2.5 text-sm text-destructive">
+                    <AlertTriangle className="size-4 shrink-0 mt-0.5" />
+                    <p>
+                      Tem certeza? Se cancelar, você mantém o acesso até o fim do período pago, mas a assinatura não será renovada.
+                    </p>
+                  </div>
+                  <div className="flex gap-2.5">
+                    <Button variant="destructive" size="sm" className="flex-1" onClick={handleCancel}>
+                      Sim, cancelar
+                    </Button>
+                    <Button variant="ghost" size="sm" className="flex-1" onClick={() => setConfirmCancel(false)}>
+                      Manter assinatura
+                    </Button>
+                  </div>
+                </div>
+              )}
             </div>
           </Card>
         ) : (
