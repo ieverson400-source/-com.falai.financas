@@ -448,6 +448,7 @@ function ProfileTab({
   const { plan, isActive, subscription, refresh } = useSubscription(user.id);
   const isSubscriber = isActive;
   const [activating, setActivating] = useState(false);
+  const [confirmCancel, setConfirmCancel] = useState(false);
 
   // 🛒 Play Store / Google Play Billing
   const PLAY_PACKAGE_NAME = "br.com.falaifinancas.app";
@@ -498,13 +499,10 @@ function ProfileTab({
     const playSubscriptionUrl = `https://play.google.com/store/account/subscriptions?sku=${sku}&package=${PLAY_PACKAGE_NAME}`;
 
     if (isTWA || /android/i.test(navigator.userAgent)) {
-      // Billing real: webhook do Play vai atualizar a tabela `subscriptions`
-      // e o hook useSubscription reflete via realtime.
       window.location.href = playSubscriptionUrl;
       return;
     }
 
-    // Fallback (desktop / iOS): ativação de demonstração imediata
     try {
       setActivating(true);
       await activateDev({ data: { plan: planKey } });
@@ -523,12 +521,23 @@ function ProfileTab({
     try {
       await cancelDev({ data: undefined });
       await refresh();
-      toast.success("Assinatura cancelada");
+      setConfirmCancel(false);
+      toast.success("Assinatura cancelada. Você mantém o acesso até o fim do período pago.");
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Falha ao cancelar";
       toast.error(msg);
     }
   }
+
+  const statusConfig = {
+    active: { label: "Ativa", color: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/20" as const, icon: Check },
+    in_grace_period: { label: "Período de carência", color: "bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/20" as const, icon: AlertTriangle },
+    canceled: { label: "Cancelada", color: "bg-rose-500/15 text-rose-600 dark:text-rose-400 border-rose-500/20" as const, icon: AlertTriangle },
+    expired: { label: "Expirada", color: "bg-slate-500/15 text-slate-600 dark:text-slate-400 border-slate-500/20" as const, icon: AlertTriangle },
+    on_hold: { label: "Em pausa", color: "bg-slate-500/15 text-slate-600 dark:text-slate-400 border-slate-500/20" as const, icon: AlertTriangle },
+    paused: { label: "Pausada", color: "bg-slate-500/15 text-slate-600 dark:text-slate-400 border-slate-500/20" as const, icon: AlertTriangle },
+    inactive: { label: "Inativa", color: "bg-slate-500/15 text-slate-600 dark:text-slate-400 border-slate-500/20" as const, icon: AlertTriangle },
+  };
 
 
 
