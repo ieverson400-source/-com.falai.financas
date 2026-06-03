@@ -27,6 +27,7 @@ import { toast } from "sonner";
 import { Trash2, Mic, Hand, Home, Wallet, MessageCircle, BarChart3, User as UserIcon, Building2, PiggyBank, CreditCard, ArrowUpRight, ArrowDownRight, Sparkles, Construction, Crown, Check, Zap, Star, Shield, Calendar as CalendarIcon, TrendingUp, Heart, Share2, Moon, Sun, LogOut, Loader2, AlertTriangle, ExternalLink, RotateCcw } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { useTheme } from "@/hooks/use-theme";
 import { categoryColor, formatBRL } from "@/lib/categories";
 import { format, parseISO, startOfMonth } from "date-fns";
 import { ptBR } from "date-fns/locale";
