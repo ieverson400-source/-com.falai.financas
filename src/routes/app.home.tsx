@@ -268,6 +268,9 @@ function InicioTab({
           </div>
         </div>
       </Card>
+      {/* Incrementar Planilhas */}
+      <ImportSpreadsheetButton />
+
 
 
       {/* Minhas contas */}
