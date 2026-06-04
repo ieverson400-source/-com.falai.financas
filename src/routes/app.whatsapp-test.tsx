@@ -12,7 +12,7 @@ import {
   getLastWhatsAppCall,
   simulateWhatsAppWebhook,
   type LastInboxEntry,
-} from "@/server/whatsapp-test.functions";
+} from "@/lib/whatsapp-test.functions";
 
 async function blobToBase64(blob: Blob): Promise<string> {
   const buf = await blob.arrayBuffer();

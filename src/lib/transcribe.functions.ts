@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { extractExpenseFromAudio } from "@/server/expense-ai";
+import { extractExpenseFromAudio } from "@/lib/expense-ai";
 
 const InputSchema = z.object({
   audioBase64: z.string().min(10).max(15_000_000),

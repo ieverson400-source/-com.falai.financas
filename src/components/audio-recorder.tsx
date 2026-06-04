@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Mic, Square, Loader2, Upload } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
-import { transcribeExpense } from "@/server/transcribe.functions";
+import { transcribeExpense } from "@/lib/transcribe.functions";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 

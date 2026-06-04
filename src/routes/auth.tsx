@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
-import { sendWhatsAppMessage } from "@/server/twilio";
+import { sendWhatsAppMessage } from "@/lib/twilio";
 import { normalizeWhatsAppPhone } from "@/lib/phone";
 
 export const Route = createFileRoute("/auth")({

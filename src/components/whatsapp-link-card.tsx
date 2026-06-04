@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { normalizeWhatsAppPhone } from "@/lib/phone";
-import { sendWhatsAppWelcome } from "@/server/whatsapp-send.functions";
+import { sendWhatsAppWelcome } from "@/lib/whatsapp-send.functions";
 
 interface Props {
   currentPhone: string | null;

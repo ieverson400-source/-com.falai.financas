@@ -16,8 +16,8 @@ import { Button } from "@/components/ui/button";
 import {
   getWhatsAppDiagnostics,
   type WhatsAppDiagnostics,
-} from "@/server/whatsapp-diagnostics.functions";
-import { sendWhatsAppWelcome } from "@/server/whatsapp-send.functions";
+} from "@/lib/whatsapp-diagnostics.functions";
+import { sendWhatsAppWelcome } from "@/lib/whatsapp-send.functions";
 import { normalizeWhatsAppPhone } from "@/lib/phone";
 import { supabase } from "@/integrations/supabase/client";
 
