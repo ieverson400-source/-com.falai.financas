@@ -1,8 +1,8 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
-import "@/integrations/supabase/server-fn-fetch.client";
 import { InstallPWAButton } from "@/components/InstallPWAButton";
+import { useEffect } from "react";
 
 
 function NotFoundComponent() {
@@ -90,6 +90,9 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
+  useEffect(() => {
+    import("@/integrations/supabase/server-fn-fetch.client");
+  }, []);
   return (
     <>
       <Outlet />
