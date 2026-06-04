@@ -60,7 +60,11 @@ export const Route = createRootRoute({
       { rel: "apple-touch-icon", href: "/icon-192.png" },
       { rel: "apple-touch-icon", sizes: "152x152", href: "/icon-152.png" },
       { rel: "apple-touch-icon", sizes: "192x192", href: "/icon-192.png" },
-      // Favicon
+      // Favicon padrão (desktop/navegadores)
+      { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon.png" },
+      { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicon.png" },
+      { rel: "shortcut icon", href: "/favicon.png" },
+      // PWA ícones
       { rel: "icon", type: "image/png", sizes: "192x192", href: "/icon-192.png" },
       { rel: "icon", type: "image/png", sizes: "512x512", href: "/icon-512.png" },
     ],
