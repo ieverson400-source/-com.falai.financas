@@ -16,7 +16,7 @@ import {
 import {
   getWhatsAppOverview,
   type WhatsAppOverview,
-} from "@/server/whatsapp-overview.functions";
+} from "@/lib/whatsapp-overview.functions";
 import { formatWhatsAppPhone } from "@/lib/phone";
 
 export function WhatsAppMappingsCard() {

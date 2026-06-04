@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { getTwilioStatus } from "@/server/twilio-status.functions";
+import { getTwilioStatus } from "@/lib/twilio-status.functions";
 
 interface Status {
   webhookUrl: string;

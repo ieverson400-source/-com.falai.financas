@@ -18,7 +18,7 @@ import {
 import { Camera, Loader2, ScanLine, X } from "lucide-react";
 import { CATEGORIES } from "@/lib/categories";
 import { useServerFn } from "@tanstack/react-start";
-import { scanReceipt } from "@/server/receipt.functions";
+import { scanReceipt } from "@/lib/receipt.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
