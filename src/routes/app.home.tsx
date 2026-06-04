@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Toaster } from "@/components/ui/sonner";
 import { formatBRL } from "@/lib/categories";
+import { ImportSpreadsheetButton } from "@/components/import-spreadsheet-button";
 import {
   Home,
   Wallet,
@@ -267,6 +268,9 @@ function InicioTab({
           </div>
         </div>
       </Card>
+      {/* Incrementar Planilhas */}
+      <ImportSpreadsheetButton />
+
 
 
       {/* Minhas contas */}
