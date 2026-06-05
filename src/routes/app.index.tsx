@@ -14,6 +14,7 @@ import { AudioRecorder } from "@/components/audio-recorder";
 import { ExpenseCharts } from "@/components/expense-charts";
 import { ManualExpenseDialog } from "@/components/manual-expense-dialog";
 import { ReceiptScanner } from "@/components/receipt-scanner";
+import { ImportSpreadsheetButton } from "@/components/import-spreadsheet-button";
 import { WhatsAppLinkCard } from "@/components/whatsapp-link-card";
 import { VerificacaoWhatsApp } from "@/components/verificacao-whatsapp";
 import { WhatsAppDiagnosticsCard } from "@/components/whatsapp-diagnostics-card";
@@ -205,6 +206,11 @@ function AppDashboard() {
               <Button asChild size="sm" className="shrink-0">
                 <Link to="/app/bancos">Começar agora</Link>
               </Button>
+            </Card>
+
+            {/* Importar planilhas */}
+            <Card className="p-4 sm:p-5 bg-card shadow-soft">
+              <div>TESTE</div>
             </Card>
 
             {/* Top stats + recorder */}
