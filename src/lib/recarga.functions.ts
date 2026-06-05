@@ -133,8 +133,9 @@ export const fazerRecarga = createServerFn({ method: "POST" })
       if (!success) errorMsg = "Recarga rejeitada pela operadora (simulado)";
     }
 
-    // 3. Atualiza status
-    await supabase
+    // 3. Atualiza status (via service_role — clientes não têm UPDATE em recargas)
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    await supabaseAdmin
       .from("recargas")
       .update({
         status: success ? "success" : "failed",
@@ -142,6 +143,7 @@ export const fazerRecarga = createServerFn({ method: "POST" })
         error_message: errorMsg,
       })
       .eq("id", recarga.id);
+
 
     return {
       ok: success,
