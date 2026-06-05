@@ -1,0 +1,100 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Roda diariamente às 03:00 UTC para pegar novas CVEs em deps já instaladas
+    - cron: "0 3 * * *"
+
+# Cancela execuções antigas no mesmo PR/branch
+concurrency:
+  group: security-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  security-events: write
+  pull-requests: read
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # 1) Auditoria de dependências (npm advisory DB)
+  #    Bloqueia em vulnerabilidades HIGH ou CRITICAL.
+  # ---------------------------------------------------------------------------
+  dependency-audit:
+    name: Dependency audit (high/critical)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Audit dependencies
+        run: bun audit --prod --audit-level=high
+
+  # ---------------------------------------------------------------------------
+  # 2) Detecção de segredos vazados (gitleaks)
+  #    Bloqueia se encontrar qualquer segredo no diff/histórico do PR.
+  # ---------------------------------------------------------------------------
+  secret-scan:
+    name: Secret scan (gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_ENABLE_UPLOAD_ARTIFACT: true
+
+  # ---------------------------------------------------------------------------
+  # 3) SAST do código JS/TS (CodeQL)
+  #    Bloqueia em alertas de severidade error.
+  # ---------------------------------------------------------------------------
+  codeql:
+    name: CodeQL (JS/TS)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript-typescript
+          queries: security-and-quality
+
+      - name: Analyze
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:javascript-typescript"
+
+  # ---------------------------------------------------------------------------
+  # Gate final: todos os jobs acima precisam passar.
+  # Use este job como "required status check" nas branch protection rules.
+  # ---------------------------------------------------------------------------
+  security-gate:
+    name: Security gate
+    needs: [dependency-audit, secret-scan, codeql]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fail if any scan failed
+        run: |
+          if [ "${{ needs.dependency-audit.result }}" != "success" ] \
+             || [ "${{ needs.secret-scan.result }}" != "success" ] \
+             || [ "${{ needs.codeql.result }}" != "success" ]; then
+            echo "Uma ou mais varreduras de segurança falharam — bloqueando merge."
+            exit 1
+          fi
+          echo "Todas as varreduras passaram."
