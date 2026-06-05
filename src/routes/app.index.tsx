@@ -14,6 +14,7 @@ import { AudioRecorder } from "@/components/audio-recorder";
 import { ExpenseCharts } from "@/components/expense-charts";
 import { ManualExpenseDialog } from "@/components/manual-expense-dialog";
 import { ReceiptScanner } from "@/components/receipt-scanner";
+import { ImportSpreadsheetButton } from "@/components/import-spreadsheet-button";
 import { WhatsAppLinkCard } from "@/components/whatsapp-link-card";
 import { VerificacaoWhatsApp } from "@/components/verificacao-whatsapp";
 import { WhatsAppDiagnosticsCard } from "@/components/whatsapp-diagnostics-card";
