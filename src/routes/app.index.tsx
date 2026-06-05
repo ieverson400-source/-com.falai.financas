@@ -210,7 +210,7 @@ function AppDashboard() {
 
             {/* Importar planilhas */}
             <Card className="p-4 sm:p-5 bg-card shadow-soft">
-              <ImportSpreadsheetButton />
+              <div>TESTE</div>
             </Card>
 
             {/* Top stats + recorder */}
