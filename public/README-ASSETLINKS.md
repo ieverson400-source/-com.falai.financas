@@ -14,7 +14,7 @@ Abra `public/.well-known/assetlinks.json` e substitua:
 
 ### 1. `SEU_PACKAGE_NAME_AQUI`
 → O package name que você definiu no PWABuilder.  
-Exemplo: `br.com.falaifinancas.app` ou `com.twa.falaifinancas`
+Exemplo: `com.falai.financas`
 
 ### 2. `SEU_SHA256_AQUI`
 → O fingerprint SHA-256 da sua keystore.  
