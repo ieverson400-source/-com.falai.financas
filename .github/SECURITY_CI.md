@@ -1,6 +1,14 @@
 # Segurança no CI
 
-O workflow [`security.yml`](./workflows/security.yml) roda em todo push para `main`, em todo PR para `main` e diariamente às 03:00 UTC. Ele executa três varreduras independentes e um gate final:
+O workflow [`security.yml`](./workflows/security.yml) roda em todo push para `main`, em todo PR para `main` (**incluindo PRs vindos de forks**) e diariamente às 03:00 UTC. Ele executa três varreduras independentes e um gate final.
+
+## PRs de forks (sem vazar tokens)
+
+- Usamos o evento `pull_request` (e **não** `pull_request_target`). Isso significa que PRs de forks rodam com `GITHUB_TOKEN` somente-leitura e **sem acesso aos secrets** do repositório — código não confiável nunca enxerga credenciais.
+- `permissions:` global é `contents: read`; cada job eleva apenas o mínimo necessário, e mesmo assim o GitHub rebaixa tudo para read-only quando o PR vem de fork.
+- `persist-credentials: false` no checkout evita que o token do runner fique disponível no working tree para steps subsequentes.
+- `bun install --frozen-lockfile` impede que um PR malicioso troque dependências sem atualizar o lockfile.
+- Upload de SARIF (CodeQL) e comentários/artefatos do gitleaks são desligados automaticamente em forks (`github.event.pull_request.head.repo.fork`), porque exigiriam permissão de escrita que o GitHub não concede nesse contexto. As varreduras continuam falhando o job em regressões — só não publicam no Security tab/PR.
 
 | Job | Ferramenta | O que bloqueia |
 |-----|------------|----------------|
