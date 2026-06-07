@@ -112,7 +112,7 @@ O `twa-manifest.json` é o **coração** do processo. Veja o que cada campo cont
 
 ```json
 {
-  "packageId": "app.lovable.falaifinancas",    // ID único na Play Store
+  "packageId": "com.falai.financas",    // ID único na Play Store
   "host": "falai-finan-as.lovable.app",        // Domínio da PWA
   "name": "Falaí Finanças",                     // Nome exibido
   "launcherName": "Falaí",                      // Nome curto (ícone)
