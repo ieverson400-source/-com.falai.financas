@@ -1,0 +1,78 @@
+name: Android Release (AAB)
+
+# Produces a Play Store-ready .aab from the deployed PWA using Bubblewrap.
+# Triggers:
+#   - manual dispatch (choose bump level)
+#   - pushing a tag like v1.2.3 (no bump, uses tag version)
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: "Version bump"
+        required: true
+        default: "patch"
+        type: choice
+        options: [patch, minor, major, none]
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-aab:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: android-actions/setup-android@v3
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Bump version (manual dispatch)
+        if: github.event_name == 'workflow_dispatch' && inputs.bump != 'none'
+        run: |
+          node scripts/bump-version.mjs ${{ inputs.bump }}
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add android/version.json package.json
+          git commit -m "chore(android): bump version [skip ci]"
+          git push
+
+      - name: Sync version from tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          node scripts/bump-version.mjs set "$TAG"
+
+      - name: Build AAB
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: node scripts/build-aab.mjs
+
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-bundle
+          path: android/build/app-release-bundle.aab
+          if-no-files-found: error

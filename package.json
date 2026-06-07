@@ -9,7 +9,10 @@
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "android:bump": "node scripts/bump-version.mjs",
+    "android:build": "node scripts/build-aab.mjs",
+    "android:release": "node scripts/bump-version.mjs patch && node scripts/build-aab.mjs"
   },
   "dependencies": {
     "@cloudflare/vite-plugin": "^1.25.5",
