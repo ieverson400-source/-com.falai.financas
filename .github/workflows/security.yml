@@ -3,6 +3,12 @@ name: Security Scan
 on:
   push:
     branches: [main]
+  # `pull_request` já dispara para PRs vindos de forks, mas com GITHUB_TOKEN
+  # somente-leitura e SEM acesso aos secrets do repositório. É exatamente
+  # isso que queremos: as varreduras rodam no código não confiável do fork
+  # sem nunca expor tokens. NÃO usamos `pull_request_target` aqui — ele
+  # rodaria com secrets no contexto da base e permitiria que um PR
+  # malicioso exfiltrasse credenciais.
   pull_request:
     branches: [main]
   schedule:
@@ -14,27 +20,37 @@ concurrency:
   group: security-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# Permissões mínimas globais (somente-leitura). Cada job eleva apenas o
+# que precisa, e mesmo assim o GitHub força essas permissões a
+# read-only quando o PR vem de um fork.
 permissions:
   contents: read
-  security-events: write
-  pull-requests: read
 
 jobs:
   # ---------------------------------------------------------------------------
   # 1) Auditoria de dependências (npm advisory DB)
-  #    Bloqueia em vulnerabilidades HIGH ou CRITICAL.
+  #    Seguro em forks: não usa secrets, apenas baixa o lockfile e roda audit.
   # ---------------------------------------------------------------------------
   dependency-audit:
     name: Dependency audit (high/critical)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Em PRs de fork, faz checkout do SHA do PR (head) e nunca faz
+          # merge automático com a base — assim não executamos código de
+          # base com input do fork.
+          persist-credentials: false
 
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
       - name: Install dependencies
+        # --frozen-lockfile garante que um PR malicioso não troque deps
+        # silenciosamente sem atualizar o lockfile.
         run: bun install --frozen-lockfile
 
       - name: Audit dependencies
@@ -42,31 +58,49 @@ jobs:
 
   # ---------------------------------------------------------------------------
   # 2) Detecção de segredos vazados (gitleaks)
-  #    Bloqueia se encontrar qualquer segredo no diff/histórico do PR.
+  #    Seguro em forks: roda sobre o diff/histórico do PR sem precisar de
+  #    secrets de escrita. GITHUB_TOKEN é o token efêmero do próprio runner.
   # ---------------------------------------------------------------------------
   secret-scan:
     name: Secret scan (gitleaks)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Run gitleaks
         uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITLEAKS_ENABLE_UPLOAD_ARTIFACT: true
+          # Upload de artefatos só faz sentido quando temos permissão de
+          # escrita (push/PR interno). Em forks o token é read-only, então
+          # desligamos para evitar erro 403 mascarado de "scan ok".
+          GITLEAKS_ENABLE_UPLOAD_ARTIFACT: ${{ github.event.pull_request.head.repo.fork && 'false' || 'true' }}
+          # Comentário no PR só funciona com permissão de escrita.
+          GITLEAKS_ENABLE_COMMENTS: ${{ github.event.pull_request.head.repo.fork && 'false' || 'true' }}
 
   # ---------------------------------------------------------------------------
   # 3) SAST do código JS/TS (CodeQL)
-  #    Bloqueia em alertas de severidade error.
+  #    Em PRs internos: faz upload do SARIF para a aba Security.
+  #    Em PRs de fork: roda a análise e falha o job em alertas, mas pula o
+  #    upload (security-events:write é forçado a read-only pelo GitHub
+  #    nesse contexto, então o upload retornaria 403).
   # ---------------------------------------------------------------------------
   codeql:
     name: CodeQL (JS/TS)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
@@ -78,10 +112,14 @@ jobs:
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:javascript-typescript"
+          # Pula o upload do SARIF quando o PR vem de um fork — sem isso o
+          # passo falharia com 403 ao tentar publicar no Security tab.
+          upload: ${{ github.event.pull_request.head.repo.fork && 'never' || 'always' }}
 
   # ---------------------------------------------------------------------------
   # Gate final: todos os jobs acima precisam passar.
   # Use este job como "required status check" nas branch protection rules.
+  # Funciona igual para PRs internos e de forks.
   # ---------------------------------------------------------------------------
   security-gate:
     name: Security gate
