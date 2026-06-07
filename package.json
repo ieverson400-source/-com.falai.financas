@@ -13,7 +13,8 @@
     "android:bump": "node scripts/bump-version.mjs",
     "android:build": "node scripts/build-aab.mjs",
     "android:build:local": "node scripts/build-aab-local.mjs",
-    "android:release": "node scripts/bump-version.mjs patch && node scripts/build-aab.mjs"
+    "android:release": "node scripts/bump-version.mjs patch && node scripts/build-aab.mjs",
+    "android:keystore": "node scripts/generate-keystore.mjs"
   },
   "dependencies": {
     "@cloudflare/vite-plugin": "^1.25.5",
