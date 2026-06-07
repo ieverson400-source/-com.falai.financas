@@ -35,4 +35,13 @@ console.log("══════════════════════�
 runScript("verify-keystore.mjs");
 runScript("build-aab.mjs");
 
-console.log("\n✓ AAB build completed successfully.");
+console.log("\n═══════════════════════════════════════════");
+console.log("  ✓ AAB build completed successfully.");
+console.log("═══════════════════════════════════════════");
+
+const aabPath = resolve(root, "android", "build", "app-release-bundle.aab");
+console.log(`\n📦 Output file:`);
+console.log(`   ${aabPath}`);
+console.log(`\nNext steps:`);
+console.log(`   • Upload to Play Console: https://play.google.com/console`);
+console.log(`   • Or run: open ${resolve(root, "android", "build")}`);
