@@ -11,12 +11,42 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Fale seus gastos. A IA transcreve, categoriza e organiza. Veja relatórios visuais em segundos.",
+          "Fale seus gastos. A IA transcreve, categoriza e organiza tudo. Veja relatórios visuais das suas finanças pessoais em segundos.",
       },
       { property: "og:title", content: "Falaí Finanças — gastos por voz" },
       {
         property: "og:description",
-        content: "Registre gastos falando. Receba relatórios automáticos.",
+        content:
+          "Registre gastos falando. A IA transcreve, categoriza e gera relatórios automáticos das suas finanças.",
+      },
+      { property: "og:url", content: "https://falai-finan-as.lovable.app/" },
+      { property: "og:type", content: "website" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://falai-finan-as.lovable.app/" },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "WebSite",
+              name: "Falaí Finanças",
+              url: "https://falai-finan-as.lovable.app/",
+              description:
+                "Registre gastos por voz, foto ou texto. A IA categoriza e gera relatórios das suas finanças.",
+              inLanguage: "pt-BR",
+            },
+            {
+              "@type": "Organization",
+              name: "Falaí Finanças",
+              url: "https://falai-finan-as.lovable.app/",
+              logo: "https://falai-finan-as.lovable.app/icon-512.png",
+            },
+          ],
+        }),
       },
     ],
   }),
@@ -42,6 +72,7 @@ function Landing() {
       </nav>
 
       {/* Hero */}
+      <main>
       <section className="px-4 sm:px-6 pt-8 sm:pt-12 pb-16 sm:pb-24 max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           <div>
@@ -122,6 +153,7 @@ function Landing() {
           ))}
         </div>
       </section>
+      </main>
 
       <footer className="px-4 sm:px-6 py-8 sm:py-10 text-center text-xs text-muted-foreground">
         © 2026 Falaí Finanças

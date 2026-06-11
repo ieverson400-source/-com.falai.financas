@@ -39,7 +39,9 @@ export const Route = createFileRoute("/app/")({
   head: () => ({
     meta: [
       { title: "Dashboard — Falaí Finanças" },
-      { name: "description", content: "Seus gastos organizados por IA." },
+      { name: "description", content: "Painel das suas finanças no Falaí: gastos do mês, contas conectadas, fluxo de caixa e relatórios organizados por IA." },
+      { property: "og:title", content: "Dashboard — Falaí Finanças" },
+      { property: "og:description", content: "Acompanhe seus gastos, contas e fluxo de caixa em um único painel organizado por IA." },
     ],
   }),
 });
@@ -178,6 +180,7 @@ function AppDashboard() {
       </header>
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 pb-28 sm:pb-28 space-y-6 sm:space-y-8">
+        <h1 className="sr-only">Dashboard Financeiro</h1>
         {activeTab === "inicio" && (
           <>
             {/* Saldo geral */}
@@ -198,7 +201,7 @@ function AppDashboard() {
                 <Sparkles className="size-5 text-primary" />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="font-display font-semibold">Conexão Bancária</h3>
+                <h2 className="font-display font-semibold">Conexão Bancária</h2>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   Conecte sua conta para sincronizar automaticamente.
                 </p>
@@ -240,7 +243,7 @@ function AppDashboard() {
             {/* Minhas contas */}
             <Card className="bg-card shadow-soft overflow-hidden">
               <div className="p-4 sm:p-6 border-b border-border">
-                <h3 className="font-display text-base sm:text-lg font-semibold">Minhas contas</h3>
+                <h2 className="font-display text-base sm:text-lg font-semibold">Minhas contas</h2>
                 <p className="text-xs text-muted-foreground mt-0.5">Exemplos para referência</p>
               </div>
               <ul className="divide-y divide-border">
@@ -281,7 +284,7 @@ function AppDashboard() {
 
             {/* Fluxo de caixa */}
             <Card className="p-5 sm:p-6 bg-card shadow-soft">
-              <h3 className="font-display text-base sm:text-lg font-semibold">Fluxo de caixa</h3>
+              <h2 className="font-display text-base sm:text-lg font-semibold">Fluxo de caixa</h2>
               <p className="text-xs text-muted-foreground mt-0.5">Resumo do mês</p>
               <div className="grid grid-cols-2 gap-3 sm:gap-4 mt-4">
                 <div className="rounded-xl border border-border p-4">
@@ -308,7 +311,7 @@ function AppDashboard() {
             <Card className="bg-card shadow-soft overflow-hidden">
               <div className="p-4 sm:p-6 flex items-center justify-between gap-3 border-b border-border">
                 <div className="min-w-0">
-                  <h3 className="font-display text-base sm:text-lg font-semibold">Gastos recentes</h3>
+                  <h2 className="font-display text-base sm:text-lg font-semibold">Gastos recentes</h2>
                   <p className="text-xs text-muted-foreground mt-0.5">
                     {refreshing ? "Atualizando..." : `${expenses.length} no total`}
                   </p>
@@ -894,7 +897,7 @@ function ReportsTab({
       <Card className="bg-card shadow-soft overflow-hidden">
         <div className="p-4 sm:p-6 border-b border-border flex items-center justify-between">
           <div>
-            <h3 className="font-display text-base sm:text-lg font-semibold">Receitas</h3>
+            <h2 className="font-display text-base sm:text-lg font-semibold">Receitas</h2>
             <p className="text-xs text-muted-foreground mt-0.5">Entradas previstas e realizadas</p>
           </div>
           <Button size="sm" variant="outline" onClick={() => toast.message("Adicionar receita em breve")}>

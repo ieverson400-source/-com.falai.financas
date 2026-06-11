@@ -18,7 +18,9 @@ export const Route = createFileRoute("/app/recarga/")({
   head: () => ({
     meta: [
       { title: "Recarga de celular — Falaí Finanças" },
-      { name: "description", content: "Recarregue seu celular pelo app." },
+      { name: "description", content: "Recarregue Claro, Vivo, Tim e Oi direto pelo Falaí Finanças a partir de R$10 e acompanhe o histórico das recargas." },
+      { property: "og:title", content: "Recarga de celular — Falaí Finanças" },
+      { property: "og:description", content: "Recarga online de Claro, Vivo, Tim e Oi a partir de R$10 com histórico no Falaí Finanças." },
     ],
   }),
 });

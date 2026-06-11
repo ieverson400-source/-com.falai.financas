@@ -1,0 +1,11 @@
+# Falaí Finanças
+
+> App de finanças pessoais em português que permite registrar gastos por voz, foto de recibo, WhatsApp ou texto. Uma IA transcreve, categoriza e gera relatórios automáticos.
+
+Falaí Finanças combina reconhecimento de voz, leitura de recibos e Open Finance para reduzir o atrito de anotar gastos. O usuário fala "gastei 89 reais no mercado" e o app extrai valor, categoria e data sozinho.
+
+## Pages
+
+- [Home](/): Landing com explicação do produto, exemplos de uso e chamada para criar conta.
+- [Entrar](/auth): Página de login e cadastro de conta.
+- [Política de Privacidade](/privacy): Como coletamos, usamos e protegemos os dados (LGPD).
