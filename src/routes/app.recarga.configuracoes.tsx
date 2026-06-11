@@ -31,8 +31,11 @@ export const Route = createFileRoute("/app/recarga/configuracoes")({
       { title: "Configurações de recarga — Falaí Finanças" },
       {
         name: "description",
-        content: "Escolha o provedor de recarga e teste a conexão.",
+        content:
+          "Escolha o provedor de recarga, configure suas credenciais e teste a conexão antes de recarregar celulares pelo Falaí Finanças.",
       },
+      { property: "og:title", content: "Configurações de recarga — Falaí Finanças" },
+      { property: "og:description", content: "Configure provedor, credenciais e teste a conexão do serviço de recarga no Falaí Finanças." },
     ],
   }),
 });

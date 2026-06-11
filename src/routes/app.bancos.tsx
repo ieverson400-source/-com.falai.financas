@@ -27,7 +27,12 @@ import {
 export const Route = createFileRoute("/app/bancos")({
   component: BancosPage,
   head: () => ({
-    meta: [{ title: "Meus bancos — Falaí Finanças" }],
+    meta: [
+      { title: "Meus bancos — Falaí Finanças" },
+      { name: "description", content: "Conecte seus bancos via Open Finance no Falaí Finanças, sincronize contas e cartões e veja seus saldos e extratos automaticamente." },
+      { property: "og:title", content: "Meus bancos — Falaí Finanças" },
+      { property: "og:description", content: "Conecte contas e cartões via Open Finance e sincronize seus saldos e extratos automaticamente." },
+    ],
   }),
 });
 
@@ -290,7 +295,7 @@ function BancosPage() {
                         <Button variant="ghost" size="icon" onClick={() => openHistory(it)} title="Histórico de sincronizações">
                           <History className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={() => handleDelete(it.id)} disabled={busy}>
+                        <Button variant="ghost" size="icon" onClick={() => handleDelete(it.id)} disabled={busy} aria-label="Excluir banco" title="Excluir banco">
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>

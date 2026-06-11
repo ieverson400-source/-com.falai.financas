@@ -39,7 +39,9 @@ export const Route = createFileRoute("/app/")({
   head: () => ({
     meta: [
       { title: "Dashboard — Falaí Finanças" },
-      { name: "description", content: "Seus gastos organizados por IA." },
+      { name: "description", content: "Painel das suas finanças no Falaí: gastos do mês, contas conectadas, fluxo de caixa e relatórios organizados por IA." },
+      { property: "og:title", content: "Dashboard — Falaí Finanças" },
+      { property: "og:description", content: "Acompanhe seus gastos, contas e fluxo de caixa em um único painel organizado por IA." },
     ],
   }),
 });

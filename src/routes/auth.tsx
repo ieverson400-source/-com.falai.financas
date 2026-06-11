@@ -16,7 +16,9 @@ export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
       { title: "Entrar — Falaí Finanças" },
-      { name: "description", content: "Acesse sua conta para registrar gastos por áudio." },
+      { name: "description", content: "Entre ou crie sua conta no Falaí Finanças para registrar gastos por voz, foto e WhatsApp com organização automática por IA." },
+      { property: "og:title", content: "Entrar — Falaí Finanças" },
+      { property: "og:description", content: "Acesse o Falaí Finanças para registrar gastos por voz, foto ou WhatsApp e ver relatórios automáticos." },
     ],
   }),
 });

@@ -11,12 +11,42 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Fale seus gastos. A IA transcreve, categoriza e organiza. Veja relatórios visuais em segundos.",
+          "Fale seus gastos. A IA transcreve, categoriza e organiza tudo. Veja relatórios visuais das suas finanças pessoais em segundos.",
       },
       { property: "og:title", content: "Falaí Finanças — gastos por voz" },
       {
         property: "og:description",
-        content: "Registre gastos falando. Receba relatórios automáticos.",
+        content:
+          "Registre gastos falando. A IA transcreve, categoriza e gera relatórios automáticos das suas finanças.",
+      },
+      { property: "og:url", content: "https://falai-finan-as.lovable.app/" },
+      { property: "og:type", content: "website" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://falai-finan-as.lovable.app/" },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "WebSite",
+              name: "Falaí Finanças",
+              url: "https://falai-finan-as.lovable.app/",
+              description:
+                "Registre gastos por voz, foto ou texto. A IA categoriza e gera relatórios das suas finanças.",
+              inLanguage: "pt-BR",
+            },
+            {
+              "@type": "Organization",
+              name: "Falaí Finanças",
+              url: "https://falai-finan-as.lovable.app/",
+              logo: "https://falai-finan-as.lovable.app/icon-512.png",
+            },
+          ],
+        }),
       },
     ],
   }),
