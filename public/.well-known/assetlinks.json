@@ -5,9 +5,9 @@
     ],
     "target": {
       "namespace": "android_app",
-      "package_name": "SEU_PACKAGE_NAME_AQUI",
+      "package_name": "com.falai.financas",
       "sha256_cert_fingerprints": [
-        "SEU_SHA256_AQUI"
+        "B5:DC:A9:BA:01:78:9B:9F:FA:84:36:18:D1:32:61:A4:00:C2:D0:85:48:53:F7:33:4D:3F:C8:70:61:D4:10:D2"
       ]
     }
   }
