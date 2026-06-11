@@ -72,6 +72,7 @@ function Landing() {
       </nav>
 
       {/* Hero */}
+      <main>
       <section className="px-4 sm:px-6 pt-8 sm:pt-12 pb-16 sm:pb-24 max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           <div>
@@ -152,6 +153,10 @@ function Landing() {
           ))}
         </div>
       </section>
+
+        </div>
+      </section>
+      </main>
 
       <footer className="px-4 sm:px-6 py-8 sm:py-10 text-center text-xs text-muted-foreground">
         © 2026 Falaí Finanças

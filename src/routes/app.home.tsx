@@ -136,6 +136,7 @@ function HomeMobile() {
       </header>
 
       <main className="mx-auto max-w-md px-4 pt-5 pb-28">
+        <h1 className="sr-only">Visão Geral de Finanças</h1>
         {tab === "inicio" && (
           <InicioTab
             saldoGeral={saldoGeral}
