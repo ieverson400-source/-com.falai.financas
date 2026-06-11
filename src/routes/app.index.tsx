@@ -180,8 +180,9 @@ function AppDashboard() {
       </header>
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 pb-28 sm:pb-28 space-y-6 sm:space-y-8">
+        <h1 className="sr-only">Dashboard Financeiro</h1>
         {activeTab === "inicio" && (
-          <>
+          <></>
             {/* Saldo geral */}
             <Card className="p-5 sm:p-6 bg-gradient-hero text-primary-foreground border-0 shadow-elevated">
               <p className="text-[11px] uppercase tracking-wider opacity-80">Saldo geral</p>
