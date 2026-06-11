@@ -153,9 +153,6 @@ function Landing() {
           ))}
         </div>
       </section>
-
-        </div>
-      </section>
       </main>
 
       <footer className="px-4 sm:px-6 py-8 sm:py-10 text-center text-xs text-muted-foreground">
