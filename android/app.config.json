@@ -2,11 +2,11 @@
   "packageId": "com.falai.financas",
   "host": "falai-finan-as.lovable.app",
   "startUrl": "/",
-  "name": "Falaí Finanças",
-  "launcherName": "Falaí",
+  "name": "Falai Financas",
+  "launcherName": "Falai",
   "themeColor": "#0f1b2d",
   "backgroundColor": "#0f1b2d",
   "manifestUrl": "https://falai-finan-as.lovable.app/manifest.webmanifest",
-  "iconUrl": "https://falai-finan-as.lovable.app/icon-512.png",
-  "maskableIconUrl": "https://falai-finan-as.lovable.app/icon-512.png"
+  "iconUrl": "https://falai-finan-as.lovable.app/icon-android-512.png",
+  "maskableIconUrl": "https://falai-finan-as.lovable.app/icon-android-512.png"
 }
