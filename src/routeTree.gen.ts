@@ -14,6 +14,7 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as BlogGuiaGestaoDeGastosRouteImport } from './routes/blog.guia-gestao-de-gastos'
 import { Route as AppWhatsappTestRouteImport } from './routes/app.whatsapp-test'
 import { Route as AppHomeRouteImport } from './routes/app.home'
 import { Route as AppBancosRouteImport } from './routes/app.bancos'
@@ -45,6 +46,11 @@ const IndexRoute = IndexRouteImport.update({
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/app/',
   path: '/app/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogGuiaGestaoDeGastosRoute = BlogGuiaGestaoDeGastosRouteImport.update({
+  id: '/blog/guia-gestao-de-gastos',
+  path: '/blog/guia-gestao-de-gastos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppWhatsappTestRoute = AppWhatsappTestRouteImport.update({
@@ -91,6 +97,7 @@ export interface FileRoutesByFullPath {
   '/app/bancos': typeof AppBancosRoute
   '/app/home': typeof AppHomeRoute
   '/app/whatsapp-test': typeof AppWhatsappTestRoute
+  '/blog/guia-gestao-de-gastos': typeof BlogGuiaGestaoDeGastosRoute
   '/app/': typeof AppIndexRoute
   '/api/public/play-rtdn': typeof ApiPublicPlayRtdnRoute
   '/api/public/whatsapp': typeof ApiPublicWhatsappRoute
@@ -105,6 +112,7 @@ export interface FileRoutesByTo {
   '/app/bancos': typeof AppBancosRoute
   '/app/home': typeof AppHomeRoute
   '/app/whatsapp-test': typeof AppWhatsappTestRoute
+  '/blog/guia-gestao-de-gastos': typeof BlogGuiaGestaoDeGastosRoute
   '/app': typeof AppIndexRoute
   '/api/public/play-rtdn': typeof ApiPublicPlayRtdnRoute
   '/api/public/whatsapp': typeof ApiPublicWhatsappRoute
@@ -120,6 +128,7 @@ export interface FileRoutesById {
   '/app/bancos': typeof AppBancosRoute
   '/app/home': typeof AppHomeRoute
   '/app/whatsapp-test': typeof AppWhatsappTestRoute
+  '/blog/guia-gestao-de-gastos': typeof BlogGuiaGestaoDeGastosRoute
   '/app/': typeof AppIndexRoute
   '/api/public/play-rtdn': typeof ApiPublicPlayRtdnRoute
   '/api/public/whatsapp': typeof ApiPublicWhatsappRoute
@@ -136,6 +145,7 @@ export interface FileRouteTypes {
     | '/app/bancos'
     | '/app/home'
     | '/app/whatsapp-test'
+    | '/blog/guia-gestao-de-gastos'
     | '/app/'
     | '/api/public/play-rtdn'
     | '/api/public/whatsapp'
@@ -150,6 +160,7 @@ export interface FileRouteTypes {
     | '/app/bancos'
     | '/app/home'
     | '/app/whatsapp-test'
+    | '/blog/guia-gestao-de-gastos'
     | '/app'
     | '/api/public/play-rtdn'
     | '/api/public/whatsapp'
@@ -164,6 +175,7 @@ export interface FileRouteTypes {
     | '/app/bancos'
     | '/app/home'
     | '/app/whatsapp-test'
+    | '/blog/guia-gestao-de-gastos'
     | '/app/'
     | '/api/public/play-rtdn'
     | '/api/public/whatsapp'
@@ -179,6 +191,7 @@ export interface RootRouteChildren {
   AppBancosRoute: typeof AppBancosRoute
   AppHomeRoute: typeof AppHomeRoute
   AppWhatsappTestRoute: typeof AppWhatsappTestRoute
+  BlogGuiaGestaoDeGastosRoute: typeof BlogGuiaGestaoDeGastosRoute
   AppIndexRoute: typeof AppIndexRoute
   ApiPublicPlayRtdnRoute: typeof ApiPublicPlayRtdnRoute
   ApiPublicWhatsappRoute: typeof ApiPublicWhatsappRoute
@@ -221,6 +234,13 @@ declare module '@tanstack/react-router' {
       path: '/app'
       fullPath: '/app/'
       preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/guia-gestao-de-gastos': {
+      id: '/blog/guia-gestao-de-gastos'
+      path: '/blog/guia-gestao-de-gastos'
+      fullPath: '/blog/guia-gestao-de-gastos'
+      preLoaderRoute: typeof BlogGuiaGestaoDeGastosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app/whatsapp-test': {
@@ -283,6 +303,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppBancosRoute: AppBancosRoute,
   AppHomeRoute: AppHomeRoute,
   AppWhatsappTestRoute: AppWhatsappTestRoute,
+  BlogGuiaGestaoDeGastosRoute: BlogGuiaGestaoDeGastosRoute,
   AppIndexRoute: AppIndexRoute,
   ApiPublicPlayRtdnRoute: ApiPublicPlayRtdnRoute,
   ApiPublicWhatsappRoute: ApiPublicWhatsappRoute,
