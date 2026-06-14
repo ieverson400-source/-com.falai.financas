@@ -88,7 +88,7 @@ export const saveRecargaSettings = createServerFn({ method: "POST" })
 
 const testSchema = z.object({
   provider: z.enum(PROVIDERS),
-  api_url: z.string().url().max(500).nullable().optional(),
+  api_url: safeUrl.nullable().optional(),
   api_key: z.string().min(1).max(500).nullable().optional(),
 });
 
