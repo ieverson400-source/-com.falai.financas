@@ -136,7 +136,7 @@ function HomeMobile() {
       </header>
 
       <main className="mx-auto max-w-md px-4 pt-5 pb-28">
-        <h1 className="sr-only">Visão Geral de Finanças</h1>
+        <h1 className="sr-only">Visão geral das suas finanças e fluxo de caixa</h1>
         {tab === "inicio" && (
           <InicioTab
             saldoGeral={saldoGeral}
@@ -282,8 +282,8 @@ function InicioTab({
           <h2 id="minhas-contas" className="font-display font-semibold text-base">
             Minhas contas
           </h2>
-          <button className="text-xs text-primary inline-flex items-center gap-0.5">
-            Ver todas <ChevronRight className="size-3.5" />
+          <button className="text-xs text-primary inline-flex items-center gap-0.5" aria-label="Ver todas as contas">
+            Ver todas as contas <ChevronRight className="size-3.5" />
           </button>
         </div>
         <Card className="rounded-2xl shadow-soft overflow-hidden">
