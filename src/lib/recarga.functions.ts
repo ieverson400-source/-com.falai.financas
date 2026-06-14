@@ -62,6 +62,9 @@ export const fazerRecarga = createServerFn({ method: "POST" })
       const provider = settings!.provider as string;
 
       try {
+        // SSRF guard: validate the stored URL even though settings save also validates,
+        // in case a row predates the validator.
+        assertSafeOutboundUrl(apiUrl);
         let url: string;
         let headers: Record<string, string>;
         let body: string;
