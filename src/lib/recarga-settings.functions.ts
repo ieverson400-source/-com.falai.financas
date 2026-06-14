@@ -1,12 +1,26 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { assertSafeOutboundUrl } from "@/lib/safe-url";
 
 const PROVIDERS = ["simulado", "generico_http", "api3"] as const;
 
+const safeUrl = z
+  .string()
+  .url()
+  .max(500)
+  .refine((v) => {
+    try {
+      assertSafeOutboundUrl(v);
+      return true;
+    } catch {
+      return false;
+    }
+  }, { message: "URL deve ser HTTPS pública (sem IPs internos/loopback)." });
+
 const settingsSchema = z.object({
   provider: z.enum(PROVIDERS),
-  api_url: z.string().url().max(500).nullable().optional(),
+  api_url: safeUrl.nullable().optional(),
   api_key: z.string().min(1).max(500).nullable().optional(),
   real_mode: z.boolean(),
 });
