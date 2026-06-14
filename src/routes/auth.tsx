@@ -137,6 +137,6 @@ function AuthPage() {
           {mode === "signin" ? "Não tem conta? Criar uma" : "Já tem conta? Entrar"}
         </button>
       </Card>
-    </div>
+    </main>
   );
 }
