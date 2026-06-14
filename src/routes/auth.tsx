@@ -85,7 +85,7 @@ function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-8 bg-gradient-hero">
+    <main className="min-h-screen flex items-center justify-center px-4 py-8 bg-gradient-hero">
       <Toaster richColors />
       <Card className="w-full max-w-md p-6 sm:p-8 shadow-elevated bg-card rounded-2xl">
         <Link to="/" className="text-sm text-muted-foreground hover:text-primary mb-6 inline-flex items-center min-h-11">
@@ -137,6 +137,6 @@ function AuthPage() {
           {mode === "signin" ? "Não tem conta? Criar uma" : "Já tem conta? Entrar"}
         </button>
       </Card>
-    </div>
+    </main>
   );
 }
