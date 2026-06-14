@@ -102,7 +102,8 @@ export const Route = createFileRoute("/api/public/whatsapp")({
           .maybeSingle();
 
         if (profileError) {
-          return textResponse(profileError.message, 500);
+          console.error("whatsapp webhook profileError", profileError.message);
+          return textResponse("Internal server error", 500);
         }
 
         if (!profile) {
