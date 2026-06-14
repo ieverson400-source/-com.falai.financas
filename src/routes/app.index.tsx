@@ -24,6 +24,7 @@ import { ChatBot } from "@/components/chat-bot";
 import { NotificationsButton } from "@/components/notifications-button";
 import { ProfileEditDialog } from "@/components/profile-edit-dialog";
 import { GoalHighlight } from "@/components/goal-highlight";
+import { resolveAvatarUrl } from "@/lib/avatar-url";
 import { toast } from "sonner";
 import { Trash2, Mic, Hand, Home, Wallet, MessageCircle, BarChart3, User as UserIcon, Building2, PiggyBank, CreditCard, ArrowUpRight, ArrowDownRight, Sparkles, Construction, Crown, Check, Zap, Star, Shield, Calendar as CalendarIcon, TrendingUp, Heart, Share2, Moon, Sun, LogOut, Loader2, AlertTriangle, ExternalLink, RotateCcw } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -101,7 +102,8 @@ function AppDashboard() {
     }
     setExpenses((expensesRes.data ?? []) as Expense[]);
     setWhatsAppPhone(profileRes.data?.whatsapp_phone ?? null);
-    setAvatarUrl(profileRes.data?.avatar_url ?? user.user_metadata?.avatar_url ?? null);
+    const storedAvatar = profileRes.data?.avatar_url ?? user.user_metadata?.avatar_path ?? user.user_metadata?.avatar_url ?? null;
+    setAvatarUrl(await resolveAvatarUrl(storedAvatar));
     setWhatsAppInbox((inboxRes.data ?? []) as WhatsAppInboxItem[]);
   }, [user]);
 
