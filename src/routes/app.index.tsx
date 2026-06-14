@@ -102,7 +102,8 @@ function AppDashboard() {
     }
     setExpenses((expensesRes.data ?? []) as Expense[]);
     setWhatsAppPhone(profileRes.data?.whatsapp_phone ?? null);
-    setAvatarUrl(profileRes.data?.avatar_url ?? user.user_metadata?.avatar_url ?? null);
+    const storedAvatar = profileRes.data?.avatar_url ?? user.user_metadata?.avatar_path ?? user.user_metadata?.avatar_url ?? null;
+    setAvatarUrl(await resolveAvatarUrl(storedAvatar));
     setWhatsAppInbox((inboxRes.data ?? []) as WhatsAppInboxItem[]);
   }, [user]);
 
