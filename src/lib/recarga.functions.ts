@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { assertSafeOutboundUrl } from "@/lib/safe-url";
 
 const OPERADORAS = ["Claro", "Vivo", "Tim", "Oi"] as const;
 const VALORES = [10, 15, 20, 30] as const;
