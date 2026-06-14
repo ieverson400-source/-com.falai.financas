@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { assertAdmin } from "@/lib/assert-admin";
 
 /**
  * Lê a assinatura do usuário autenticado.
@@ -36,8 +37,11 @@ export const activateDevSubscription = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(async ({ data, context }) => {
+    // Only admins may grant subscriptions without going through billing.
+    await assertAdmin(context.supabase, context.userId);
     const { userId } = context;
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
 
     const periodEnd = new Date();
     periodEnd.setDate(periodEnd.getDate() + 30);
@@ -66,6 +70,7 @@ export const activateDevSubscription = createServerFn({ method: "POST" })
 export const cancelDevSubscription = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
+    await assertAdmin(context.supabase, context.userId);
     const { userId } = context;
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin

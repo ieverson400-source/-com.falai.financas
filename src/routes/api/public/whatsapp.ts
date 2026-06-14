@@ -102,7 +102,8 @@ export const Route = createFileRoute("/api/public/whatsapp")({
           .maybeSingle();
 
         if (profileError) {
-          return textResponse(profileError.message, 500);
+          console.error("whatsapp webhook profileError", profileError.message);
+          return textResponse("Internal server error", 500);
         }
 
         if (!profile) {
@@ -148,7 +149,8 @@ export const Route = createFileRoute("/api/public/whatsapp")({
           .upsert(inboxPayload, { onConflict: "message_sid", ignoreDuplicates: false });
 
         if (upsertError) {
-          return textResponse(upsertError.message, 500);
+          console.error("whatsapp webhook upsertError", upsertError.message);
+          return textResponse("Internal server error", 500);
         }
 
         const mediaUrl = parsed.data.MediaUrl0;
