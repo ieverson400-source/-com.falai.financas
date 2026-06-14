@@ -149,7 +149,8 @@ export const Route = createFileRoute("/api/public/whatsapp")({
           .upsert(inboxPayload, { onConflict: "message_sid", ignoreDuplicates: false });
 
         if (upsertError) {
-          return textResponse(upsertError.message, 500);
+          console.error("whatsapp webhook upsertError", upsertError.message);
+          return textResponse("Internal server error", 500);
         }
 
         const mediaUrl = parsed.data.MediaUrl0;
