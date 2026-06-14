@@ -31,7 +31,8 @@ export interface WhatsAppOverview {
 
 export const getWhatsAppOverview = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .handler(async (): Promise<WhatsAppOverview> => {
+  .handler(async ({ context }): Promise<WhatsAppOverview> => {
+    await assertAdmin(context.supabase, context.userId);
     // Use admin para enxergar todos os perfis (visão de administração)
     const { data: profiles, error: profilesError } = await supabaseAdmin
       .from("profiles")
