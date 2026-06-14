@@ -59,21 +59,24 @@ export function ProfileEditDialog({
       toast.error(upErr.message);
       return;
     }
-    const { data: pub } = supabase.storage.from("avatars").getPublicUrl(path);
-    const url = pub.publicUrl;
+    // Bucket is private — store the storage path, render via short-lived signed URLs.
+    const { data: signed } = await supabase.storage
+      .from("avatars")
+      .createSignedUrl(path, 60 * 60);
+    const displayUrl = signed?.signedUrl ?? null;
 
     const { error: profErr } = await supabase
       .from("profiles")
-      .update({ avatar_url: url })
+      .update({ avatar_url: path })
       .eq("user_id", userId);
     if (profErr) {
       setUploading(false);
       toast.error(profErr.message);
       return;
     }
-    await supabase.auth.updateUser({ data: { avatar_url: url } });
-    setAvatarUrl(url);
-    onAvatarChange?.(url);
+    await supabase.auth.updateUser({ data: { avatar_path: path } });
+    setAvatarUrl(displayUrl);
+    onAvatarChange?.(displayUrl);
     setUploading(false);
     toast.success("Foto atualizada!");
   };
