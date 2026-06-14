@@ -24,6 +24,7 @@ import { ChatBot } from "@/components/chat-bot";
 import { NotificationsButton } from "@/components/notifications-button";
 import { ProfileEditDialog } from "@/components/profile-edit-dialog";
 import { GoalHighlight } from "@/components/goal-highlight";
+import { resolveAvatarUrl } from "@/lib/avatar-url";
 import { toast } from "sonner";
 import { Trash2, Mic, Hand, Home, Wallet, MessageCircle, BarChart3, User as UserIcon, Building2, PiggyBank, CreditCard, ArrowUpRight, ArrowDownRight, Sparkles, Construction, Crown, Check, Zap, Star, Shield, Calendar as CalendarIcon, TrendingUp, Heart, Share2, Moon, Sun, LogOut, Loader2, AlertTriangle, ExternalLink, RotateCcw } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
