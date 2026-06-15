@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { normalizeWhatsAppPhone } from "@/lib/phone";
+import { assertAdmin } from "@/lib/assert-admin";
 
 const InputSchema = z.object({
   phone: z.string().min(8).max(30),
