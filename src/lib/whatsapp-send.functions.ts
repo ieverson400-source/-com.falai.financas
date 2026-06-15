@@ -80,10 +80,6 @@ export const sendWhatsAppWelcome = createServerFn({ method: "POST" })
       );
     }
 
-    const to = normalizeWhatsAppPhone(data.phone);
-    if (!to) {
-      throw new Error("Número inválido. Use formato internacional, ex: +5519996020358.");
-    }
 
     // Normaliza o número de origem (caso esteja sem prefixo whatsapp:).
     const fromNormalized = fromRaw
