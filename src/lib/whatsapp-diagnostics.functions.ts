@@ -44,7 +44,8 @@ function normalizeFrom(raw: string | undefined): string | null {
 
 export const getWhatsAppDiagnostics = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .handler(async (): Promise<WhatsAppDiagnostics> => {
+  .handler(async ({ context }): Promise<WhatsAppDiagnostics> => {
+    await assertAdmin(context.supabase, context.userId);
     const accountSid = process.env.TWILIO_ACCOUNT_SID;
     const authToken = process.env.TWILIO_AUTH_TOKEN;
     const fromRaw = process.env.TWILIO_WHATSAPP_FROM;
