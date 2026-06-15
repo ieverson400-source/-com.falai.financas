@@ -195,7 +195,7 @@ function AppDashboard() {
       </header>
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 pb-28 sm:pb-28 space-y-6 sm:space-y-8">
-        <h1 className="sr-only">Dashboard Financeiro</h1>
+        <h1 className="sr-only">Painel de finanças: gastos do mês, contas e fluxo de caixa</h1>
         {activeTab === "inicio" && (
           <>
             {/* Saldo geral */}
