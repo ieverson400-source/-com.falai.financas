@@ -36,7 +36,35 @@ export type SendWhatsAppResult = {
 export const sendWhatsAppWelcome = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => InputSchema.parse(input))
-  .handler(async ({ data }): Promise<SendWhatsAppResult> => {
+  .handler(async ({ data, context }): Promise<SendWhatsAppResult> => {
+    const to = normalizeWhatsAppPhone(data.phone);
+    if (!to) {
+      throw new Error("Número inválido. Use formato internacional, ex: +5519996020358.");
+    }
+
+    // Authorization: only allow sending to the caller's own registered WhatsApp number,
+    // unless the caller is an admin. Prevents arbitrary messaging via the app's Twilio credentials.
+    let isAdmin = false;
+    try {
+      await assertAdmin(context.supabase, context.userId);
+      isAdmin = true;
+    } catch {
+      isAdmin = false;
+    }
+    if (!isAdmin) {
+      const { data: profile } = await context.supabase
+        .from("profiles")
+        .select("whatsapp_phone")
+        .eq("user_id", context.userId)
+        .maybeSingle();
+      const own = normalizeWhatsAppPhone(profile?.whatsapp_phone ?? "");
+      if (!own || own !== to) {
+        throw new Error(
+          "Você só pode enviar mensagens para o seu próprio número de WhatsApp registrado no perfil.",
+        );
+      }
+    }
+
     const accountSid = process.env.TWILIO_ACCOUNT_SID;
     const authToken = process.env.TWILIO_AUTH_TOKEN;
     const fromRaw = process.env.TWILIO_WHATSAPP_FROM;
