@@ -152,9 +152,9 @@ function AppDashboard() {
 
       <header className="border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 sticky top-0 z-30">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-2">
-          <Link to="/" className="flex items-center gap-2 min-w-0">
+          <Link to="/" aria-label="Voltar para a página inicial Falaí" className="flex items-center gap-2 min-w-0">
             <div className="size-9 rounded-xl bg-gradient-hero flex items-center justify-center shadow-soft">
-              <Mic className="size-4 text-primary-foreground" />
+              <Mic className="size-4 text-primary-foreground" aria-hidden="true" />
             </div>
             <span className="font-display font-semibold truncate">Falaí</span>
           </Link>
@@ -162,6 +162,7 @@ function AppDashboard() {
             <NotificationsButton userId={user.id} />
             <button
               onClick={() => setActiveTab("perfil")}
+              aria-label="Abrir perfil do usuário"
               className="flex items-center gap-2 min-w-0 rounded-full hover:bg-muted/40 pl-2 pr-1 py-1 transition-colors"
             >
               <span className="text-sm font-medium truncate max-w-[140px] hidden sm:inline">
@@ -169,7 +170,11 @@ function AppDashboard() {
               </span>
               <div className="size-8 rounded-full bg-gradient-hero flex items-center justify-center shadow-soft shrink-0 overflow-hidden">
                 {avatarUrl ? (
-                  <img src={avatarUrl} alt="" className="size-full object-cover" />
+                  <img
+                    src={avatarUrl}
+                    alt={`Foto de perfil de ${user.user_metadata?.display_name || user.email?.split("@")[0] || "usuário"}`}
+                    className="size-full object-cover"
+                  />
                 ) : (
                   <span className="text-sm font-semibold text-primary-foreground">
                     {(user.email?.[0] || "U").toUpperCase()}
@@ -190,7 +195,7 @@ function AppDashboard() {
       </header>
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 pb-28 sm:pb-28 space-y-6 sm:space-y-8">
-        <h1 className="sr-only">Dashboard Financeiro</h1>
+        <h1 className="sr-only">Painel de finanças: gastos do mês, contas e fluxo de caixa</h1>
         {activeTab === "inicio" && (
           <>
             {/* Saldo geral */}

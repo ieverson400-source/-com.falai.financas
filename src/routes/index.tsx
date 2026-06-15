@@ -65,7 +65,7 @@ function Landing() {
         </div>
         <div className="flex items-center gap-1.5">
           <ThemeToggle />
-          <Link to="/auth">
+          <Link to="/auth" aria-label="Entrar na sua conta Falaí Finanças">
             <Button variant="ghost" size="sm" className="h-10 px-4">Entrar</Button>
           </Link>
         </div>
