@@ -209,7 +209,7 @@ function BancosPage() {
       <header className="sticky top-0 z-10 border-b bg-background/80 backdrop-blur">
         <div className="mx-auto flex max-w-3xl items-center gap-3 px-4 py-4">
           <Button asChild variant="ghost" size="icon">
-            <Link to="/app"><ArrowLeft className="h-5 w-5" /></Link>
+            <Link to="/app" aria-label="Voltar para o painel"><ArrowLeft className="h-5 w-5" /></Link>
           </Button>
           <h1 className="flex-1 text-lg font-bold">Meus bancos</h1>
           <DropdownMenu>
@@ -284,6 +284,7 @@ function BancosPage() {
                           size="icon"
                           onClick={() => handleSync(it.pluggy_item_id)}
                           disabled={busy || syncingId === it.pluggy_item_id}
+                          aria-label="Sincronizar dados do banco"
                           title="Sincronizar agora"
                         >
                           {syncingId === it.pluggy_item_id ? (
@@ -292,7 +293,7 @@ function BancosPage() {
                             <RefreshCw className="h-4 w-4" />
                           )}
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={() => openHistory(it)} title="Histórico de sincronizações">
+                        <Button variant="ghost" size="icon" onClick={() => openHistory(it)} aria-label="Ver histórico de sincronizações" title="Histórico de sincronizações">
                           <History className="h-4 w-4" />
                         </Button>
                         <Button variant="ghost" size="icon" onClick={() => handleDelete(it.id)} disabled={busy} aria-label="Excluir banco" title="Excluir banco">
