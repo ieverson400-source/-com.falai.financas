@@ -169,7 +169,11 @@ function AppDashboard() {
               </span>
               <div className="size-8 rounded-full bg-gradient-hero flex items-center justify-center shadow-soft shrink-0 overflow-hidden">
                 {avatarUrl ? (
-                  <img src={avatarUrl} alt="" className="size-full object-cover" />
+                  <img
+                    src={avatarUrl}
+                    alt={`Foto de perfil de ${user.user_metadata?.display_name || user.email?.split("@")[0] || "usuário"}`}
+                    className="size-full object-cover"
+                  />
                 ) : (
                   <span className="text-sm font-semibold text-primary-foreground">
                     {(user.email?.[0] || "U").toUpperCase()}
