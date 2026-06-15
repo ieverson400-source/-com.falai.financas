@@ -122,7 +122,7 @@ export function ProfileEditDialog({
           <div className="relative">
             <div className="size-20 rounded-full bg-gradient-hero flex items-center justify-center text-primary-foreground font-display font-bold text-2xl overflow-hidden shadow-soft">
               {avatarUrl ? (
-                <img src={avatarUrl} alt="Avatar" className="size-full object-cover" />
+                <img src={avatarUrl} alt="Sua foto de perfil" className="size-full object-cover" />
               ) : (
                 (email ?? "?").slice(0, 1).toUpperCase()
               )}

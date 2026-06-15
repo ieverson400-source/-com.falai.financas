@@ -107,7 +107,7 @@ function RecargaPage() {
       <header className="border-b border-border bg-card">
         <div className="container max-w-2xl mx-auto px-4 py-4 flex items-center gap-3">
           <Button asChild variant="ghost" size="icon">
-            <Link to="/app">
+            <Link to="/app" aria-label="Voltar para o painel">
               <ArrowLeft className="h-5 w-5" />
             </Link>
           </Button>
@@ -116,7 +116,7 @@ function RecargaPage() {
             <h1 className="text-lg font-semibold">Recarga de celular</h1>
           </div>
           <Button asChild variant="ghost" size="icon">
-            <Link to="/app/recarga/configuracoes">
+            <Link to="/app/recarga/configuracoes" aria-label="Configurações de recarga">
               <Settings className="h-5 w-5" />
             </Link>
           </Button>
