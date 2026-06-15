@@ -86,7 +86,8 @@ export const Route = createFileRoute("/api/public/play-rtdn")({
         );
 
         if (error) {
-          return Response.json({ error: error.message }, { status: 500 });
+          console.error("play-rtdn upsert error", error.message);
+          return Response.json({ error: "Internal server error" }, { status: 500 });
         }
         return Response.json({ ok: true });
       },
