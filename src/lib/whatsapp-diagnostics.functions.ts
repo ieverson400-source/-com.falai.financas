@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { assertAdmin } from "@/lib/assert-admin";
 
 const TWILIO_SANDBOX_NUMBER = "+14155238886";
 
@@ -43,7 +44,8 @@ function normalizeFrom(raw: string | undefined): string | null {
 
 export const getWhatsAppDiagnostics = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .handler(async (): Promise<WhatsAppDiagnostics> => {
+  .handler(async ({ context }): Promise<WhatsAppDiagnostics> => {
+    await assertAdmin(context.supabase, context.userId);
     const accountSid = process.env.TWILIO_ACCOUNT_SID;
     const authToken = process.env.TWILIO_AUTH_TOKEN;
     const fromRaw = process.env.TWILIO_WHATSAPP_FROM;

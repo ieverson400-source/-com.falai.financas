@@ -69,10 +69,18 @@ function AppDashboard() {
   const [whatsAppInbox, setWhatsAppInbox] = useState<WhatsAppInboxItem[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState<TabKey>("inicio");
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth" });
   }, [loading, user, navigate]);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .rpc("has_role", { _user_id: user.id, _role: "admin" })
+      .then(({ data }) => setIsAdmin(Boolean(data)));
+  }, [user]);
 
   const load = useCallback(async () => {
     if (!user) return;
@@ -237,7 +245,7 @@ function AppDashboard() {
                 <div className="col-span-2 lg:col-span-1 space-y-4">
                   <WhatsAppLinkCard currentPhone={whatsAppPhone} onSaved={setWhatsAppPhone} />
                   <VerificacaoWhatsApp />
-                  <WhatsAppDiagnosticsCard currentPhone={whatsAppPhone} />
+                  {isAdmin && <WhatsAppDiagnosticsCard currentPhone={whatsAppPhone} />}
                 </div>
               </div>
             </div>
