@@ -152,9 +152,9 @@ function AppDashboard() {
 
       <header className="border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 sticky top-0 z-30">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-2">
-          <Link to="/" className="flex items-center gap-2 min-w-0">
+          <Link to="/" aria-label="Voltar para a página inicial Falaí" className="flex items-center gap-2 min-w-0">
             <div className="size-9 rounded-xl bg-gradient-hero flex items-center justify-center shadow-soft">
-              <Mic className="size-4 text-primary-foreground" />
+              <Mic className="size-4 text-primary-foreground" aria-hidden="true" />
             </div>
             <span className="font-display font-semibold truncate">Falaí</span>
           </Link>
@@ -162,6 +162,7 @@ function AppDashboard() {
             <NotificationsButton userId={user.id} />
             <button
               onClick={() => setActiveTab("perfil")}
+              aria-label="Abrir perfil do usuário"
               className="flex items-center gap-2 min-w-0 rounded-full hover:bg-muted/40 pl-2 pr-1 py-1 transition-colors"
             >
               <span className="text-sm font-medium truncate max-w-[140px] hidden sm:inline">
