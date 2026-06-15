@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { assertAdmin } from "@/lib/assert-admin";
 
 const TWILIO_SANDBOX_NUMBER = "+14155238886";
 
