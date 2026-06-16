@@ -31,6 +31,10 @@ export const Route = createFileRoute("/app/whatsapp-test")({
     meta: [
       { title: "Teste WhatsApp — Falaí" },
       { name: "description", content: "Simule chamadas do webhook do WhatsApp e veja os logs." },
+      { property: "og:url", content: "https://falai-finan-as.lovable.app/app/whatsapp-test" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://falai-finan-as.lovable.app/app/whatsapp-test" },
     ],
   }),
 });

@@ -17,6 +17,10 @@ export const Route = createFileRoute("/privacy")({
           "Política de Privacidade do app Falaí Finanças: como coletamos, usamos e protegemos seus dados financeiros.",
       },
       { property: "og:type", content: "article" },
+      { property: "og:url", content: "https://falai-finan-as.lovable.app/privacy" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://falai-finan-as.lovable.app/privacy" },
     ],
   }),
 });

@@ -3,7 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 export const Route = createFileRoute("/blog/guia-gestao-de-gastos")({
   head: () => ({
     meta: [
-      { title: "Guia de gestão de gastos: automatize com voz e IA | Falaí Finanças" },
+      { title: "Guia de gestão de gastos com voz e IA | Falaí Finanças" },
       {
         name: "description",
         content:
