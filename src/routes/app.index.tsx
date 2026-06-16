@@ -43,6 +43,10 @@ export const Route = createFileRoute("/app/")({
       { name: "description", content: "Painel das suas finanças no Falaí: gastos do mês, contas conectadas, fluxo de caixa e relatórios organizados por IA." },
       { property: "og:title", content: "Dashboard — Falaí Finanças" },
       { property: "og:description", content: "Acompanhe seus gastos, contas e fluxo de caixa em um único painel organizado por IA." },
+      { property: "og:url", content: "https://falai-finan-as.lovable.app/app" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://falai-finan-as.lovable.app/app" },
     ],
   }),
 });

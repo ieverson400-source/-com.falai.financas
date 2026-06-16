@@ -32,6 +32,10 @@ export const Route = createFileRoute("/app/bancos")({
       { name: "description", content: "Conecte seus bancos via Open Finance no Falaí Finanças, sincronize contas e cartões e veja seus saldos e extratos automaticamente." },
       { property: "og:title", content: "Meus bancos — Falaí Finanças" },
       { property: "og:description", content: "Conecte contas e cartões via Open Finance e sincronize seus saldos e extratos automaticamente." },
+      { property: "og:url", content: "https://falai-finan-as.lovable.app/app/bancos" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://falai-finan-as.lovable.app/app/bancos" },
     ],
   }),
 });

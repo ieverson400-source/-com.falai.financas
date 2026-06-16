@@ -19,6 +19,10 @@ export const Route = createFileRoute("/auth")({
       { name: "description", content: "Entre ou crie sua conta no Falaí Finanças para registrar gastos por voz, foto e WhatsApp com organização automática por IA." },
       { property: "og:title", content: "Entrar — Falaí Finanças" },
       { property: "og:description", content: "Acesse o Falaí Finanças para registrar gastos por voz, foto ou WhatsApp e ver relatórios automáticos." },
+      { property: "og:url", content: "https://falai-finan-as.lovable.app/auth" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://falai-finan-as.lovable.app/auth" },
     ],
   }),
 });

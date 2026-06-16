@@ -35,6 +35,10 @@ export const Route = createFileRoute("/app/home")({
       { name: "description", content: "Visão geral das suas finanças no Falaí: saldo, contas, entradas, saídas e fluxo de caixa do mês em um painel mobile." },
       { property: "og:title", content: "Início — Falaí Finanças" },
       { property: "og:description", content: "Acompanhe saldo, contas e fluxo de caixa do mês em um painel mobile rápido." },
+      { property: "og:url", content: "https://falai-finan-as.lovable.app/app/home" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://falai-finan-as.lovable.app/app/home" },
     ],
   }),
 });
