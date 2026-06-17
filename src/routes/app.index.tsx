@@ -15,7 +15,7 @@ import { ExpenseCharts } from "@/components/expense-charts";
 import { ManualExpenseDialog } from "@/components/manual-expense-dialog";
 import { ReceiptScanner } from "@/components/receipt-scanner";
 import { ImportSpreadsheetButton } from "@/components/import-spreadsheet-button";
-import { WhatsAppLinkCard } from "@/components/whatsapp-link-card";
+
 import { VerificacaoWhatsApp } from "@/components/verificacao-whatsapp";
 import { WhatsAppDiagnosticsCard } from "@/components/whatsapp-diagnostics-card";
 import { WhatsAppInboxCard, type WhatsAppInboxItem } from "@/components/whatsapp-inbox-card";
@@ -252,7 +252,6 @@ function AppDashboard() {
                   <p className="font-display text-xl sm:text-2xl font-semibold mt-1 break-words">{formatBRL(totalAll)}</p>
                 </Card>
                 <div className="col-span-2 lg:col-span-1 space-y-4">
-                  <WhatsAppLinkCard currentPhone={whatsAppPhone} onSaved={setWhatsAppPhone} />
                   <VerificacaoWhatsApp />
                   {isAdmin && <WhatsAppDiagnosticsCard currentPhone={whatsAppPhone} />}
                 </div>
