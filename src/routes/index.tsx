@@ -156,7 +156,10 @@ function Landing() {
       </main>
 
       <footer className="px-4 sm:px-6 py-8 sm:py-10 text-center text-xs text-muted-foreground">
-        © 2026 Falaí Finanças
+        <div className="flex items-center justify-center gap-4">
+          <span>© 2026 Falaí Finanças</span>
+          <Link to="/privacy" className="hover:underline underline-offset-2">Política de Privacidade</Link>
+        </div>
       </footer>
     </div>
   );
