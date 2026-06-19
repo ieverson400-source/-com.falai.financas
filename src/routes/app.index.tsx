@@ -860,14 +860,14 @@ function ProfileTab({
             <span className="text-sm font-medium flex-1">Privacidade e segurança</span>
             <ExternalLink className="size-3.5 text-muted-foreground" />
           </a>
-          <a
-            href={`mailto:privacidade@falai.app?subject=${encodeURIComponent("Pedido de eliminação de conta e dados")}&body=${encodeURIComponent("Olá,\n\nSolicito a eliminação permanente da minha conta e de todos os dados associados no Falaí Finanças.\n\nE-mail da conta: " + (user.email ?? "") + "\n\nObrigado.")}`}
+          <Link
+            to="/account-delete"
             className="w-full px-4 py-3.5 flex items-center gap-3 text-left hover:bg-destructive/10 transition-colors text-destructive"
           >
             <Trash2 className="size-4" />
             <span className="text-sm font-medium flex-1">Solicitar eliminação da conta</span>
             <ExternalLink className="size-3.5 opacity-70" />
-          </a>
+          </Link>
         </Card>
       </section>
     </div>
