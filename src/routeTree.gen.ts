@@ -23,6 +23,7 @@ import { Route as AppRecargaIndexRouteImport } from './routes/app.recarga.index'
 import { Route as AppRecargaConfiguracoesRouteImport } from './routes/app.recarga.configuracoes'
 import { Route as ApiPublicWhatsappRouteImport } from './routes/api/public/whatsapp'
 import { Route as ApiPublicPlayRtdnRouteImport } from './routes/api/public/play-rtdn'
+import { Route as ApiPublicHooksWhatsappMonthlySummaryRouteImport } from './routes/api/public/hooks/whatsapp-monthly-summary'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -94,6 +95,12 @@ const ApiPublicPlayRtdnRoute = ApiPublicPlayRtdnRouteImport.update({
   path: '/api/public/play-rtdn',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicHooksWhatsappMonthlySummaryRoute =
+  ApiPublicHooksWhatsappMonthlySummaryRouteImport.update({
+    id: '/api/public/hooks/whatsapp-monthly-summary',
+    path: '/api/public/hooks/whatsapp-monthly-summary',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -110,6 +117,7 @@ export interface FileRoutesByFullPath {
   '/api/public/whatsapp': typeof ApiPublicWhatsappRoute
   '/app/recarga/configuracoes': typeof AppRecargaConfiguracoesRoute
   '/app/recarga/': typeof AppRecargaIndexRoute
+  '/api/public/hooks/whatsapp-monthly-summary': typeof ApiPublicHooksWhatsappMonthlySummaryRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -126,6 +134,7 @@ export interface FileRoutesByTo {
   '/api/public/whatsapp': typeof ApiPublicWhatsappRoute
   '/app/recarga/configuracoes': typeof AppRecargaConfiguracoesRoute
   '/app/recarga': typeof AppRecargaIndexRoute
+  '/api/public/hooks/whatsapp-monthly-summary': typeof ApiPublicHooksWhatsappMonthlySummaryRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -143,6 +152,7 @@ export interface FileRoutesById {
   '/api/public/whatsapp': typeof ApiPublicWhatsappRoute
   '/app/recarga/configuracoes': typeof AppRecargaConfiguracoesRoute
   '/app/recarga/': typeof AppRecargaIndexRoute
+  '/api/public/hooks/whatsapp-monthly-summary': typeof ApiPublicHooksWhatsappMonthlySummaryRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -161,6 +171,7 @@ export interface FileRouteTypes {
     | '/api/public/whatsapp'
     | '/app/recarga/configuracoes'
     | '/app/recarga/'
+    | '/api/public/hooks/whatsapp-monthly-summary'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -177,6 +188,7 @@ export interface FileRouteTypes {
     | '/api/public/whatsapp'
     | '/app/recarga/configuracoes'
     | '/app/recarga'
+    | '/api/public/hooks/whatsapp-monthly-summary'
   id:
     | '__root__'
     | '/'
@@ -193,6 +205,7 @@ export interface FileRouteTypes {
     | '/api/public/whatsapp'
     | '/app/recarga/configuracoes'
     | '/app/recarga/'
+    | '/api/public/hooks/whatsapp-monthly-summary'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -210,6 +223,7 @@ export interface RootRouteChildren {
   ApiPublicWhatsappRoute: typeof ApiPublicWhatsappRoute
   AppRecargaConfiguracoesRoute: typeof AppRecargaConfiguracoesRoute
   AppRecargaIndexRoute: typeof AppRecargaIndexRoute
+  ApiPublicHooksWhatsappMonthlySummaryRoute: typeof ApiPublicHooksWhatsappMonthlySummaryRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -312,6 +326,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicPlayRtdnRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/whatsapp-monthly-summary': {
+      id: '/api/public/hooks/whatsapp-monthly-summary'
+      path: '/api/public/hooks/whatsapp-monthly-summary'
+      fullPath: '/api/public/hooks/whatsapp-monthly-summary'
+      preLoaderRoute: typeof ApiPublicHooksWhatsappMonthlySummaryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -330,6 +351,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicWhatsappRoute: ApiPublicWhatsappRoute,
   AppRecargaConfiguracoesRoute: AppRecargaConfiguracoesRoute,
   AppRecargaIndexRoute: AppRecargaIndexRoute,
+  ApiPublicHooksWhatsappMonthlySummaryRoute:
+    ApiPublicHooksWhatsappMonthlySummaryRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

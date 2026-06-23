@@ -11,7 +11,10 @@ export const updateNotificationPrefs = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => InputSchema.parse(input))
   .handler(async ({ data, context }) => {
-    const update: Record<string, boolean> = {};
+    const update: {
+      notify_expense_confirmation?: boolean;
+      notify_monthly_summary?: boolean;
+    } = {};
     if (typeof data.notify_expense_confirmation === "boolean")
       update.notify_expense_confirmation = data.notify_expense_confirmation;
     if (typeof data.notify_monthly_summary === "boolean")
