@@ -264,6 +264,8 @@ export type Database = {
           created_at: string
           display_name: string | null
           id: string
+          notify_expense_confirmation: boolean
+          notify_monthly_summary: boolean
           updated_at: string
           user_id: string
           whatsapp_phone: string | null
@@ -273,6 +275,8 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           id?: string
+          notify_expense_confirmation?: boolean
+          notify_monthly_summary?: boolean
           updated_at?: string
           user_id: string
           whatsapp_phone?: string | null
@@ -282,6 +286,8 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           id?: string
+          notify_expense_confirmation?: boolean
+          notify_monthly_summary?: boolean
           updated_at?: string
           user_id?: string
           whatsapp_phone?: string | null
