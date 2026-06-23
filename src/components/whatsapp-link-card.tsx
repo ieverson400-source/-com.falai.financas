@@ -1,14 +1,20 @@
-import { useState } from "react";
-import { MessageCircle, Save, Send, Zap, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { MessageCircle, Save, Send, Zap, Trash2, Bell } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { normalizeWhatsAppPhone } from "@/lib/phone";
 import { sendWhatsAppWelcome } from "@/lib/whatsapp-send.functions";
+import {
+  getNotificationPrefs,
+  updateNotificationPrefs,
+} from "@/lib/notification-prefs.functions";
 
 interface Props {
   currentPhone: string | null;
@@ -25,7 +31,51 @@ export function WhatsAppLinkCard({ currentPhone, onSaved }: Props) {
   const [sendLog, setSendLog] = useState<
     { ts: string; level: "info" | "success" | "error"; message: string }[]
   >([]);
+  const [notifyExpense, setNotifyExpense] = useState(true);
+  const [notifyMonthly, setNotifyMonthly] = useState(true);
+  const [savingPrefs, setSavingPrefs] = useState<"expense" | "monthly" | null>(null);
   const sendWelcome = useServerFn(sendWhatsAppWelcome);
+  const loadPrefs = useServerFn(getNotificationPrefs);
+  const savePrefs = useServerFn(updateNotificationPrefs);
+
+  useEffect(() => {
+    let mounted = true;
+    loadPrefs()
+      .then((p) => {
+        if (!mounted) return;
+        setNotifyExpense(p.notify_expense_confirmation);
+        setNotifyMonthly(p.notify_monthly_summary);
+      })
+      .catch(() => {});
+    return () => {
+      mounted = false;
+    };
+  }, [loadPrefs]);
+
+  const togglePref = async (
+    kind: "expense" | "monthly",
+    value: boolean,
+  ) => {
+    setSavingPrefs(kind);
+    const prev = kind === "expense" ? notifyExpense : notifyMonthly;
+    if (kind === "expense") setNotifyExpense(value);
+    else setNotifyMonthly(value);
+    try {
+      await savePrefs({
+        data:
+          kind === "expense"
+            ? { notify_expense_confirmation: value }
+            : { notify_monthly_summary: value },
+      });
+      toast.success("Preferência atualizada.");
+    } catch (e) {
+      if (kind === "expense") setNotifyExpense(prev);
+      else setNotifyMonthly(prev);
+      toast.error(e instanceof Error ? e.message : "Falha ao salvar preferência.");
+    } finally {
+      setSavingPrefs(null);
+    }
+  };
 
   const appendLog = (level: "info" | "success" | "error", message: string) => {
     setSendLog((prev) =>
@@ -324,6 +374,58 @@ export function WhatsAppLinkCard({ currentPhone, onSaved }: Props) {
               {sendHint}
             </div>
           )}
+
+          <Separator />
+
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 text-sm font-medium">
+              <Bell className="size-4 text-primary" />
+              Notificações por WhatsApp
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Disponíveis para quem tem WhatsApp vinculado. As mensagens são enviadas pelo número configurado no Twilio.
+            </p>
+
+            <div className="flex items-start justify-between gap-3 rounded-md border border-border bg-background/60 p-3">
+              <div className="flex-1">
+                <Label htmlFor="notify-expense" className="text-sm font-medium">
+                  Confirmação de cada gasto registrado
+                </Label>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Toda vez que um gasto for criado (áudio, chat ou WhatsApp), você recebe uma mensagem com valor, categoria e data.
+                </p>
+              </div>
+              <Switch
+                id="notify-expense"
+                checked={notifyExpense}
+                disabled={!currentPhone || savingPrefs === "expense"}
+                onCheckedChange={(v) => togglePref("expense", v)}
+              />
+            </div>
+
+            <div className="flex items-start justify-between gap-3 rounded-md border border-border bg-background/60 p-3">
+              <div className="flex-1">
+                <Label htmlFor="notify-monthly" className="text-sm font-medium">
+                  Resumo mensal
+                </Label>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  No início de cada mês, você recebe o total gasto, número de lançamentos e as 3 maiores categorias do mês anterior.
+                </p>
+              </div>
+              <Switch
+                id="notify-monthly"
+                checked={notifyMonthly}
+                disabled={!currentPhone || savingPrefs === "monthly"}
+                onCheckedChange={(v) => togglePref("monthly", v)}
+              />
+            </div>
+
+            {!currentPhone && (
+              <p className="text-xs text-muted-foreground">
+                Salve um número de WhatsApp acima para ativar as notificações.
+              </p>
+            )}
+          </div>
         </div>
       </div>
     </Card>

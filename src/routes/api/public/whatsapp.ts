@@ -97,7 +97,7 @@ export const Route = createFileRoute("/api/public/whatsapp")({
 
         const { data: profile, error: profileError } = await supabaseAdmin
           .from("profiles")
-          .select("user_id")
+          .select("user_id, whatsapp_phone, notify_expense_confirmation")
           .eq("whatsapp_phone", phone)
           .maybeSingle();
 
@@ -198,6 +198,26 @@ export const Route = createFileRoute("/api/public/whatsapp")({
             expense_id: expense.id,
             error_message: null,
           });
+
+          // Confirmação por WhatsApp (best-effort).
+          if (profile.whatsapp_phone && profile.notify_expense_confirmation) {
+            try {
+              const { sendWhatsAppText, formatExpenseConfirmation } = await import(
+                "@/lib/whatsapp-notify.server"
+              );
+              await sendWhatsAppText({
+                toPhone: profile.whatsapp_phone,
+                body: formatExpenseConfirmation({
+                  amount: Number(extracted.amount),
+                  category: extracted.category,
+                  description: extracted.description ?? null,
+                  expense_date: extracted.expense_date,
+                }),
+              });
+            } catch (notifyErr) {
+              console.error("whatsapp webhook notify failed", notifyErr);
+            }
+          }
 
           return textResponse("OK", 200);
         } catch (error) {
