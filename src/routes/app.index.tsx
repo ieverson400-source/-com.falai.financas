@@ -28,7 +28,7 @@ import { ProfileEditDialog } from "@/components/profile-edit-dialog";
 import { GoalHighlight } from "@/components/goal-highlight";
 import { resolveAvatarUrl } from "@/lib/avatar-url";
 import { toast } from "sonner";
-import { Trash2, Mic, Hand, Home, Wallet, MessageCircle, BarChart3, User as UserIcon, Building2, PiggyBank, CreditCard, ArrowUpRight, ArrowDownRight, Sparkles, Construction, Crown, Check, Zap, Star, Shield, Calendar as CalendarIcon, TrendingUp, Heart, Share2, Moon, Sun, LogOut, Loader2, AlertTriangle, ExternalLink, RotateCcw } from "lucide-react";
+import { Trash2, Mic, Hand, Home, Wallet, MessageCircle, BarChart3, User as UserIcon, Building2, PiggyBank, CreditCard, ArrowUpRight, ArrowDownRight, Sparkles, Construction, Crown, Check, Zap, Star, Shield, Calendar as CalendarIcon, TrendingUp, Heart, Share2, Moon, Sun, LogOut, Loader2, AlertTriangle, ExternalLink, RotateCcw, Gem } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useTheme } from "@/hooks/use-theme";
@@ -488,8 +488,10 @@ function ProfileTab({
       name: "Pro",
       price: "R$ 19,90",
       period: "/mês",
+      tagline: "Para começar com tudo",
       icon: Zap,
       highlight: false,
+      mostExpensive: false,
       playSku: "falai_pro_monthly",
       features: [
         "Gastos ilimitados por áudio",
@@ -502,14 +504,34 @@ function ProfileTab({
       name: "Premium",
       price: "R$ 39,90",
       period: "/mês",
+      tagline: "Para você levar a sério",
       icon: Crown,
       highlight: true,
+      mostExpensive: false,
       playSku: "falai_premium_monthly",
       features: [
         "Tudo do Pro",
         "IA financeira personalizada",
         "Suporte prioritário 24/7",
-        "Múltiplas contas + família",
+      ],
+    },
+    {
+      key: "familia" as const,
+      name: "Família",
+      price: "R$ 69,90",
+      period: "/mês",
+      tagline: "Para toda a família",
+      icon: Gem,
+      highlight: false,
+      mostExpensive: true,
+      playSku: "falai_familia_monthly",
+      features: [
+        "Tudo do Premium",
+        "Múltiplas contas vinculadas",
+        "Até 5 membros da família",
+        "Painel familiar compartilhado",
+        "Metas e orçamentos em grupo",
+        "Atendimento dedicado VIP",
       ],
     },
   ];
@@ -517,7 +539,7 @@ function ProfileTab({
   const activateDev = useServerFn(activateDevSubscription);
   const cancelDev = useServerFn(cancelDevSubscription);
 
-  async function handleSubscribe(planKey: "pro" | "premium", planName: string, sku: string) {
+  async function handleSubscribe(planKey: "pro" | "premium" | "familia", planName: string, sku: string) {
     if (typeof window === "undefined") return;
 
     const isTWA =
@@ -526,8 +548,16 @@ function ProfileTab({
 
     const playSubscriptionUrl = `https://play.google.com/store/account/subscriptions?sku=${sku}&package=${PLAY_PACKAGE_NAME}`;
 
+    // Sempre que estiver no app instalado / Android, abre direto o fluxo de pagamento da Play Store.
     if (isTWA || /android/i.test(navigator.userAgent)) {
       window.location.href = playSubscriptionUrl;
+      return;
+    }
+
+    // Plano Família ainda não existe no provider de demo — direciona para Play Store.
+    if (planKey === "familia") {
+      window.open(playSubscriptionUrl, "_blank", "noopener,noreferrer");
+      toast.info("Abrindo a Play Store para concluir a assinatura Família.");
       return;
     }
 
@@ -544,6 +574,7 @@ function ProfileTab({
       setActivating(false);
     }
   }
+
 
   async function handleCancel() {
     try {
@@ -726,7 +757,7 @@ function ProfileTab({
             </div>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {plans.map((p) => {
               const Icon = p.icon;
               return (
@@ -735,12 +766,19 @@ function ProfileTab({
                   className={`relative p-5 shadow-soft transition-all hover:shadow-elevated ${
                     p.highlight
                       ? "bg-gradient-hero text-primary-foreground border-0"
-                      : "bg-card"
+                      : p.mostExpensive
+                        ? "bg-card border-2 border-accent/40"
+                        : "bg-card"
                   }`}
                 >
                   {p.highlight && (
                     <span className="absolute -top-2.5 right-4 inline-flex items-center gap-1 rounded-full bg-accent text-accent-foreground px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider">
                       <Star className="size-3" /> Popular
+                    </span>
+                  )}
+                  {p.mostExpensive && (
+                    <span className="absolute -top-2.5 right-4 inline-flex items-center gap-1 rounded-full bg-accent text-accent-foreground px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+                      <Gem className="size-3" /> Melhor valor
                     </span>
                   )}
                   <div className="flex items-center gap-2.5">
@@ -754,10 +792,11 @@ function ProfileTab({
                     <div>
                       <p className="font-display font-semibold">{p.name}</p>
                       <p className={`text-[11px] ${p.highlight ? "opacity-80" : "text-muted-foreground"}`}>
-                        Para você levar a sério
+                        {p.tagline}
                       </p>
                     </div>
                   </div>
+
                   <div className="mt-4">
                     <span className="font-display text-3xl font-bold">{p.price}</span>
                     <span className={`text-sm ${p.highlight ? "opacity-80" : "text-muted-foreground"}`}>
