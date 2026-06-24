@@ -757,7 +757,7 @@ function ProfileTab({
             </div>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {plans.map((p) => {
               const Icon = p.icon;
               return (
@@ -766,12 +766,19 @@ function ProfileTab({
                   className={`relative p-5 shadow-soft transition-all hover:shadow-elevated ${
                     p.highlight
                       ? "bg-gradient-hero text-primary-foreground border-0"
-                      : "bg-card"
+                      : p.mostExpensive
+                        ? "bg-card border-2 border-accent/40"
+                        : "bg-card"
                   }`}
                 >
                   {p.highlight && (
                     <span className="absolute -top-2.5 right-4 inline-flex items-center gap-1 rounded-full bg-accent text-accent-foreground px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider">
                       <Star className="size-3" /> Popular
+                    </span>
+                  )}
+                  {p.mostExpensive && (
+                    <span className="absolute -top-2.5 right-4 inline-flex items-center gap-1 rounded-full bg-accent text-accent-foreground px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+                      <Gem className="size-3" /> Melhor valor
                     </span>
                   )}
                   <div className="flex items-center gap-2.5">
@@ -785,10 +792,11 @@ function ProfileTab({
                     <div>
                       <p className="font-display font-semibold">{p.name}</p>
                       <p className={`text-[11px] ${p.highlight ? "opacity-80" : "text-muted-foreground"}`}>
-                        Para você levar a sério
+                        {p.tagline}
                       </p>
                     </div>
                   </div>
+
                   <div className="mt-4">
                     <span className="font-display text-3xl font-bold">{p.price}</span>
                     <span className={`text-sm ${p.highlight ? "opacity-80" : "text-muted-foreground"}`}>
