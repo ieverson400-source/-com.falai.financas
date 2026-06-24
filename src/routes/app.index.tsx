@@ -8,6 +8,7 @@ import {
   activateDevSubscription,
   cancelDevSubscription,
 } from "@/lib/subscription.functions";
+import { verifyMyPlayPurchase } from "@/lib/play-billing.functions";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { AudioRecorder } from "@/components/audio-recorder";
@@ -538,6 +539,69 @@ function ProfileTab({
 
   const activateDev = useServerFn(activateDevSubscription);
   const cancelDev = useServerFn(cancelDevSubscription);
+  const verifyPlay = useServerFn(verifyMyPlayPurchase);
+  const [verifying, setVerifying] = useState(false);
+
+  // Lê o purchaseToken que a camada nativa (Play Billing / TWA bridge) grava
+  // em localStorage após o checkout — chave compartilhada com o wrapper Android.
+  const readStoredPlayToken = useCallback(():
+    | { purchaseToken: string; productId?: string }
+    | null => {
+    if (typeof window === "undefined") return null;
+    try {
+      const raw = window.localStorage.getItem("falai.play.purchase");
+      if (!raw) return null;
+      const parsed = JSON.parse(raw) as { purchaseToken?: string; productId?: string };
+      if (!parsed.purchaseToken) return null;
+      return { purchaseToken: parsed.purchaseToken, productId: parsed.productId };
+    } catch {
+      return null;
+    }
+  }, []);
+
+  async function handleRestorePurchase() {
+    const stored = readStoredPlayToken();
+    if (!stored) {
+      toast.error("Nenhuma compra recente encontrada neste dispositivo. Abra o app pelo Google Play após assinar.");
+      return;
+    }
+    try {
+      setVerifying(true);
+      const res = await verifyPlay({ data: stored });
+      await refresh();
+      if (res.status === "active" || res.status === "in_grace_period") {
+        toast.success(`Assinatura ${res.plan.toUpperCase()} ativa — recursos liberados.`);
+      } else {
+        toast.info(`Status atual: ${res.status}.`);
+      }
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Falha ao validar a compra";
+      toast.error(msg);
+    } finally {
+      setVerifying(false);
+    }
+  }
+
+  // Revalida automaticamente no primeiro mount se houver token armazenado e
+  // ainda não houver assinatura ativa no nosso backend.
+  useEffect(() => {
+    if (isActive) return;
+    const stored = readStoredPlayToken();
+    if (!stored) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        await verifyPlay({ data: stored });
+        if (!cancelled) await refresh();
+      } catch {
+        // silencioso — o usuário pode tentar manualmente via "Restaurar compra".
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function handleSubscribe(planKey: "pro" | "premium" | "familia", planName: string, sku: string) {
     if (typeof window === "undefined") return;
@@ -838,7 +902,19 @@ function ProfileTab({
             })}
           </div>
         )}
+
+        {/* Restaurar compra — valida o purchaseToken da Play Store no backend */}
+        <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 rounded-xl border border-border bg-muted/30 px-4 py-3">
+          <div className="text-xs text-muted-foreground">
+            Já assinou pela Play Store? Valide o status no servidor para liberar os recursos.
+          </div>
+          <Button size="sm" variant="outline" disabled={verifying} onClick={handleRestorePurchase} className="gap-2">
+            {verifying ? <Loader2 className="size-4 animate-spin" /> : <RotateCcw className="size-4" />}
+            Restaurar compra
+          </Button>
+        </div>
       </section>
+
 
       {/* Loving the app? */}
       <Card className="p-5 bg-gradient-hero text-primary-foreground border-0 shadow-elevated">
