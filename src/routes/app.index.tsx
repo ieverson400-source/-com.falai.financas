@@ -636,18 +636,64 @@ function ProfileTab({
       document.referrer.startsWith("android-app://") ||
       window.matchMedia("(display-mode: standalone)").matches;
 
-    const playSubscriptionUrl = `https://play.google.com/store/account/subscriptions?sku=${sku}&package=${PLAY_PACKAGE_NAME}`;
+    // Tela de detalhes do app (NÃO usar /store/account/subscriptions — essa é a tela
+    // "Gerenciar assinatura" que mostra "Não foi possível encontrar sua assinatura"
+    // quando o usuário ainda não comprou nada).
+    const playStoreFallback = `https://play.google.com/store/apps/details?id=${PLAY_PACKAGE_NAME}`;
 
-    // Sempre que estiver no app instalado / Android, abre direto o fluxo de pagamento da Play Store.
-    if (isTWA || /android/i.test(navigator.userAgent)) {
-      window.location.href = playSubscriptionUrl;
+    // Dentro do TWA: usar a Digital Goods API + PaymentRequest para acionar
+    // o fluxo NATIVO de compra do Google Play Billing (Pix, cartão, etc.).
+    if (isTWA && "getDigitalGoodsService" in window) {
+      try {
+        setActivating(true);
+        // @ts-expect-error — Digital Goods API ainda não tipada no lib.dom
+        const service = await window.getDigitalGoodsService("https://play.google.com/billing");
+        const details = await service.getDetails([sku]);
+        if (!details?.length) throw new Error(`SKU ${sku} não encontrado no Play Console`);
+
+        const request = new PaymentRequest(
+          [
+            {
+              supportedMethods: "https://play.google.com/billing",
+              data: { sku },
+            },
+          ],
+          { total: { label: planName, amount: { currency: "BRL", value: "0" } } },
+        );
+        const response = await request.show();
+        // O purchaseToken vem dentro de details no PaymentResponse do Play Billing.
+        const purchaseToken: string | undefined =
+          (response.details as { purchaseToken?: string })?.purchaseToken;
+        await response.complete("success");
+
+        if (purchaseToken) {
+          try { localStorage.setItem("play_purchase_token", purchaseToken); } catch { /* noop */ }
+          await verifyPlay({ data: { purchaseToken, productId: sku } });
+          await refresh();
+          toast.success(`Assinatura ${planName} ativada!`);
+        } else {
+          toast.warning("Compra concluída. Aguarde a confirmação.");
+        }
+        return;
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : "Falha ao iniciar compra";
+        toast.error(msg);
+        return;
+      } finally {
+        setActivating(false);
+      }
+    }
+
+    // Android fora do TWA (navegador): abre a página do app na Play Store.
+    if (/android/i.test(navigator.userAgent)) {
+      window.location.href = playStoreFallback;
       return;
     }
 
-    // Plano Família ainda não existe no provider de demo — direciona para Play Store.
-    if (planKey === "familia") {
-      window.open(playSubscriptionUrl, "_blank", "noopener,noreferrer");
-      toast.info("Abrindo a Play Store para concluir a assinatura Família.");
+    // Desktop / iOS — modo demonstração para Pro; demais planos abrem Play Store.
+    if (planKey === "familia" || planKey === "premium") {
+      window.open(playStoreFallback, "_blank", "noopener,noreferrer");
+      toast.info(`Abrindo a Play Store para concluir a assinatura ${planName}.`);
       return;
     }
 
@@ -659,7 +705,7 @@ function ProfileTab({
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Falha ao ativar";
       toast.error(msg);
-      window.open(PLAY_STORE_URL, "_blank", "noopener,noreferrer");
+      window.open(playStoreFallback, "_blank", "noopener,noreferrer");
     } finally {
       setActivating(false);
     }
