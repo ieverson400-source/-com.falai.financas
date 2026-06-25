@@ -582,6 +582,32 @@ function ProfileTab({
     }
   }
 
+  // Verifica agora — não depende do mount do TWA: se houver token salvo,
+  // revalida no Google; caso contrário, apenas reconsulta o backend.
+  async function handleVerifyNow() {
+    try {
+      setVerifying(true);
+      const stored = readStoredPlayToken();
+      if (stored) {
+        const res = await verifyPlay({ data: stored });
+        await refresh();
+        if (res.status === "active" || res.status === "in_grace_period") {
+          toast.success(`Assinatura ${res.plan.toUpperCase()} ativa.`);
+        } else {
+          toast.info(`Status atual: ${res.status}.`);
+        }
+      } else {
+        await refresh();
+        toast.success("Status atualizado.");
+      }
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Falha ao verificar";
+      toast.error(msg);
+    } finally {
+      setVerifying(false);
+    }
+  }
+
   // Revalida automaticamente no primeiro mount se houver token armazenado e
   // ainda não houver assinatura ativa no nosso backend.
   useEffect(() => {
@@ -702,6 +728,50 @@ function ProfileTab({
             </p>
           </div>
         </div>
+
+        {/* Status atual — sempre visível, não depende do mount do TWA */}
+        {(() => {
+          const statusKey = (subscription?.status as keyof typeof statusConfig) ?? "inactive";
+          const cfg = statusConfig[statusKey];
+          const StatusIcon = cfg.icon;
+          const statusLabel = isSubscriber
+            ? cfg.label
+            : subscription
+              ? cfg.label
+              : "Sem assinatura";
+          return (
+            <Card className="mb-4 p-4 sm:p-5 bg-card shadow-soft flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+              <div className="size-11 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                <Shield className="size-5 text-primary" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <p className="font-medium">Status da assinatura</p>
+                  <Badge variant="outline" className={`${cfg.color} text-[11px] font-semibold border`}>
+                    <StatusIcon className="size-3 mr-1" />
+                    {statusLabel}
+                  </Badge>
+                </div>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {isSubscriber
+                    ? `Plano ${plan.toUpperCase()} • atualizado em tempo real`
+                    : "Assine um plano abaixo ou verifique uma compra já feita na Play Store."}
+                </p>
+              </div>
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={verifying}
+                onClick={handleVerifyNow}
+                className="gap-2 shrink-0"
+              >
+                {verifying ? <Loader2 className="size-4 animate-spin" /> : <RotateCcw className="size-4" />}
+                Verificar agora
+              </Button>
+            </Card>
+          );
+        })()}
+
 
         {isSubscriber ? (
           <Card className="overflow-hidden bg-card shadow-soft border-border">
