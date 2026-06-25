@@ -582,6 +582,32 @@ function ProfileTab({
     }
   }
 
+  // Verifica agora — não depende do mount do TWA: se houver token salvo,
+  // revalida no Google; caso contrário, apenas reconsulta o backend.
+  async function handleVerifyNow() {
+    try {
+      setVerifying(true);
+      const stored = readStoredPlayToken();
+      if (stored) {
+        const res = await verifyPlay({ data: stored });
+        await refresh();
+        if (res.status === "active" || res.status === "in_grace_period") {
+          toast.success(`Assinatura ${res.plan.toUpperCase()} ativa.`);
+        } else {
+          toast.info(`Status atual: ${res.status}.`);
+        }
+      } else {
+        await refresh();
+        toast.success("Status atualizado.");
+      }
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Falha ao verificar";
+      toast.error(msg);
+    } finally {
+      setVerifying(false);
+    }
+  }
+
   // Revalida automaticamente no primeiro mount se houver token armazenado e
   // ainda não houver assinatura ativa no nosso backend.
   useEffect(() => {
