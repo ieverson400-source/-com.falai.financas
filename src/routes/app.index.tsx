@@ -254,11 +254,12 @@ function AppDashboard() {
                   <p className="text-[11px] uppercase tracking-wider text-muted-foreground">Total geral</p>
                   <p className="font-display text-xl sm:text-2xl font-semibold mt-1 break-words">{formatBRL(totalAll)}</p>
                 </Card>
-                <div className="col-span-2 lg:col-span-1 space-y-4">
-                  <WhatsAppLinkCard currentPhone={whatsAppPhone} onSaved={(phone) => setWhatsAppPhone(phone)} />
-                  <VerificacaoWhatsApp />
-                  {isAdmin && <WhatsAppDiagnosticsCard currentPhone={whatsAppPhone} />}
-                </div>
+                {isAdmin && (
+                  <div className="col-span-2 lg:col-span-1 space-y-4">
+                    <WhatsAppDiagnosticsCard currentPhone={whatsAppPhone} />
+                  </div>
+                )}
+
               </div>
             </div>
 
