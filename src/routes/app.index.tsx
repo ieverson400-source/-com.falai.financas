@@ -17,9 +17,8 @@ import { ManualExpenseDialog } from "@/components/manual-expense-dialog";
 import { ReceiptScanner } from "@/components/receipt-scanner";
 import { ImportSpreadsheetButton } from "@/components/import-spreadsheet-button";
 
-import { WhatsAppLinkCard } from "@/components/whatsapp-link-card";
 
-import { VerificacaoWhatsApp } from "@/components/verificacao-whatsapp";
+
 import { WhatsAppDiagnosticsCard } from "@/components/whatsapp-diagnostics-card";
 import { WhatsAppInboxCard, type WhatsAppInboxItem } from "@/components/whatsapp-inbox-card";
 import { Toaster } from "@/components/ui/sonner";
