@@ -9,6 +9,7 @@ import {
   cancelDevSubscription,
 } from "@/lib/subscription.functions";
 import { verifyMyPlayPurchase } from "@/lib/play-billing.functions";
+import { listBankData } from "@/lib/pluggy.functions";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { AudioRecorder } from "@/components/audio-recorder";
