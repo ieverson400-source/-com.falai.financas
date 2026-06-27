@@ -77,6 +77,8 @@ function AppDashboard() {
   const [refreshing, setRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState<TabKey>("inicio");
   const [isAdmin, setIsAdmin] = useState(false);
+  const [bankAccounts, setBankAccounts] = useState<Array<{ id: string; name: string | null; type: string | null; number: string | null; balance: number | null; institution: string | null }>>([]);
+  const fetchBankData = useServerFn(listBankData);
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth" });
