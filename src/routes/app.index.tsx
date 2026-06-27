@@ -283,31 +283,56 @@ function AppDashboard() {
 
             {/* Minhas contas */}
             <Card className="bg-card shadow-soft overflow-hidden">
-              <div className="p-4 sm:p-6 border-b border-border">
-                <h2 className="font-display text-base sm:text-lg font-semibold">Minhas contas</h2>
-                <p className="text-xs text-muted-foreground mt-0.5">Exemplos para referência</p>
+              <div className="p-4 sm:p-6 border-b border-border flex items-center justify-between gap-3">
+                <div>
+                  <h2 className="font-display text-base sm:text-lg font-semibold">Minhas contas</h2>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {bankAccounts.length > 0
+                      ? `${bankAccounts.length} conta(s) sincronizada(s)`
+                      : "Conecte um banco para ver seus saldos"}
+                  </p>
+                </div>
+                <Button asChild size="sm" variant={bankAccounts.length > 0 ? "outline" : "default"}>
+                  <Link to="/app/bancos">{bankAccounts.length > 0 ? "Gerenciar" : "Conectar"}</Link>
+                </Button>
               </div>
-              <ul className="divide-y divide-border">
-                {[
-                  { icon: Building2, name: "Conta Corrente", value: 0 },
-                  { icon: PiggyBank, name: "Poupança", value: 0 },
-                  { icon: CreditCard, name: "Cartão de Crédito", value: 0 },
-                ].map(({ icon: Icon, name, value }) => (
-                  <li key={name} className="px-4 sm:px-6 py-4 flex items-center gap-3">
-                    <div className="size-10 rounded-xl bg-muted flex items-center justify-center shrink-0">
-                      <Icon className="size-4 text-muted-foreground" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium truncate">{name}</p>
-                      <p className="text-xs text-muted-foreground">Demonstração</p>
-                    </div>
-                    <p className="font-display font-semibold tabular-nums text-sm">
-                      {formatBRL(value)}
-                    </p>
-                  </li>
-                ))}
-              </ul>
+              {bankAccounts.length === 0 ? (
+                <div className="px-4 sm:px-6 py-8 text-center">
+                  <Building2 className="mx-auto mb-2 size-8 text-muted-foreground" />
+                  <p className="text-sm text-muted-foreground">
+                    Nenhuma conta conectada ainda.
+                  </p>
+                </div>
+              ) : (
+                <ul className="divide-y divide-border">
+                  {bankAccounts.map((acc) => {
+                    const type = (acc.type ?? "").toLowerCase();
+                    const Icon = type.includes("credit") || type.includes("cart")
+                      ? CreditCard
+                      : type.includes("savings") || type.includes("poup")
+                        ? PiggyBank
+                        : Building2;
+                    return (
+                      <li key={acc.id} className="px-4 sm:px-6 py-4 flex items-center gap-3">
+                        <div className="size-10 rounded-xl bg-muted flex items-center justify-center shrink-0">
+                          <Icon className="size-4 text-muted-foreground" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium truncate">{acc.name ?? acc.type ?? "Conta"}</p>
+                          <p className="text-xs text-muted-foreground truncate">
+                            {[acc.institution, acc.number].filter(Boolean).join(" · ") || "—"}
+                          </p>
+                        </div>
+                        <p className="font-display font-semibold tabular-nums text-sm">
+                          {formatBRL(acc.balance ?? 0)}
+                        </p>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
             </Card>
+
 
             {/* Recarga de celular */}
             <Link to="/app/recarga" className="block">
