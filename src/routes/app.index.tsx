@@ -122,7 +122,23 @@ function AppDashboard() {
     const storedAvatar = profileRes.data?.avatar_url ?? user.user_metadata?.avatar_path ?? user.user_metadata?.avatar_url ?? null;
     setAvatarUrl(await resolveAvatarUrl(storedAvatar));
     setWhatsAppInbox((inboxRes.data ?? []) as WhatsAppInboxItem[]);
-  }, [user]);
+    try {
+      const bank = await fetchBankData();
+      const itemsById = new Map((bank.items as Array<{ id: string; institution_name: string | null }>).map((i) => [i.id, i.institution_name]));
+      setBankAccounts(
+        (bank.accounts as Array<{ id: string; name: string | null; type: string | null; number: string | null; balance: number | null; item_id: string }>).map((a) => ({
+          id: a.id,
+          name: a.name,
+          type: a.type,
+          number: a.number,
+          balance: a.balance,
+          institution: itemsById.get(a.item_id) ?? null,
+        })),
+      );
+    } catch {
+      setBankAccounts([]);
+    }
+  }, [user, fetchBankData]);
 
   useEffect(() => {
     if (user) load();
