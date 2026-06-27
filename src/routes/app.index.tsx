@@ -1019,16 +1019,6 @@ function ProfileTab({
           </div>
         )}
 
-        {/* Restaurar compra — valida o purchaseToken da Play Store no backend */}
-        <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 rounded-xl border border-border bg-muted/30 px-4 py-3">
-          <div className="text-xs text-muted-foreground">
-            Já assinou pela Play Store? Valide o status no servidor para liberar os recursos.
-          </div>
-          <Button size="sm" variant="outline" disabled={verifying} onClick={handleRestorePurchase} className="gap-2">
-            {verifying ? <Loader2 className="size-4 animate-spin" /> : <RotateCcw className="size-4" />}
-            Restaurar compra
-          </Button>
-        </div>
       </section>
 
 
