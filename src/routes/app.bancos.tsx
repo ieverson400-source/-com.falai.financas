@@ -208,7 +208,7 @@ function BancosPage() {
   if (loading || !user) return null;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="flex min-h-screen flex-col bg-background">
       <Toaster />
       <header className="sticky top-0 z-10 border-b bg-background/80 backdrop-blur">
         <div className="mx-auto flex max-w-3xl items-center gap-3 px-4 py-4">
@@ -247,7 +247,7 @@ function BancosPage() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-3xl space-y-6 px-4 py-6">
+      <main className="mx-auto max-w-3xl flex-1 space-y-6 px-4 py-6 w-full">
         {items.length === 0 ? (
           <Card className="p-8 text-center">
             <Building2 className="mx-auto mb-3 h-10 w-10 text-muted-foreground" />
@@ -391,6 +391,15 @@ function BancosPage() {
           )}
         </DialogContent>
       </Dialog>
+
+      <footer className="border-t bg-background px-4 py-6 text-center text-xs text-muted-foreground">
+        <div className="mx-auto flex max-w-3xl items-center justify-center gap-4">
+          <span>© 2026 Falaí Finanças</span>
+          <Link to="/privacy" className="hover:underline underline-offset-2">
+            Política de Privacidade
+          </Link>
+        </div>
+      </footer>
     </div>
   );
 }
