@@ -160,6 +160,16 @@ function HomeMobile() {
         {tab === "perfil" && <PlaceholderTab title="Perfil" desc="Suas preferências e conta." />}
       </main>
 
+      {/* Footer */}
+      <footer className="border-t bg-background px-4 py-6 text-center text-xs text-muted-foreground pb-24">
+        <div className="mx-auto flex max-w-md items-center justify-center gap-4">
+          <span>© 2026 Falaí Finanças</span>
+          <Link to="/privacy" className="hover:underline underline-offset-2">
+            Política de Privacidade
+          </Link>
+        </div>
+      </footer>
+
       {/* Bottom nav */}
       <nav
         aria-label="Navegação principal"

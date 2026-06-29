@@ -461,6 +461,16 @@ function AppDashboard() {
         )}
       </main>
 
+      {/* Footer */}
+      <footer className="border-t bg-background px-4 py-6 text-center text-xs text-muted-foreground pb-24">
+        <div className="mx-auto flex max-w-6xl items-center justify-center gap-4">
+          <span>© 2026 Falaí Finanças</span>
+          <Link to="/privacy" className="hover:underline underline-offset-2">
+            Política de Privacidade
+          </Link>
+        </div>
+      </footer>
+
       {/* Bottom nav */}
       <nav
         className="fixed bottom-0 inset-x-0 z-40 border-t border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80"
