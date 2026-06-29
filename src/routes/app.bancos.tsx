@@ -247,7 +247,7 @@ function BancosPage() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-3xl space-y-6 px-4 py-6">
+      <main className="mx-auto max-w-3xl flex-1 space-y-6 px-4 py-6 w-full">
         {items.length === 0 ? (
           <Card className="p-8 text-center">
             <Building2 className="mx-auto mb-3 h-10 w-10 text-muted-foreground" />
