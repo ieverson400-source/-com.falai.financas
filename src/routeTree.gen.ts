@@ -22,6 +22,7 @@ import { Route as AppConectarWhatsappRouteImport } from './routes/app.conectar-w
 import { Route as AppBancosRouteImport } from './routes/app.bancos'
 import { Route as AppRecargaIndexRouteImport } from './routes/app.recarga.index'
 import { Route as AppRecargaConfiguracoesRouteImport } from './routes/app.recarga.configuracoes'
+import { Route as ApiPublicZapiRouteImport } from './routes/api/public/zapi'
 import { Route as ApiPublicWhatsappRouteImport } from './routes/api/public/whatsapp'
 import { Route as ApiPublicPlayRtdnRouteImport } from './routes/api/public/play-rtdn'
 import { Route as ApiPublicHooksWhatsappMonthlySummaryRouteImport } from './routes/api/public/hooks/whatsapp-monthly-summary'
@@ -91,6 +92,11 @@ const AppRecargaConfiguracoesRoute = AppRecargaConfiguracoesRouteImport.update({
   path: '/app/recarga/configuracoes',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicZapiRoute = ApiPublicZapiRouteImport.update({
+  id: '/api/public/zapi',
+  path: '/api/public/zapi',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicWhatsappRoute = ApiPublicWhatsappRouteImport.update({
   id: '/api/public/whatsapp',
   path: '/api/public/whatsapp',
@@ -122,6 +128,7 @@ export interface FileRoutesByFullPath {
   '/app/': typeof AppIndexRoute
   '/api/public/play-rtdn': typeof ApiPublicPlayRtdnRoute
   '/api/public/whatsapp': typeof ApiPublicWhatsappRoute
+  '/api/public/zapi': typeof ApiPublicZapiRoute
   '/app/recarga/configuracoes': typeof AppRecargaConfiguracoesRoute
   '/app/recarga/': typeof AppRecargaIndexRoute
   '/api/public/hooks/whatsapp-monthly-summary': typeof ApiPublicHooksWhatsappMonthlySummaryRoute
@@ -140,6 +147,7 @@ export interface FileRoutesByTo {
   '/app': typeof AppIndexRoute
   '/api/public/play-rtdn': typeof ApiPublicPlayRtdnRoute
   '/api/public/whatsapp': typeof ApiPublicWhatsappRoute
+  '/api/public/zapi': typeof ApiPublicZapiRoute
   '/app/recarga/configuracoes': typeof AppRecargaConfiguracoesRoute
   '/app/recarga': typeof AppRecargaIndexRoute
   '/api/public/hooks/whatsapp-monthly-summary': typeof ApiPublicHooksWhatsappMonthlySummaryRoute
@@ -159,6 +167,7 @@ export interface FileRoutesById {
   '/app/': typeof AppIndexRoute
   '/api/public/play-rtdn': typeof ApiPublicPlayRtdnRoute
   '/api/public/whatsapp': typeof ApiPublicWhatsappRoute
+  '/api/public/zapi': typeof ApiPublicZapiRoute
   '/app/recarga/configuracoes': typeof AppRecargaConfiguracoesRoute
   '/app/recarga/': typeof AppRecargaIndexRoute
   '/api/public/hooks/whatsapp-monthly-summary': typeof ApiPublicHooksWhatsappMonthlySummaryRoute
@@ -179,6 +188,7 @@ export interface FileRouteTypes {
     | '/app/'
     | '/api/public/play-rtdn'
     | '/api/public/whatsapp'
+    | '/api/public/zapi'
     | '/app/recarga/configuracoes'
     | '/app/recarga/'
     | '/api/public/hooks/whatsapp-monthly-summary'
@@ -197,6 +207,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/api/public/play-rtdn'
     | '/api/public/whatsapp'
+    | '/api/public/zapi'
     | '/app/recarga/configuracoes'
     | '/app/recarga'
     | '/api/public/hooks/whatsapp-monthly-summary'
@@ -215,6 +226,7 @@ export interface FileRouteTypes {
     | '/app/'
     | '/api/public/play-rtdn'
     | '/api/public/whatsapp'
+    | '/api/public/zapi'
     | '/app/recarga/configuracoes'
     | '/app/recarga/'
     | '/api/public/hooks/whatsapp-monthly-summary'
@@ -234,6 +246,7 @@ export interface RootRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
   ApiPublicPlayRtdnRoute: typeof ApiPublicPlayRtdnRoute
   ApiPublicWhatsappRoute: typeof ApiPublicWhatsappRoute
+  ApiPublicZapiRoute: typeof ApiPublicZapiRoute
   AppRecargaConfiguracoesRoute: typeof AppRecargaConfiguracoesRoute
   AppRecargaIndexRoute: typeof AppRecargaIndexRoute
   ApiPublicHooksWhatsappMonthlySummaryRoute: typeof ApiPublicHooksWhatsappMonthlySummaryRoute
@@ -332,6 +345,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRecargaConfiguracoesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/zapi': {
+      id: '/api/public/zapi'
+      path: '/api/public/zapi'
+      fullPath: '/api/public/zapi'
+      preLoaderRoute: typeof ApiPublicZapiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/whatsapp': {
       id: '/api/public/whatsapp'
       path: '/api/public/whatsapp'
@@ -370,6 +390,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppIndexRoute: AppIndexRoute,
   ApiPublicPlayRtdnRoute: ApiPublicPlayRtdnRoute,
   ApiPublicWhatsappRoute: ApiPublicWhatsappRoute,
+  ApiPublicZapiRoute: ApiPublicZapiRoute,
   AppRecargaConfiguracoesRoute: AppRecargaConfiguracoesRoute,
   AppRecargaIndexRoute: AppRecargaIndexRoute,
   ApiPublicHooksWhatsappMonthlySummaryRoute:
