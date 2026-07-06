@@ -47,24 +47,41 @@ function AuthPage() {
     setLoading(true);
     try {
       if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
+        const normalized = normalizeWhatsAppPhone(phone);
+        const { data: signUpData, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
             emailRedirectTo: window.location.origin + "/app",
-            data: { display_name: name || email.split("@")[0] },
+            data: {
+              display_name: name || email.split("@")[0],
+              whatsapp_phone: normalized ?? null,
+            },
           },
         });
         if (error) throw error;
 
-        // Envia mensagem de boas-vindas via WhatsApp (não bloqueia o cadastro em caso de falha)
-        const normalized = normalizeWhatsAppPhone(phone);
+        // Se já veio sessão (auto-confirm), grava o telefone no perfil imediatamente
+        if (signUpData.session && signUpData.user && normalized) {
+          await supabase
+            .from("profiles")
+            .upsert(
+              {
+                user_id: signUpData.user.id,
+                display_name: name || email.split("@")[0],
+                whatsapp_phone: normalized,
+              },
+              { onConflict: "user_id" },
+            );
+        }
+
         if (normalized) {
           try {
             await sendWelcome({
               data: {
                 toNumber: `whatsapp:${normalized}`,
-                messageBody: "Olá! Seja bem-vindo ao Falai Finanças! 🚀",
+                messageBody:
+                  "Olá! Bem-vindo ao Falaí Finanças 🚀\n\nA partir de agora você vai receber por aqui:\n• Confirmação de cada gasto registrado\n• Resumo diário no fim do dia\n• Resumo semanal e mensal\n• Alertas de orçamento\n• Dica financeira semanal\n\nBoa organização! 💚",
               },
             });
             toast.success("Conta criada! Enviamos uma mensagem no seu WhatsApp.");
@@ -77,8 +94,33 @@ function AuthPage() {
         }
         setMode("signin");
       } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { data: signInData, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
+
+        // Sincroniza telefone do metadata para o perfil caso ainda não esteja gravado
+        const metaPhone = signInData.user?.user_metadata?.whatsapp_phone;
+        if (signInData.user && metaPhone) {
+          const { data: prof } = await supabase
+            .from("profiles")
+            .select("whatsapp_phone")
+            .eq("user_id", signInData.user.id)
+            .maybeSingle();
+          if (!prof?.whatsapp_phone) {
+            await supabase
+              .from("profiles")
+              .upsert(
+                {
+                  user_id: signInData.user.id,
+                  display_name:
+                    signInData.user.user_metadata?.display_name ??
+                    signInData.user.email ??
+                    null,
+                  whatsapp_phone: metaPhone,
+                },
+                { onConflict: "user_id" },
+              );
+          }
+        }
         window.location.href = "/app";
       }
     } catch (err) {
