@@ -173,14 +173,122 @@ function HomeMobile() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t bg-background px-4 py-6 text-center text-xs text-muted-foreground pb-24">
-        <div className="mx-auto flex max-w-md items-center justify-center gap-4">
-          <span>© 2026 Falaí Finanças</span>
-          <Link to="/privacy" className="hover:underline underline-offset-2">
-            Política de Privacidade
-          </Link>
+      <footer className="border-t bg-background px-4 py-6 text-xs text-muted-foreground pb-24">
+        <div className="mx-auto flex max-w-md flex-col items-center gap-3">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-2">
+                <CalendarClock className="size-4" />
+                Agenda de mensagens automáticas
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-md">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <MessageCircle className="size-5 text-primary" />
+                  Relatórios automáticos no WhatsApp
+                </DialogTitle>
+                <DialogDescription>
+                  Quando o Falaí envia mensagens no seu WhatsApp automaticamente.
+                </DialogDescription>
+              </DialogHeader>
+              <ul className="space-y-3 text-sm">
+                <li className="flex items-start gap-3">
+                  <span className="mt-0.5 inline-flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary text-[11px] font-semibold">
+                    ⚡
+                  </span>
+                  <div>
+                    <p className="font-medium text-foreground">A cada gasto</p>
+                    <p className="text-xs text-muted-foreground">
+                      Confirmação instantânea assim que um gasto é registrado.
+                    </p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="mt-0.5 inline-flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary text-[11px] font-semibold">
+                    21h
+                  </span>
+                  <div>
+                    <p className="font-medium text-foreground">Resumo diário</p>
+                    <p className="text-xs text-muted-foreground">
+                      Todo dia às 21h: total gasto e top categorias do dia.
+                    </p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="mt-0.5 inline-flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary text-[11px] font-semibold">
+                    SEG
+                  </span>
+                  <div>
+                    <p className="font-medium text-foreground">Resumo semanal</p>
+                    <p className="text-xs text-muted-foreground">
+                      Toda segunda de manhã: comparativo com a semana anterior.
+                    </p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="mt-0.5 inline-flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary text-[11px] font-semibold">
+                    01
+                  </span>
+                  <div>
+                    <p className="font-medium text-foreground">Resumo mensal</p>
+                    <p className="text-xs text-muted-foreground">
+                      Todo dia 1º: fechamento completo do mês anterior.
+                    </p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="mt-0.5 inline-flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary text-[11px] font-semibold">
+                    !
+                  </span>
+                  <div>
+                    <p className="font-medium text-foreground">Alerta de orçamento</p>
+                    <p className="text-xs text-muted-foreground">
+                      Quando uma categoria atinge 80% e 100% da meta.
+                    </p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="mt-0.5 inline-flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary text-[11px] font-semibold">
+                    SEX
+                  </span>
+                  <div>
+                    <p className="font-medium text-foreground">Dica financeira semanal</p>
+                    <p className="text-xs text-muted-foreground">
+                      Toda sexta: dica personalizada com IA a partir dos seus gastos.
+                    </p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="mt-0.5 inline-flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary text-[11px] font-semibold">
+                    zZ
+                  </span>
+                  <div>
+                    <p className="font-medium text-foreground">Lembrete de inatividade</p>
+                    <p className="text-xs text-muted-foreground">
+                      Aviso amigável se você ficar dias sem registrar gastos.
+                    </p>
+                  </div>
+                </li>
+              </ul>
+              <p className="text-[11px] text-muted-foreground text-center pt-2">
+                Você pode ligar ou desligar cada tipo em{" "}
+                <Link to="/app/conectar-whatsapp" className="underline">
+                  WhatsApp & notificações
+                </Link>
+                .
+              </p>
+            </DialogContent>
+          </Dialog>
+          <div className="flex items-center justify-center gap-4 text-center">
+            <span>© 2026 Falaí Finanças</span>
+            <Link to="/privacy" className="hover:underline underline-offset-2">
+              Política de Privacidade
+            </Link>
+          </div>
         </div>
       </footer>
+
 
       {/* Bottom nav */}
       <nav
