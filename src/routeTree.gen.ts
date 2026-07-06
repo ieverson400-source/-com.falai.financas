@@ -18,7 +18,6 @@ import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as BlogGuiaGestaoDeGastosRouteImport } from './routes/blog.guia-gestao-de-gastos'
 import { Route as AppWhatsappTestRouteImport } from './routes/app.whatsapp-test'
 import { Route as AppOrcamentosRouteImport } from './routes/app.orcamentos'
-import { Route as AppOnboardingWhatsappRouteImport } from './routes/app.onboarding-whatsapp'
 import { Route as AppHomeRouteImport } from './routes/app.home'
 import { Route as AppConectarWhatsappRouteImport } from './routes/app.conectar-whatsapp'
 import { Route as AppBancosRouteImport } from './routes/app.bancos'
@@ -76,11 +75,6 @@ const AppWhatsappTestRoute = AppWhatsappTestRouteImport.update({
 const AppOrcamentosRoute = AppOrcamentosRouteImport.update({
   id: '/app/orcamentos',
   path: '/app/orcamentos',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AppOnboardingWhatsappRoute = AppOnboardingWhatsappRouteImport.update({
-  id: '/app/onboarding-whatsapp',
-  path: '/app/onboarding-whatsapp',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppHomeRoute = AppHomeRouteImport.update({
@@ -163,7 +157,6 @@ export interface FileRoutesByFullPath {
   '/app/bancos': typeof AppBancosRoute
   '/app/conectar-whatsapp': typeof AppConectarWhatsappRoute
   '/app/home': typeof AppHomeRoute
-  '/app/onboarding-whatsapp': typeof AppOnboardingWhatsappRoute
   '/app/orcamentos': typeof AppOrcamentosRoute
   '/app/whatsapp-test': typeof AppWhatsappTestRoute
   '/blog/guia-gestao-de-gastos': typeof BlogGuiaGestaoDeGastosRoute
@@ -188,7 +181,6 @@ export interface FileRoutesByTo {
   '/app/bancos': typeof AppBancosRoute
   '/app/conectar-whatsapp': typeof AppConectarWhatsappRoute
   '/app/home': typeof AppHomeRoute
-  '/app/onboarding-whatsapp': typeof AppOnboardingWhatsappRoute
   '/app/orcamentos': typeof AppOrcamentosRoute
   '/app/whatsapp-test': typeof AppWhatsappTestRoute
   '/blog/guia-gestao-de-gastos': typeof BlogGuiaGestaoDeGastosRoute
@@ -214,7 +206,6 @@ export interface FileRoutesById {
   '/app/bancos': typeof AppBancosRoute
   '/app/conectar-whatsapp': typeof AppConectarWhatsappRoute
   '/app/home': typeof AppHomeRoute
-  '/app/onboarding-whatsapp': typeof AppOnboardingWhatsappRoute
   '/app/orcamentos': typeof AppOrcamentosRoute
   '/app/whatsapp-test': typeof AppWhatsappTestRoute
   '/blog/guia-gestao-de-gastos': typeof BlogGuiaGestaoDeGastosRoute
@@ -241,7 +232,6 @@ export interface FileRouteTypes {
     | '/app/bancos'
     | '/app/conectar-whatsapp'
     | '/app/home'
-    | '/app/onboarding-whatsapp'
     | '/app/orcamentos'
     | '/app/whatsapp-test'
     | '/blog/guia-gestao-de-gastos'
@@ -266,7 +256,6 @@ export interface FileRouteTypes {
     | '/app/bancos'
     | '/app/conectar-whatsapp'
     | '/app/home'
-    | '/app/onboarding-whatsapp'
     | '/app/orcamentos'
     | '/app/whatsapp-test'
     | '/blog/guia-gestao-de-gastos'
@@ -291,7 +280,6 @@ export interface FileRouteTypes {
     | '/app/bancos'
     | '/app/conectar-whatsapp'
     | '/app/home'
-    | '/app/onboarding-whatsapp'
     | '/app/orcamentos'
     | '/app/whatsapp-test'
     | '/blog/guia-gestao-de-gastos'
@@ -317,7 +305,6 @@ export interface RootRouteChildren {
   AppBancosRoute: typeof AppBancosRoute
   AppConectarWhatsappRoute: typeof AppConectarWhatsappRoute
   AppHomeRoute: typeof AppHomeRoute
-  AppOnboardingWhatsappRoute: typeof AppOnboardingWhatsappRoute
   AppOrcamentosRoute: typeof AppOrcamentosRoute
   AppWhatsappTestRoute: typeof AppWhatsappTestRoute
   BlogGuiaGestaoDeGastosRoute: typeof BlogGuiaGestaoDeGastosRoute
@@ -397,13 +384,6 @@ declare module '@tanstack/react-router' {
       path: '/app/orcamentos'
       fullPath: '/app/orcamentos'
       preLoaderRoute: typeof AppOrcamentosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app/onboarding-whatsapp': {
-      id: '/app/onboarding-whatsapp'
-      path: '/app/onboarding-whatsapp'
-      fullPath: '/app/onboarding-whatsapp'
-      preLoaderRoute: typeof AppOnboardingWhatsappRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app/home': {
@@ -509,7 +489,6 @@ const rootRouteChildren: RootRouteChildren = {
   AppBancosRoute: AppBancosRoute,
   AppConectarWhatsappRoute: AppConectarWhatsappRoute,
   AppHomeRoute: AppHomeRoute,
-  AppOnboardingWhatsappRoute: AppOnboardingWhatsappRoute,
   AppOrcamentosRoute: AppOrcamentosRoute,
   AppWhatsappTestRoute: AppWhatsappTestRoute,
   BlogGuiaGestaoDeGastosRoute: BlogGuiaGestaoDeGastosRoute,

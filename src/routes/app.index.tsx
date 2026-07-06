@@ -3,7 +3,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-import { useOnboardingGate } from "@/hooks/use-onboarding-gate";
+
 import { useSubscription } from "@/hooks/use-subscription";
 import {
   activateDevSubscription,
@@ -70,7 +70,7 @@ type TabKey = "inicio" | "contas" | "chat" | "relatorios" | "perfil";
 
 function AppDashboard() {
   const { user, loading } = useAuth();
-  useOnboardingGate();
+  
   const navigate = useNavigate();
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [whatsAppPhone, setWhatsAppPhone] = useState<string | null>(null);
