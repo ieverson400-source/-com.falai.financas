@@ -21,6 +21,7 @@ import { Route as AppOrcamentosRouteImport } from './routes/app.orcamentos'
 import { Route as AppHomeRouteImport } from './routes/app.home'
 import { Route as AppConectarWhatsappRouteImport } from './routes/app.conectar-whatsapp'
 import { Route as AppBancosRouteImport } from './routes/app.bancos'
+import { Route as AppAgendaMensagensRouteImport } from './routes/app.agenda-mensagens'
 import { Route as AppRecargaIndexRouteImport } from './routes/app.recarga.index'
 import { Route as AppRecargaConfiguracoesRouteImport } from './routes/app.recarga.configuracoes'
 import { Route as ApiPublicZapiRouteImport } from './routes/api/public/zapi'
@@ -92,6 +93,11 @@ const AppBancosRoute = AppBancosRouteImport.update({
   path: '/app/bancos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppAgendaMensagensRoute = AppAgendaMensagensRouteImport.update({
+  id: '/app/agenda-mensagens',
+  path: '/app/agenda-mensagens',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppRecargaIndexRoute = AppRecargaIndexRouteImport.update({
   id: '/app/recarga/',
   path: '/app/recarga/',
@@ -154,6 +160,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/app/agenda-mensagens': typeof AppAgendaMensagensRoute
   '/app/bancos': typeof AppBancosRoute
   '/app/conectar-whatsapp': typeof AppConectarWhatsappRoute
   '/app/home': typeof AppHomeRoute
@@ -178,6 +185,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/app/agenda-mensagens': typeof AppAgendaMensagensRoute
   '/app/bancos': typeof AppBancosRoute
   '/app/conectar-whatsapp': typeof AppConectarWhatsappRoute
   '/app/home': typeof AppHomeRoute
@@ -203,6 +211,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/app/agenda-mensagens': typeof AppAgendaMensagensRoute
   '/app/bancos': typeof AppBancosRoute
   '/app/conectar-whatsapp': typeof AppConectarWhatsappRoute
   '/app/home': typeof AppHomeRoute
@@ -229,6 +238,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/privacy'
     | '/sitemap.xml'
+    | '/app/agenda-mensagens'
     | '/app/bancos'
     | '/app/conectar-whatsapp'
     | '/app/home'
@@ -253,6 +263,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/privacy'
     | '/sitemap.xml'
+    | '/app/agenda-mensagens'
     | '/app/bancos'
     | '/app/conectar-whatsapp'
     | '/app/home'
@@ -277,6 +288,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/privacy'
     | '/sitemap.xml'
+    | '/app/agenda-mensagens'
     | '/app/bancos'
     | '/app/conectar-whatsapp'
     | '/app/home'
@@ -302,6 +314,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   PrivacyRoute: typeof PrivacyRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  AppAgendaMensagensRoute: typeof AppAgendaMensagensRoute
   AppBancosRoute: typeof AppBancosRoute
   AppConectarWhatsappRoute: typeof AppConectarWhatsappRoute
   AppHomeRoute: typeof AppHomeRoute
@@ -407,6 +420,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppBancosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/agenda-mensagens': {
+      id: '/app/agenda-mensagens'
+      path: '/app/agenda-mensagens'
+      fullPath: '/app/agenda-mensagens'
+      preLoaderRoute: typeof AppAgendaMensagensRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/app/recarga/': {
       id: '/app/recarga/'
       path: '/app/recarga'
@@ -486,6 +506,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   PrivacyRoute: PrivacyRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  AppAgendaMensagensRoute: AppAgendaMensagensRoute,
   AppBancosRoute: AppBancosRoute,
   AppConectarWhatsappRoute: AppConectarWhatsappRoute,
   AppHomeRoute: AppHomeRoute,
@@ -510,12 +531,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
