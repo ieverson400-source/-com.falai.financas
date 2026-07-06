@@ -199,7 +199,7 @@ export const Route = createFileRoute("/api/public/whatsapp")({
             error_message: null,
           });
 
-          // Confirmação por WhatsApp (best-effort).
+          // Confirmação + alerta de orçamento (best-effort).
           if (profile.whatsapp_phone && profile.notify_expense_confirmation) {
             try {
               const { sendWhatsAppText, formatExpenseConfirmation } = await import(
@@ -217,6 +217,16 @@ export const Route = createFileRoute("/api/public/whatsapp")({
             } catch (notifyErr) {
               console.error("whatsapp webhook notify failed", notifyErr);
             }
+          }
+          try {
+            const { maybeSendBudgetAlert } = await import("@/lib/budget-alert.server");
+            await maybeSendBudgetAlert({
+              userId: profile.user_id,
+              category: extracted.category,
+              expenseDate: extracted.expense_date,
+            });
+          } catch (e) {
+            console.error("whatsapp webhook budget alert failed", e);
           }
 
           return textResponse("OK", 200);

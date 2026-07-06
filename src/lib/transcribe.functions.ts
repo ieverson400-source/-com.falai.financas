@@ -36,7 +36,7 @@ export const transcribeExpense = createServerFn({ method: "POST" })
 
     if (error) throw new Error(error.message);
 
-    // Notificação de confirmação por WhatsApp (best-effort).
+    // Notificação de confirmação + alerta de orçamento por WhatsApp (best-effort).
     try {
       const { data: profile } = await supabase
         .from("profiles")
@@ -57,6 +57,12 @@ export const transcribeExpense = createServerFn({ method: "POST" })
           }),
         });
       }
+      const { maybeSendBudgetAlert } = await import("@/lib/budget-alert.server");
+      await maybeSendBudgetAlert({
+        userId,
+        category: inserted.category,
+        expenseDate: inserted.expense_date,
+      });
     } catch (e) {
       console.error("transcribeExpense: notify failed", e);
     }
