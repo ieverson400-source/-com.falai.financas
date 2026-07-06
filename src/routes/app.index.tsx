@@ -66,7 +66,7 @@ interface Expense {
   created_at: string;
 }
 
-type TabKey = "inicio" | "contas" | "chat" | "relatorios" | "perfil";
+type TabKey = "inicio" | "contas" | "agendas" | "chat" | "relatorios" | "perfil";
 
 function AppDashboard() {
   const { user, loading } = useAuth();
@@ -478,11 +478,12 @@ function AppDashboard() {
         className="fixed bottom-0 inset-x-0 z-40 border-t border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80"
         aria-label="Navegação principal"
       >
-        <div className="max-w-6xl mx-auto grid grid-cols-5">
+        <div className="max-w-6xl mx-auto grid grid-cols-6">
           {(
             [
               { key: "inicio", label: "Início", icon: Home },
               { key: "contas", label: "Contas", icon: Wallet },
+              { key: "agendas", label: "Agendas", icon: CalendarIcon },
               { key: "chat", label: "Chat", icon: MessageCircle },
               { key: "relatorios", label: "Relatórios", icon: BarChart3 },
               { key: "perfil", label: "Perfil", icon: UserIcon },
@@ -499,6 +500,10 @@ function AppDashboard() {
                   }
                   if (key === "contas") {
                     navigate({ to: "/app/bancos" });
+                    return;
+                  }
+                  if (key === "agendas") {
+                    navigate({ to: "/app/agendas" });
                     return;
                   }
                   setActiveTab(key);

@@ -153,7 +153,7 @@ function OrcamentosPage() {
       <header className="sticky top-0 z-10 bg-background/80 backdrop-blur border-b">
         <div className="max-w-2xl mx-auto flex items-center gap-3 px-4 py-3">
           <Button asChild variant="ghost" size="icon">
-            <Link to="/app/home">
+            <Link to="/app">
               <ArrowLeft className="h-5 w-5" />
             </Link>
           </Button>

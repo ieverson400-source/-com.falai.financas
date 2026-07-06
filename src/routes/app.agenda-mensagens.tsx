@@ -170,7 +170,7 @@ function AgendaMensagensPage() {
       <header className="border-b bg-background/80 backdrop-blur sticky top-0 z-10">
         <div className="mx-auto flex max-w-2xl items-center gap-3 px-4 py-4">
           <Button asChild variant="ghost" size="icon">
-            <Link to="/app/home">
+            <Link to="/app">
               <ArrowLeft className="size-4" />
             </Link>
           </Button>

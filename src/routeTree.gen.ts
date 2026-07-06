@@ -18,9 +18,9 @@ import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as BlogGuiaGestaoDeGastosRouteImport } from './routes/blog.guia-gestao-de-gastos'
 import { Route as AppWhatsappTestRouteImport } from './routes/app.whatsapp-test'
 import { Route as AppOrcamentosRouteImport } from './routes/app.orcamentos'
-import { Route as AppHomeRouteImport } from './routes/app.home'
 import { Route as AppConectarWhatsappRouteImport } from './routes/app.conectar-whatsapp'
 import { Route as AppBancosRouteImport } from './routes/app.bancos'
+import { Route as AppAgendasRouteImport } from './routes/app.agendas'
 import { Route as AppAgendaMensagensRouteImport } from './routes/app.agenda-mensagens'
 import { Route as AppRecargaIndexRouteImport } from './routes/app.recarga.index'
 import { Route as AppRecargaConfiguracoesRouteImport } from './routes/app.recarga.configuracoes'
@@ -78,11 +78,6 @@ const AppOrcamentosRoute = AppOrcamentosRouteImport.update({
   path: '/app/orcamentos',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppHomeRoute = AppHomeRouteImport.update({
-  id: '/app/home',
-  path: '/app/home',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AppConectarWhatsappRoute = AppConectarWhatsappRouteImport.update({
   id: '/app/conectar-whatsapp',
   path: '/app/conectar-whatsapp',
@@ -91,6 +86,11 @@ const AppConectarWhatsappRoute = AppConectarWhatsappRouteImport.update({
 const AppBancosRoute = AppBancosRouteImport.update({
   id: '/app/bancos',
   path: '/app/bancos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppAgendasRoute = AppAgendasRouteImport.update({
+  id: '/app/agendas',
+  path: '/app/agendas',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppAgendaMensagensRoute = AppAgendaMensagensRouteImport.update({
@@ -161,9 +161,9 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/app/agenda-mensagens': typeof AppAgendaMensagensRoute
+  '/app/agendas': typeof AppAgendasRoute
   '/app/bancos': typeof AppBancosRoute
   '/app/conectar-whatsapp': typeof AppConectarWhatsappRoute
-  '/app/home': typeof AppHomeRoute
   '/app/orcamentos': typeof AppOrcamentosRoute
   '/app/whatsapp-test': typeof AppWhatsappTestRoute
   '/blog/guia-gestao-de-gastos': typeof BlogGuiaGestaoDeGastosRoute
@@ -186,9 +186,9 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/app/agenda-mensagens': typeof AppAgendaMensagensRoute
+  '/app/agendas': typeof AppAgendasRoute
   '/app/bancos': typeof AppBancosRoute
   '/app/conectar-whatsapp': typeof AppConectarWhatsappRoute
-  '/app/home': typeof AppHomeRoute
   '/app/orcamentos': typeof AppOrcamentosRoute
   '/app/whatsapp-test': typeof AppWhatsappTestRoute
   '/blog/guia-gestao-de-gastos': typeof BlogGuiaGestaoDeGastosRoute
@@ -212,9 +212,9 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/app/agenda-mensagens': typeof AppAgendaMensagensRoute
+  '/app/agendas': typeof AppAgendasRoute
   '/app/bancos': typeof AppBancosRoute
   '/app/conectar-whatsapp': typeof AppConectarWhatsappRoute
-  '/app/home': typeof AppHomeRoute
   '/app/orcamentos': typeof AppOrcamentosRoute
   '/app/whatsapp-test': typeof AppWhatsappTestRoute
   '/blog/guia-gestao-de-gastos': typeof BlogGuiaGestaoDeGastosRoute
@@ -239,9 +239,9 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/sitemap.xml'
     | '/app/agenda-mensagens'
+    | '/app/agendas'
     | '/app/bancos'
     | '/app/conectar-whatsapp'
-    | '/app/home'
     | '/app/orcamentos'
     | '/app/whatsapp-test'
     | '/blog/guia-gestao-de-gastos'
@@ -264,9 +264,9 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/sitemap.xml'
     | '/app/agenda-mensagens'
+    | '/app/agendas'
     | '/app/bancos'
     | '/app/conectar-whatsapp'
-    | '/app/home'
     | '/app/orcamentos'
     | '/app/whatsapp-test'
     | '/blog/guia-gestao-de-gastos'
@@ -289,9 +289,9 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/sitemap.xml'
     | '/app/agenda-mensagens'
+    | '/app/agendas'
     | '/app/bancos'
     | '/app/conectar-whatsapp'
-    | '/app/home'
     | '/app/orcamentos'
     | '/app/whatsapp-test'
     | '/blog/guia-gestao-de-gastos'
@@ -315,9 +315,9 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   AppAgendaMensagensRoute: typeof AppAgendaMensagensRoute
+  AppAgendasRoute: typeof AppAgendasRoute
   AppBancosRoute: typeof AppBancosRoute
   AppConectarWhatsappRoute: typeof AppConectarWhatsappRoute
-  AppHomeRoute: typeof AppHomeRoute
   AppOrcamentosRoute: typeof AppOrcamentosRoute
   AppWhatsappTestRoute: typeof AppWhatsappTestRoute
   BlogGuiaGestaoDeGastosRoute: typeof BlogGuiaGestaoDeGastosRoute
@@ -399,13 +399,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppOrcamentosRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/app/home': {
-      id: '/app/home'
-      path: '/app/home'
-      fullPath: '/app/home'
-      preLoaderRoute: typeof AppHomeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/app/conectar-whatsapp': {
       id: '/app/conectar-whatsapp'
       path: '/app/conectar-whatsapp'
@@ -418,6 +411,13 @@ declare module '@tanstack/react-router' {
       path: '/app/bancos'
       fullPath: '/app/bancos'
       preLoaderRoute: typeof AppBancosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/agendas': {
+      id: '/app/agendas'
+      path: '/app/agendas'
+      fullPath: '/app/agendas'
+      preLoaderRoute: typeof AppAgendasRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app/agenda-mensagens': {
@@ -507,9 +507,9 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   AppAgendaMensagensRoute: AppAgendaMensagensRoute,
+  AppAgendasRoute: AppAgendasRoute,
   AppBancosRoute: AppBancosRoute,
   AppConectarWhatsappRoute: AppConectarWhatsappRoute,
-  AppHomeRoute: AppHomeRoute,
   AppOrcamentosRoute: AppOrcamentosRoute,
   AppWhatsappTestRoute: AppWhatsappTestRoute,
   BlogGuiaGestaoDeGastosRoute: BlogGuiaGestaoDeGastosRoute,
