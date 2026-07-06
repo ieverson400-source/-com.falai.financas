@@ -27,7 +27,7 @@ export const updateNotificationPrefs = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => InputSchema.parse(input))
   .handler(async ({ data, context }) => {
-    const update: Record<string, boolean> = {};
+    const update: Partial<Record<PrefKey, boolean>> = {};
     for (const k of KEYS) {
       const v = data[k];
       if (typeof v === "boolean") update[k] = v;
