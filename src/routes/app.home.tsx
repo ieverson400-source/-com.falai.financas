@@ -27,7 +27,7 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   Sparkles,
-  ChevronRight,
+  
   Building2,
   PiggyBank,
   CreditCard,
