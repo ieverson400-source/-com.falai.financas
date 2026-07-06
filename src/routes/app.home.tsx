@@ -27,7 +27,7 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   Sparkles,
-  ChevronRight,
+  
   Building2,
   PiggyBank,
   CreditCard,
@@ -412,13 +412,18 @@ function InicioTab({
 
       {/* Minhas contas */}
       <section aria-labelledby="minhas-contas">
-        <div className="flex items-center justify-between mb-2.5 px-1">
+        <div className="flex items-center justify-between mb-2.5 px-1 gap-2">
           <h2 id="minhas-contas" className="font-display font-semibold text-base">
             Minhas contas
           </h2>
-          <button className="text-xs text-primary inline-flex items-center gap-0.5" aria-label="Ver todas as contas">
-            Ver todas as contas <ChevronRight className="size-3.5" />
-          </button>
+          <Link
+            to="/app/agenda-mensagens"
+            className="text-xs text-primary inline-flex items-center gap-1 rounded-full border border-primary/30 bg-primary/5 px-2.5 py-1 hover:bg-primary/10 transition-colors"
+            aria-label="Ver agenda de mensagens automáticas no WhatsApp"
+          >
+            <CalendarClock className="size-3.5" />
+            Agenda
+          </Link>
         </div>
         <Card className="rounded-2xl shadow-soft overflow-hidden">
           <ul className="divide-y divide-border">
