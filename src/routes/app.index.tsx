@@ -66,7 +66,7 @@ interface Expense {
   created_at: string;
 }
 
-type TabKey = "inicio" | "contas" | "chat" | "relatorios" | "perfil";
+type TabKey = "inicio" | "contas" | "agendas" | "chat" | "relatorios" | "perfil";
 
 function AppDashboard() {
   const { user, loading } = useAuth();
