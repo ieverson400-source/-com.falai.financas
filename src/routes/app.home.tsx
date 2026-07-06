@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import { useOnboardingGate } from "@/hooks/use-onboarding-gate";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -62,6 +63,7 @@ const sampleAccounts = [
 
 function HomeMobile() {
   const { user, loading } = useAuth();
+  useOnboardingGate();
   const navigate = useNavigate();
   const [tab, setTab] = useState<TabKey>("inicio");
   const [expenses, setExpenses] = useState<Expense[]>([]);

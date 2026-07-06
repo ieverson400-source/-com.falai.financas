@@ -14,6 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
+      budget_alerts_sent: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          month: string
+          threshold: number
+          user_id: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          id?: string
+          month: string
+          threshold: number
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          month?: string
+          threshold?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      category_budgets: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          monthly_limit: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          id?: string
+          monthly_limit: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          monthly_limit?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       chat_messages: {
         Row: {
           content: string
@@ -264,8 +318,14 @@ export type Database = {
           created_at: string
           display_name: string | null
           id: string
+          last_inactivity_reminder_at: string | null
+          notify_budget_alert: boolean
+          notify_daily_summary: boolean
           notify_expense_confirmation: boolean
+          notify_inactivity: boolean
           notify_monthly_summary: boolean
+          notify_weekly_summary: boolean
+          notify_weekly_tip: boolean
           updated_at: string
           user_id: string
           whatsapp_phone: string | null
@@ -275,8 +335,14 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           id?: string
+          last_inactivity_reminder_at?: string | null
+          notify_budget_alert?: boolean
+          notify_daily_summary?: boolean
           notify_expense_confirmation?: boolean
+          notify_inactivity?: boolean
           notify_monthly_summary?: boolean
+          notify_weekly_summary?: boolean
+          notify_weekly_tip?: boolean
           updated_at?: string
           user_id: string
           whatsapp_phone?: string | null
@@ -286,8 +352,14 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           id?: string
+          last_inactivity_reminder_at?: string | null
+          notify_budget_alert?: boolean
+          notify_daily_summary?: boolean
           notify_expense_confirmation?: boolean
+          notify_inactivity?: boolean
           notify_monthly_summary?: boolean
+          notify_weekly_summary?: boolean
+          notify_weekly_tip?: boolean
           updated_at?: string
           user_id?: string
           whatsapp_phone?: string | null
