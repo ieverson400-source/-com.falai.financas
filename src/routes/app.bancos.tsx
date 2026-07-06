@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, useCallback } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useAuth } from "@/hooks/use-auth";
-import { useOnboardingGate } from "@/hooks/use-onboarding-gate";
+
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
@@ -80,7 +80,7 @@ function loadPluggyScript(): Promise<void> {
 
 function BancosPage() {
   const { user, loading } = useAuth();
-  useOnboardingGate();
+  
   const navigate = useNavigate();
   const [items, setItems] = useState<Item[]>([]);
   const [accounts, setAccounts] = useState<Account[]>([]);

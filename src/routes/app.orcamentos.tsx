@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-import { useOnboardingGate } from "@/hooks/use-onboarding-gate";
+
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,7 +31,7 @@ interface BudgetRow {
 
 function OrcamentosPage() {
   const { user, loading: authLoading } = useAuth();
-  useOnboardingGate();
+  
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [limits, setLimits] = useState<Record<string, string>>({});
