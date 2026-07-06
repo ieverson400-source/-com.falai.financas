@@ -7,6 +7,14 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Toaster } from "@/components/ui/sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { formatBRL } from "@/lib/categories";
 import { ImportSpreadsheetButton } from "@/components/import-spreadsheet-button";
 import {
@@ -24,6 +32,8 @@ import {
   PiggyBank,
   CreditCard,
   LogOut,
+  CalendarClock,
+  MessageCircle,
 } from "lucide-react";
 import { format, parseISO, startOfMonth } from "date-fns";
 import { ptBR } from "date-fns/locale";
