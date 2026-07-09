@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 
 export type SubscriptionRow = Database["public"]["Tables"]["subscriptions"]["Row"];
-export type PlanKey = "free" | "pro" | "premium";
+export type PlanKey = "free" | "pro" | "premium" | "familia";
 
 export interface SubscriptionState {
   subscription: SubscriptionRow | null;
@@ -11,6 +11,7 @@ export interface SubscriptionState {
   isActive: boolean;
   isPro: boolean;
   isPremium: boolean;
+  isFamilia: boolean;
   loading: boolean;
   refresh: () => Promise<void>;
 }
@@ -71,8 +72,9 @@ export function useSubscription(userId: string | undefined): SubscriptionState {
     subscription,
     plan,
     isActive,
-    isPro: isActive && (plan === "pro" || plan === "premium"),
-    isPremium: isActive && plan === "premium",
+    isPro: isActive && (plan === "pro" || plan === "premium" || plan === "familia"),
+    isPremium: isActive && (plan === "premium" || plan === "familia"),
+    isFamilia: isActive && plan === "familia",
     loading,
     refresh,
   };
