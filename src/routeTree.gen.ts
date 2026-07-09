@@ -17,6 +17,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as BlogGuiaGestaoDeGastosRouteImport } from './routes/blog.guia-gestao-de-gastos'
 import { Route as AppWhatsappTestRouteImport } from './routes/app.whatsapp-test'
+import { Route as AppPlanosRouteImport } from './routes/app.planos'
 import { Route as AppOrcamentosRouteImport } from './routes/app.orcamentos'
 import { Route as AppConectarWhatsappRouteImport } from './routes/app.conectar-whatsapp'
 import { Route as AppBancosRouteImport } from './routes/app.bancos'
@@ -24,6 +25,7 @@ import { Route as AppAgendasRouteImport } from './routes/app.agendas'
 import { Route as AppAgendaMensagensRouteImport } from './routes/app.agenda-mensagens'
 import { Route as AppRecargaIndexRouteImport } from './routes/app.recarga.index'
 import { Route as AppRecargaConfiguracoesRouteImport } from './routes/app.recarga.configuracoes'
+import { Route as AppPlanosRetornoRouteImport } from './routes/app.planos.retorno'
 import { Route as ApiPublicZapiRouteImport } from './routes/api/public/zapi'
 import { Route as ApiPublicWhatsappRouteImport } from './routes/api/public/whatsapp'
 import { Route as ApiPublicPlayRtdnRouteImport } from './routes/api/public/play-rtdn'
@@ -74,6 +76,11 @@ const AppWhatsappTestRoute = AppWhatsappTestRouteImport.update({
   path: '/app/whatsapp-test',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppPlanosRoute = AppPlanosRouteImport.update({
+  id: '/app/planos',
+  path: '/app/planos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppOrcamentosRoute = AppOrcamentosRouteImport.update({
   id: '/app/orcamentos',
   path: '/app/orcamentos',
@@ -108,6 +115,11 @@ const AppRecargaConfiguracoesRoute = AppRecargaConfiguracoesRouteImport.update({
   id: '/app/recarga/configuracoes',
   path: '/app/recarga/configuracoes',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AppPlanosRetornoRoute = AppPlanosRetornoRouteImport.update({
+  id: '/retorno',
+  path: '/retorno',
+  getParentRoute: () => AppPlanosRoute,
 } as any)
 const ApiPublicZapiRoute = ApiPublicZapiRouteImport.update({
   id: '/api/public/zapi',
@@ -172,12 +184,14 @@ export interface FileRoutesByFullPath {
   '/app/bancos': typeof AppBancosRoute
   '/app/conectar-whatsapp': typeof AppConectarWhatsappRoute
   '/app/orcamentos': typeof AppOrcamentosRoute
+  '/app/planos': typeof AppPlanosRouteWithChildren
   '/app/whatsapp-test': typeof AppWhatsappTestRoute
   '/blog/guia-gestao-de-gastos': typeof BlogGuiaGestaoDeGastosRoute
   '/app/': typeof AppIndexRoute
   '/api/public/play-rtdn': typeof ApiPublicPlayRtdnRoute
   '/api/public/whatsapp': typeof ApiPublicWhatsappRoute
   '/api/public/zapi': typeof ApiPublicZapiRoute
+  '/app/planos/retorno': typeof AppPlanosRetornoRoute
   '/app/recarga/configuracoes': typeof AppRecargaConfiguracoesRoute
   '/app/recarga/': typeof AppRecargaIndexRoute
   '/api/public/hooks/whatsapp-daily-summary': typeof ApiPublicHooksWhatsappDailySummaryRoute
@@ -198,12 +212,14 @@ export interface FileRoutesByTo {
   '/app/bancos': typeof AppBancosRoute
   '/app/conectar-whatsapp': typeof AppConectarWhatsappRoute
   '/app/orcamentos': typeof AppOrcamentosRoute
+  '/app/planos': typeof AppPlanosRouteWithChildren
   '/app/whatsapp-test': typeof AppWhatsappTestRoute
   '/blog/guia-gestao-de-gastos': typeof BlogGuiaGestaoDeGastosRoute
   '/app': typeof AppIndexRoute
   '/api/public/play-rtdn': typeof ApiPublicPlayRtdnRoute
   '/api/public/whatsapp': typeof ApiPublicWhatsappRoute
   '/api/public/zapi': typeof ApiPublicZapiRoute
+  '/app/planos/retorno': typeof AppPlanosRetornoRoute
   '/app/recarga/configuracoes': typeof AppRecargaConfiguracoesRoute
   '/app/recarga': typeof AppRecargaIndexRoute
   '/api/public/hooks/whatsapp-daily-summary': typeof ApiPublicHooksWhatsappDailySummaryRoute
@@ -225,12 +241,14 @@ export interface FileRoutesById {
   '/app/bancos': typeof AppBancosRoute
   '/app/conectar-whatsapp': typeof AppConectarWhatsappRoute
   '/app/orcamentos': typeof AppOrcamentosRoute
+  '/app/planos': typeof AppPlanosRouteWithChildren
   '/app/whatsapp-test': typeof AppWhatsappTestRoute
   '/blog/guia-gestao-de-gastos': typeof BlogGuiaGestaoDeGastosRoute
   '/app/': typeof AppIndexRoute
   '/api/public/play-rtdn': typeof ApiPublicPlayRtdnRoute
   '/api/public/whatsapp': typeof ApiPublicWhatsappRoute
   '/api/public/zapi': typeof ApiPublicZapiRoute
+  '/app/planos/retorno': typeof AppPlanosRetornoRoute
   '/app/recarga/configuracoes': typeof AppRecargaConfiguracoesRoute
   '/app/recarga/': typeof AppRecargaIndexRoute
   '/api/public/hooks/whatsapp-daily-summary': typeof ApiPublicHooksWhatsappDailySummaryRoute
@@ -253,12 +271,14 @@ export interface FileRouteTypes {
     | '/app/bancos'
     | '/app/conectar-whatsapp'
     | '/app/orcamentos'
+    | '/app/planos'
     | '/app/whatsapp-test'
     | '/blog/guia-gestao-de-gastos'
     | '/app/'
     | '/api/public/play-rtdn'
     | '/api/public/whatsapp'
     | '/api/public/zapi'
+    | '/app/planos/retorno'
     | '/app/recarga/configuracoes'
     | '/app/recarga/'
     | '/api/public/hooks/whatsapp-daily-summary'
@@ -279,12 +299,14 @@ export interface FileRouteTypes {
     | '/app/bancos'
     | '/app/conectar-whatsapp'
     | '/app/orcamentos'
+    | '/app/planos'
     | '/app/whatsapp-test'
     | '/blog/guia-gestao-de-gastos'
     | '/app'
     | '/api/public/play-rtdn'
     | '/api/public/whatsapp'
     | '/api/public/zapi'
+    | '/app/planos/retorno'
     | '/app/recarga/configuracoes'
     | '/app/recarga'
     | '/api/public/hooks/whatsapp-daily-summary'
@@ -305,12 +327,14 @@ export interface FileRouteTypes {
     | '/app/bancos'
     | '/app/conectar-whatsapp'
     | '/app/orcamentos'
+    | '/app/planos'
     | '/app/whatsapp-test'
     | '/blog/guia-gestao-de-gastos'
     | '/app/'
     | '/api/public/play-rtdn'
     | '/api/public/whatsapp'
     | '/api/public/zapi'
+    | '/app/planos/retorno'
     | '/app/recarga/configuracoes'
     | '/app/recarga/'
     | '/api/public/hooks/whatsapp-daily-summary'
@@ -332,6 +356,7 @@ export interface RootRouteChildren {
   AppBancosRoute: typeof AppBancosRoute
   AppConectarWhatsappRoute: typeof AppConectarWhatsappRoute
   AppOrcamentosRoute: typeof AppOrcamentosRoute
+  AppPlanosRoute: typeof AppPlanosRouteWithChildren
   AppWhatsappTestRoute: typeof AppWhatsappTestRoute
   BlogGuiaGestaoDeGastosRoute: typeof BlogGuiaGestaoDeGastosRoute
   AppIndexRoute: typeof AppIndexRoute
@@ -406,6 +431,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppWhatsappTestRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/planos': {
+      id: '/app/planos'
+      path: '/app/planos'
+      fullPath: '/app/planos'
+      preLoaderRoute: typeof AppPlanosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/app/orcamentos': {
       id: '/app/orcamentos'
       path: '/app/orcamentos'
@@ -454,6 +486,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/recarga/configuracoes'
       preLoaderRoute: typeof AppRecargaConfiguracoesRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/app/planos/retorno': {
+      id: '/app/planos/retorno'
+      path: '/retorno'
+      fullPath: '/app/planos/retorno'
+      preLoaderRoute: typeof AppPlanosRetornoRouteImport
+      parentRoute: typeof AppPlanosRoute
     }
     '/api/public/zapi': {
       id: '/api/public/zapi'
@@ -521,6 +560,18 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AppPlanosRouteChildren {
+  AppPlanosRetornoRoute: typeof AppPlanosRetornoRoute
+}
+
+const AppPlanosRouteChildren: AppPlanosRouteChildren = {
+  AppPlanosRetornoRoute: AppPlanosRetornoRoute,
+}
+
+const AppPlanosRouteWithChildren = AppPlanosRoute._addFileChildren(
+  AppPlanosRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountDeleteRoute: AccountDeleteRoute,
@@ -532,6 +583,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppBancosRoute: AppBancosRoute,
   AppConectarWhatsappRoute: AppConectarWhatsappRoute,
   AppOrcamentosRoute: AppOrcamentosRoute,
+  AppPlanosRoute: AppPlanosRouteWithChildren,
   AppWhatsappTestRoute: AppWhatsappTestRoute,
   BlogGuiaGestaoDeGastosRoute: BlogGuiaGestaoDeGastosRoute,
   AppIndexRoute: AppIndexRoute,
