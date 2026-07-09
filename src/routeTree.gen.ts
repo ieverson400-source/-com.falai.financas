@@ -27,6 +27,7 @@ import { Route as AppRecargaConfiguracoesRouteImport } from './routes/app.recarg
 import { Route as ApiPublicZapiRouteImport } from './routes/api/public/zapi'
 import { Route as ApiPublicWhatsappRouteImport } from './routes/api/public/whatsapp'
 import { Route as ApiPublicPlayRtdnRouteImport } from './routes/api/public/play-rtdn'
+import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 import { Route as ApiPublicHooksWhatsappWeeklyTipRouteImport } from './routes/api/public/hooks/whatsapp-weekly-tip'
 import { Route as ApiPublicHooksWhatsappWeeklySummaryRouteImport } from './routes/api/public/hooks/whatsapp-weekly-summary'
 import { Route as ApiPublicHooksWhatsappMonthlySummaryRouteImport } from './routes/api/public/hooks/whatsapp-monthly-summary'
@@ -123,6 +124,12 @@ const ApiPublicPlayRtdnRoute = ApiPublicPlayRtdnRouteImport.update({
   path: '/api/public/play-rtdn',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicPaymentsWebhookRoute =
+  ApiPublicPaymentsWebhookRouteImport.update({
+    id: '/api/public/payments/webhook',
+    path: '/api/public/payments/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksWhatsappWeeklyTipRoute =
   ApiPublicHooksWhatsappWeeklyTipRouteImport.update({
     id: '/api/public/hooks/whatsapp-weekly-tip',
@@ -178,6 +185,7 @@ export interface FileRoutesByFullPath {
   '/api/public/hooks/whatsapp-monthly-summary': typeof ApiPublicHooksWhatsappMonthlySummaryRoute
   '/api/public/hooks/whatsapp-weekly-summary': typeof ApiPublicHooksWhatsappWeeklySummaryRoute
   '/api/public/hooks/whatsapp-weekly-tip': typeof ApiPublicHooksWhatsappWeeklyTipRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -203,6 +211,7 @@ export interface FileRoutesByTo {
   '/api/public/hooks/whatsapp-monthly-summary': typeof ApiPublicHooksWhatsappMonthlySummaryRoute
   '/api/public/hooks/whatsapp-weekly-summary': typeof ApiPublicHooksWhatsappWeeklySummaryRoute
   '/api/public/hooks/whatsapp-weekly-tip': typeof ApiPublicHooksWhatsappWeeklyTipRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -229,6 +238,7 @@ export interface FileRoutesById {
   '/api/public/hooks/whatsapp-monthly-summary': typeof ApiPublicHooksWhatsappMonthlySummaryRoute
   '/api/public/hooks/whatsapp-weekly-summary': typeof ApiPublicHooksWhatsappWeeklySummaryRoute
   '/api/public/hooks/whatsapp-weekly-tip': typeof ApiPublicHooksWhatsappWeeklyTipRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -256,6 +266,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/whatsapp-monthly-summary'
     | '/api/public/hooks/whatsapp-weekly-summary'
     | '/api/public/hooks/whatsapp-weekly-tip'
+    | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -281,6 +292,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/whatsapp-monthly-summary'
     | '/api/public/hooks/whatsapp-weekly-summary'
     | '/api/public/hooks/whatsapp-weekly-tip'
+    | '/api/public/payments/webhook'
   id:
     | '__root__'
     | '/'
@@ -306,6 +318,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/whatsapp-monthly-summary'
     | '/api/public/hooks/whatsapp-weekly-summary'
     | '/api/public/hooks/whatsapp-weekly-tip'
+    | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -332,6 +345,7 @@ export interface RootRouteChildren {
   ApiPublicHooksWhatsappMonthlySummaryRoute: typeof ApiPublicHooksWhatsappMonthlySummaryRoute
   ApiPublicHooksWhatsappWeeklySummaryRoute: typeof ApiPublicHooksWhatsappWeeklySummaryRoute
   ApiPublicHooksWhatsappWeeklyTipRoute: typeof ApiPublicHooksWhatsappWeeklyTipRoute
+  ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -462,6 +476,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicPlayRtdnRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/payments/webhook': {
+      id: '/api/public/payments/webhook'
+      path: '/api/public/payments/webhook'
+      fullPath: '/api/public/payments/webhook'
+      preLoaderRoute: typeof ApiPublicPaymentsWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/whatsapp-weekly-tip': {
       id: '/api/public/hooks/whatsapp-weekly-tip'
       path: '/api/public/hooks/whatsapp-weekly-tip'
@@ -527,6 +548,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicHooksWhatsappWeeklySummaryRoute:
     ApiPublicHooksWhatsappWeeklySummaryRoute,
   ApiPublicHooksWhatsappWeeklyTipRoute: ApiPublicHooksWhatsappWeeklyTipRoute,
+  ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
