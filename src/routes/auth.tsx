@@ -35,7 +35,24 @@ function AuthPage() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [showWhatsapp, setShowWhatsapp] = useState(false);
   const sendWelcome = useServerFn(sendWhatsAppMessage);
+
+  const handleGoogle = async () => {
+    setGoogleLoading(true);
+    try {
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: window.location.origin + "/app",
+      });
+      if (result.error) throw result.error;
+      if (result.redirected) return;
+      window.location.href = "/app";
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Erro ao entrar com Google");
+      setGoogleLoading(false);
+    }
+  };
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
