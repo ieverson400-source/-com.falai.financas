@@ -14,7 +14,8 @@
     "android:build": "node scripts/build-aab.mjs",
     "android:build:local": "node scripts/build-aab-local.mjs",
     "android:release": "node scripts/bump-version.mjs patch && node scripts/build-aab.mjs",
-    "android:keystore": "node scripts/generate-keystore.mjs"
+    "android:keystore": "node scripts/generate-keystore.mjs",
+    "test:stripe-webhook": "node scripts/test-stripe-webhook.mjs"
   },
   "dependencies": {
     "@cloudflare/vite-plugin": "^1.42.3",
@@ -81,7 +82,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
-    "@lovable.dev/vite-tanstack-config": "2.7.1",
+    "@lovable.dev/vite-tanstack-config": "2.7.6",
     "@types/node": "^22.16.5",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
