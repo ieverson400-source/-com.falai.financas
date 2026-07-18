@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -40,6 +41,11 @@ import { Route as ApiPublicHooksWhatsappDailySummaryRouteImport } from './routes
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -185,6 +191,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/privacy': typeof PrivacyRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/app/agenda-mensagens': typeof AppAgendaMensagensRoute
   '/app/agendas': typeof AppAgendasRoute
@@ -214,6 +221,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/privacy': typeof PrivacyRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/app/agenda-mensagens': typeof AppAgendaMensagensRoute
   '/app/agendas': typeof AppAgendasRoute
@@ -244,6 +252,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/privacy': typeof PrivacyRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/app/agenda-mensagens': typeof AppAgendaMensagensRoute
   '/app/agendas': typeof AppAgendasRoute
@@ -275,6 +284,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/forgot-password'
     | '/privacy'
+    | '/reset-password'
     | '/sitemap.xml'
     | '/app/agenda-mensagens'
     | '/app/agendas'
@@ -304,6 +314,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/forgot-password'
     | '/privacy'
+    | '/reset-password'
     | '/sitemap.xml'
     | '/app/agenda-mensagens'
     | '/app/agendas'
@@ -333,6 +344,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/forgot-password'
     | '/privacy'
+    | '/reset-password'
     | '/sitemap.xml'
     | '/app/agenda-mensagens'
     | '/app/agendas'
@@ -363,6 +375,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   PrivacyRoute: typeof PrivacyRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   AppAgendaMensagensRoute: typeof AppAgendaMensagensRoute
   AppAgendasRoute: typeof AppAgendasRoute
@@ -393,6 +406,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -598,6 +618,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   PrivacyRoute: PrivacyRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   AppAgendaMensagensRoute: AppAgendaMensagensRoute,
   AppAgendasRoute: AppAgendasRoute,
