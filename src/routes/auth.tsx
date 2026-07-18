@@ -225,6 +225,14 @@ function AuthPage() {
           </Button>
         </form>
 
+        {mode === "signin" && (
+          <div className="mt-3 text-center">
+            <Link to="/forgot-password" className="text-sm text-primary hover:underline">
+              Esqueci minha senha
+            </Link>
+          </div>
+        )}
+
         <button
           onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
           className="mt-4 text-sm text-primary hover:underline w-full text-center min-h-11"

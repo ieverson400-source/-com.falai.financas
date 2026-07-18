@@ -10,7 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AccountDeleteRouteImport } from './routes/account-delete'
 import { Route as IndexRouteImport } from './routes/index'
@@ -41,9 +43,19 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -177,7 +189,9 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/account-delete': typeof AccountDeleteRoute
   '/auth': typeof AuthRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/privacy': typeof PrivacyRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/app/agenda-mensagens': typeof AppAgendaMensagensRoute
   '/app/agendas': typeof AppAgendasRoute
@@ -205,7 +219,9 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/account-delete': typeof AccountDeleteRoute
   '/auth': typeof AuthRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/privacy': typeof PrivacyRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/app/agenda-mensagens': typeof AppAgendaMensagensRoute
   '/app/agendas': typeof AppAgendasRoute
@@ -234,7 +250,9 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/account-delete': typeof AccountDeleteRoute
   '/auth': typeof AuthRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/privacy': typeof PrivacyRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/app/agenda-mensagens': typeof AppAgendaMensagensRoute
   '/app/agendas': typeof AppAgendasRoute
@@ -264,7 +282,9 @@ export interface FileRouteTypes {
     | '/'
     | '/account-delete'
     | '/auth'
+    | '/forgot-password'
     | '/privacy'
+    | '/reset-password'
     | '/sitemap.xml'
     | '/app/agenda-mensagens'
     | '/app/agendas'
@@ -292,7 +312,9 @@ export interface FileRouteTypes {
     | '/'
     | '/account-delete'
     | '/auth'
+    | '/forgot-password'
     | '/privacy'
+    | '/reset-password'
     | '/sitemap.xml'
     | '/app/agenda-mensagens'
     | '/app/agendas'
@@ -320,7 +342,9 @@ export interface FileRouteTypes {
     | '/'
     | '/account-delete'
     | '/auth'
+    | '/forgot-password'
     | '/privacy'
+    | '/reset-password'
     | '/sitemap.xml'
     | '/app/agenda-mensagens'
     | '/app/agendas'
@@ -349,7 +373,9 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountDeleteRoute: typeof AccountDeleteRoute
   AuthRoute: typeof AuthRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   PrivacyRoute: typeof PrivacyRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   AppAgendaMensagensRoute: typeof AppAgendaMensagensRoute
   AppAgendasRoute: typeof AppAgendasRoute
@@ -382,11 +408,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy': {
       id: '/privacy'
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -576,7 +616,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountDeleteRoute: AccountDeleteRoute,
   AuthRoute: AuthRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   PrivacyRoute: PrivacyRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   AppAgendaMensagensRoute: AppAgendaMensagensRoute,
   AppAgendasRoute: AppAgendasRoute,
