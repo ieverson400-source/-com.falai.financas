@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AccountDeleteRouteImport } from './routes/account-delete'
 import { Route as IndexRouteImport } from './routes/index'
@@ -44,6 +45,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -177,6 +183,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/account-delete': typeof AccountDeleteRoute
   '/auth': typeof AuthRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/app/agenda-mensagens': typeof AppAgendaMensagensRoute
@@ -205,6 +212,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/account-delete': typeof AccountDeleteRoute
   '/auth': typeof AuthRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/app/agenda-mensagens': typeof AppAgendaMensagensRoute
@@ -234,6 +242,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/account-delete': typeof AccountDeleteRoute
   '/auth': typeof AuthRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/app/agenda-mensagens': typeof AppAgendaMensagensRoute
@@ -264,6 +273,7 @@ export interface FileRouteTypes {
     | '/'
     | '/account-delete'
     | '/auth'
+    | '/forgot-password'
     | '/privacy'
     | '/sitemap.xml'
     | '/app/agenda-mensagens'
@@ -292,6 +302,7 @@ export interface FileRouteTypes {
     | '/'
     | '/account-delete'
     | '/auth'
+    | '/forgot-password'
     | '/privacy'
     | '/sitemap.xml'
     | '/app/agenda-mensagens'
@@ -320,6 +331,7 @@ export interface FileRouteTypes {
     | '/'
     | '/account-delete'
     | '/auth'
+    | '/forgot-password'
     | '/privacy'
     | '/sitemap.xml'
     | '/app/agenda-mensagens'
@@ -349,6 +361,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountDeleteRoute: typeof AccountDeleteRoute
   AuthRoute: typeof AuthRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   PrivacyRoute: typeof PrivacyRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   AppAgendaMensagensRoute: typeof AppAgendaMensagensRoute
@@ -387,6 +400,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -576,6 +596,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountDeleteRoute: AccountDeleteRoute,
   AuthRoute: AuthRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   PrivacyRoute: PrivacyRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   AppAgendaMensagensRoute: AppAgendaMensagensRoute,
