@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
-import { ArrowLeft, Building2, Plus, Trash2, RefreshCw, Loader2, History, CheckCircle2, XCircle, ShieldCheck, Globe } from "lucide-react";
+import { ArrowLeft, Building2, Plus, Trash2, RefreshCw, Loader2, History, CheckCircle2, XCircle, ShieldCheck, Globe, Search, Landmark } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { formatBRL } from "@/lib/categories";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
@@ -23,6 +24,7 @@ import {
   deletePluggyItem,
   listSyncLogs,
   listOpenFinanceConnectorIds,
+  listConnectors,
 } from "@/lib/pluggy.functions";
 
 export const Route = createFileRoute("/app/bancos")({
@@ -94,6 +96,35 @@ function BancosPage() {
   const removeItem = useServerFn(deletePluggyItem);
   const fetchLogs = useServerFn(listSyncLogs);
   const fetchOpenFinanceIds = useServerFn(listOpenFinanceConnectorIds);
+  const fetchConnectors = useServerFn(listConnectors);
+
+  type Connector = {
+    id: number;
+    name: string;
+    imageUrl: string | null;
+    primaryColor: string | null;
+    type: string | null;
+    isOpenFinance: boolean;
+    isSandbox: boolean;
+  };
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [connectors, setConnectors] = useState<Connector[]>([]);
+  const [connectorsLoading, setConnectorsLoading] = useState(false);
+  const [search, setSearch] = useState("");
+
+  const openPicker = async () => {
+    setPickerOpen(true);
+    if (connectors.length > 0) return;
+    setConnectorsLoading(true);
+    try {
+      const res = await fetchConnectors();
+      setConnectors(res.connectors as Connector[]);
+    } catch (e) {
+      toast.error("Erro ao carregar instituições", { description: (e as Error).message });
+    } finally {
+      setConnectorsLoading(false);
+    }
+  };
 
   type SyncLog = { id: string; status: string; error_message: string | null; accounts_count: number | null; triggered_by: string; created_at: string };
   const [historyItem, setHistoryItem] = useState<Item | null>(null);
@@ -132,12 +163,14 @@ function BancosPage() {
     if (user) load();
   }, [user, load]);
 
-  const handleConnect = async (mode: "openfinance" | "all" = "all") => {
+  const handleConnect = async (mode: "openfinance" | "all" = "all", connectorId?: number) => {
     setConnecting(true);
     try {
       await loadPluggyScript();
       let connectorIds: number[] | undefined;
-      if (mode === "openfinance") {
+      if (connectorId) {
+        connectorIds = [connectorId];
+      } else if (mode === "openfinance") {
         const { connectorIds: ids } = await fetchOpenFinanceIds();
         if (!ids || ids.length === 0) {
           toast.error("Nenhum conector Open Finance disponível no momento.");
@@ -235,6 +268,15 @@ function BancosPage() {
                   Regulado pelo Banco Central, mais seguro
                 </span>
               </DropdownMenuItem>
+              <DropdownMenuItem onClick={openPicker} className="flex-col items-start gap-0.5 py-2">
+                <div className="flex items-center gap-2 font-medium">
+                  <Landmark className="h-4 w-4 text-primary" />
+                  Escolher meu banco
+                </div>
+                <span className="pl-6 text-xs text-muted-foreground">
+                  Busque na lista de instituições disponíveis
+                </span>
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleConnect("all")} className="flex-col items-start gap-0.5 py-2">
                 <div className="flex items-center gap-2 font-medium">
                   <Globe className="h-4 w-4" />
@@ -261,6 +303,12 @@ function BancosPage() {
               {connecting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ShieldCheck className="mr-2 h-4 w-4" />}
               Conectar via Open Finance
             </Button>
+            <div className="mt-3">
+              <Button variant="outline" onClick={openPicker} disabled={connecting}>
+                <Landmark className="mr-2 h-4 w-4" />
+                Escolher meu banco na lista
+              </Button>
+            </div>
           </Card>
         ) : (
           <>
@@ -351,6 +399,73 @@ function BancosPage() {
           </>
         )}
       </main>
+
+      <Dialog open={pickerOpen} onOpenChange={setPickerOpen}>
+        <DialogContent className="max-h-[85vh] overflow-hidden sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Escolher instituição</DialogTitle>
+          </DialogHeader>
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Buscar banco..."
+              className="pl-9"
+              aria-label="Buscar instituição financeira"
+            />
+          </div>
+          <div className="max-h-[55vh] space-y-2 overflow-y-auto pr-1">
+            {connectorsLoading ? (
+              <div className="flex items-center justify-center py-8 text-sm text-muted-foreground">
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Carregando instituições...
+              </div>
+            ) : (
+              (() => {
+                const q = search.trim().toLowerCase();
+                const filtered = connectors.filter((c) => c.name.toLowerCase().includes(q));
+                if (filtered.length === 0) {
+                  return (
+                    <p className="py-8 text-center text-sm text-muted-foreground">
+                      Nenhuma instituição encontrada.
+                    </p>
+                  );
+                }
+                return filtered.map((c) => (
+                  <button
+                    key={c.id}
+                    type="button"
+                    onClick={() => {
+                      setPickerOpen(false);
+                      handleConnect(c.isOpenFinance ? "openfinance" : "all", c.id);
+                    }}
+                    className="flex w-full items-center gap-3 rounded-lg border p-3 text-left transition-colors hover:bg-accent"
+                  >
+                    <span
+                      className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md bg-muted"
+                      style={c.primaryColor ? { backgroundColor: `${c.primaryColor}1a` } : undefined}
+                    >
+                      {c.imageUrl ? (
+                        <img src={c.imageUrl} alt="" className="h-6 w-6 object-contain" loading="lazy" />
+                      ) : (
+                        <Building2 className="h-4 w-4" />
+                      )}
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-sm font-medium">{c.name}</span>
+                      <span className="flex items-center gap-2 text-xs text-muted-foreground">
+                        {c.isOpenFinance ? "Open Finance" : "Login direto"}
+                        {c.isSandbox ? " · teste" : ""}
+                      </span>
+                    </span>
+                    <Plus className="h-4 w-4 shrink-0 text-muted-foreground" />
+                  </button>
+                ));
+              })()
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={!!historyItem} onOpenChange={(o) => !o && setHistoryItem(null)}>
         <DialogContent className="max-w-md">
