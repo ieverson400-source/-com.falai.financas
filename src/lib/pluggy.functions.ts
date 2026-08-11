@@ -250,3 +250,33 @@ export const deletePluggyItem = createServerFn({ method: "POST" })
     await supabase.from("pluggy_items").delete().eq("id", data.itemId);
     return { ok: true };
   });
+
+// Lista instituições disponíveis para o usuário escolher dentro do app
+export const listConnectors = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async () => {
+    const apiKey = await getPluggyApiKey();
+    const res = await pluggyFetch(`/connectors?countries=BR&sandbox=true`, apiKey);
+    const connectors = (res?.results ?? []) as Array<{
+      id: number;
+      name: string;
+      imageUrl?: string;
+      primaryColor?: string;
+      type?: string;
+      isOpenFinance?: boolean;
+      isSandbox?: boolean;
+    }>;
+    return {
+      connectors: connectors
+        .map((c) => ({
+          id: c.id,
+          name: c.name,
+          imageUrl: c.imageUrl ?? null,
+          primaryColor: c.primaryColor ? `#${c.primaryColor.replace("#", "")}` : null,
+          type: c.type ?? null,
+          isOpenFinance: c.isOpenFinance === true,
+          isSandbox: c.isSandbox === true,
+        }))
+        .sort((a, b) => Number(b.isOpenFinance) - Number(a.isOpenFinance) || a.name.localeCompare(b.name)),
+    };
+  });
