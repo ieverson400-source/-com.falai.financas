@@ -60,7 +60,7 @@ export const listOpenFinanceConnectorIds = createServerFn({ method: "GET" })
   .handler(async () => {
     const apiKey = await getPluggyApiKey();
     const res = await pluggyFetch(
-      `/connectors?countries=BR&isOpenFinance=true&sandbox=true`,
+      `/connectors?countries=BR&isOpenFinance=true${sandboxParam()}`,
       apiKey,
     );
     const connectors = (res?.results ?? []) as Array<{ id: number; isOpenFinance?: boolean }>;
@@ -261,7 +261,7 @@ export const listConnectors = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async () => {
     const apiKey = await getPluggyApiKey();
-    const res = await pluggyFetch(`/connectors?countries=BR&sandbox=true`, apiKey);
+    const res = await pluggyFetch(`/connectors?countries=BR${sandboxParam()}`, apiKey);
     const connectors = (res?.results ?? []) as Array<{
       id: number;
       name: string;
