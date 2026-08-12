@@ -4,6 +4,11 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const PLUGGY_API = "https://api.pluggy.ai";
 
+// Só inclui bancos de teste ("Pluggy Bank") quando PLUGGY_SANDBOX="true".
+function sandboxParam(): string {
+  return process.env.PLUGGY_SANDBOX === "true" ? "&sandbox=true" : "";
+}
+
 async function getPluggyApiKey(): Promise<string> {
   const clientId = process.env.PLUGGY_CLIENT_ID;
   const clientSecret = process.env.PLUGGY_CLIENT_SECRET;
