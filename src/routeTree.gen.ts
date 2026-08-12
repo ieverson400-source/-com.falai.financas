@@ -30,6 +30,7 @@ import { Route as AppRecargaConfiguracoesRouteImport } from './routes/app.recarg
 import { Route as AppPlanosRetornoRouteImport } from './routes/app.planos.retorno'
 import { Route as ApiPublicZapiRouteImport } from './routes/api/public/zapi'
 import { Route as ApiPublicWhatsappRouteImport } from './routes/api/public/whatsapp'
+import { Route as ApiPublicPluggyWebhookRouteImport } from './routes/api/public/pluggy-webhook'
 import { Route as ApiPublicPlayRtdnRouteImport } from './routes/api/public/play-rtdn'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 import { Route as ApiPublicHooksWhatsappWeeklyTipRouteImport } from './routes/api/public/hooks/whatsapp-weekly-tip'
@@ -143,6 +144,11 @@ const ApiPublicWhatsappRoute = ApiPublicWhatsappRouteImport.update({
   path: '/api/public/whatsapp',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicPluggyWebhookRoute = ApiPublicPluggyWebhookRouteImport.update({
+  id: '/api/public/pluggy-webhook',
+  path: '/api/public/pluggy-webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicPlayRtdnRoute = ApiPublicPlayRtdnRouteImport.update({
   id: '/api/public/play-rtdn',
   path: '/api/public/play-rtdn',
@@ -203,6 +209,7 @@ export interface FileRoutesByFullPath {
   '/blog/guia-gestao-de-gastos': typeof BlogGuiaGestaoDeGastosRoute
   '/app/': typeof AppIndexRoute
   '/api/public/play-rtdn': typeof ApiPublicPlayRtdnRoute
+  '/api/public/pluggy-webhook': typeof ApiPublicPluggyWebhookRoute
   '/api/public/whatsapp': typeof ApiPublicWhatsappRoute
   '/api/public/zapi': typeof ApiPublicZapiRoute
   '/app/planos/retorno': typeof AppPlanosRetornoRoute
@@ -233,6 +240,7 @@ export interface FileRoutesByTo {
   '/blog/guia-gestao-de-gastos': typeof BlogGuiaGestaoDeGastosRoute
   '/app': typeof AppIndexRoute
   '/api/public/play-rtdn': typeof ApiPublicPlayRtdnRoute
+  '/api/public/pluggy-webhook': typeof ApiPublicPluggyWebhookRoute
   '/api/public/whatsapp': typeof ApiPublicWhatsappRoute
   '/api/public/zapi': typeof ApiPublicZapiRoute
   '/app/planos/retorno': typeof AppPlanosRetornoRoute
@@ -264,6 +272,7 @@ export interface FileRoutesById {
   '/blog/guia-gestao-de-gastos': typeof BlogGuiaGestaoDeGastosRoute
   '/app/': typeof AppIndexRoute
   '/api/public/play-rtdn': typeof ApiPublicPlayRtdnRoute
+  '/api/public/pluggy-webhook': typeof ApiPublicPluggyWebhookRoute
   '/api/public/whatsapp': typeof ApiPublicWhatsappRoute
   '/api/public/zapi': typeof ApiPublicZapiRoute
   '/app/planos/retorno': typeof AppPlanosRetornoRoute
@@ -296,6 +305,7 @@ export interface FileRouteTypes {
     | '/blog/guia-gestao-de-gastos'
     | '/app/'
     | '/api/public/play-rtdn'
+    | '/api/public/pluggy-webhook'
     | '/api/public/whatsapp'
     | '/api/public/zapi'
     | '/app/planos/retorno'
@@ -326,6 +336,7 @@ export interface FileRouteTypes {
     | '/blog/guia-gestao-de-gastos'
     | '/app'
     | '/api/public/play-rtdn'
+    | '/api/public/pluggy-webhook'
     | '/api/public/whatsapp'
     | '/api/public/zapi'
     | '/app/planos/retorno'
@@ -356,6 +367,7 @@ export interface FileRouteTypes {
     | '/blog/guia-gestao-de-gastos'
     | '/app/'
     | '/api/public/play-rtdn'
+    | '/api/public/pluggy-webhook'
     | '/api/public/whatsapp'
     | '/api/public/zapi'
     | '/app/planos/retorno'
@@ -387,6 +399,7 @@ export interface RootRouteChildren {
   BlogGuiaGestaoDeGastosRoute: typeof BlogGuiaGestaoDeGastosRoute
   AppIndexRoute: typeof AppIndexRoute
   ApiPublicPlayRtdnRoute: typeof ApiPublicPlayRtdnRoute
+  ApiPublicPluggyWebhookRoute: typeof ApiPublicPluggyWebhookRoute
   ApiPublicWhatsappRoute: typeof ApiPublicWhatsappRoute
   ApiPublicZapiRoute: typeof ApiPublicZapiRoute
   AppRecargaConfiguracoesRoute: typeof AppRecargaConfiguracoesRoute
@@ -548,6 +561,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicWhatsappRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/pluggy-webhook': {
+      id: '/api/public/pluggy-webhook'
+      path: '/api/public/pluggy-webhook'
+      fullPath: '/api/public/pluggy-webhook'
+      preLoaderRoute: typeof ApiPublicPluggyWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/play-rtdn': {
       id: '/api/public/play-rtdn'
       path: '/api/public/play-rtdn'
@@ -630,6 +650,7 @@ const rootRouteChildren: RootRouteChildren = {
   BlogGuiaGestaoDeGastosRoute: BlogGuiaGestaoDeGastosRoute,
   AppIndexRoute: AppIndexRoute,
   ApiPublicPlayRtdnRoute: ApiPublicPlayRtdnRoute,
+  ApiPublicPluggyWebhookRoute: ApiPublicPluggyWebhookRoute,
   ApiPublicWhatsappRoute: ApiPublicWhatsappRoute,
   ApiPublicZapiRoute: ApiPublicZapiRoute,
   AppRecargaConfiguracoesRoute: AppRecargaConfiguracoesRoute,
@@ -647,12 +668,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
