@@ -42,9 +42,13 @@ export const createPluggyConnectToken = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: { itemId?: string }) => input ?? {})
   .handler(async ({ data, context }) => {
+    const { pluggyWebhookUrl } = await import("./pluggy.server");
     const apiKey = await getPluggyApiKey();
+    const token = process.env.PLUGGY_WEBHOOK_TOKEN;
     const body: Record<string, unknown> = {
       clientUserId: context.userId,
+      webhookUrl: token ? `${pluggyWebhookUrl()}?token=${encodeURIComponent(token)}` : pluggyWebhookUrl(),
+      avoidDuplicates: true,
     };
     if (data?.itemId) body.itemId = data.itemId;
     const res = await pluggyFetch("/connect_token", apiKey, {
@@ -53,6 +57,7 @@ export const createPluggyConnectToken = createServerFn({ method: "POST" })
     });
     return { accessToken: res.accessToken as string };
   });
+
 
 // Lista conectores Open Finance (Brasil) para filtrar no widget Pluggy Connect
 export const listOpenFinanceConnectorIds = createServerFn({ method: "GET" })
