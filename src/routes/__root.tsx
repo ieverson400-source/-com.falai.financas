@@ -2,7 +2,8 @@ import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/r
 
 import appCss from "../styles.css?url";
 import { InstallPWAButton } from "@/components/InstallPWAButton";
-import { useEffect } from "react";
+import "@/integrations/supabase/server-fn-fetch-patch";
+
 
 
 function NotFoundComponent() {
