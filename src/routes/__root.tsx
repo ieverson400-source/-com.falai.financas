@@ -95,10 +95,8 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
-  useEffect(() => {
-    import("@/integrations/supabase/server-fn-fetch-patch");
-  }, []);
   return (
+
     <>
       <Outlet />
       <InstallPWAButton />
