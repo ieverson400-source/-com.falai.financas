@@ -43,7 +43,7 @@ function AuthPage() {
     setGoogleLoading(true);
     try {
       const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin + "/app",
+        redirect_uri: window.location.origin,
       });
       if (result.error) throw result.error;
       if (result.redirected) return;
@@ -53,6 +53,7 @@ function AuthPage() {
       setGoogleLoading(false);
     }
   };
+
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
