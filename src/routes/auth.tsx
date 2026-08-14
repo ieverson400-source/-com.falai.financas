@@ -42,8 +42,19 @@ function AuthPage() {
   const handleGoogle = async () => {
     setGoogleLoading(true);
     try {
+      // Limpa estado de OAuth antigo (causa comum do erro "State verification failed")
+      try {
+        for (const store of [window.sessionStorage, window.localStorage]) {
+          Object.keys(store)
+            .filter((k) => /oauth|pkce|state/i.test(k) && !k.startsWith("sb-"))
+            .forEach((k) => store.removeItem(k));
+        }
+      } catch { /* storage indisponível */ }
+
       const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin,
+        // Volta para uma rota pública que confirma a sessão antes de ir ao app
+        redirect_uri: `${window.location.origin}/auth`,
+        extraParams: { prompt: "select_account" },
       });
       if (result.error) throw result.error;
       if (result.redirected) return;
@@ -56,10 +67,19 @@ function AuthPage() {
 
 
   useEffect(() => {
+    // Mensagem amigável quando o provedor retorna erro (ex.: state inválido)
+    const params = new URLSearchParams(window.location.search);
+    const oauthError = params.get("error_description") ?? params.get("error");
+    if (oauthError) {
+      toast.error("Não foi possível concluir o login com Google. Tente novamente.");
+      window.history.replaceState({}, "", "/auth");
+    }
+
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) window.location.href = "/app";
     });
   }, []);
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
