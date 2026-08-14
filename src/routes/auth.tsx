@@ -194,17 +194,46 @@ function AuthPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="h-11" />
+            <Input
+              id="email"
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="h-11"
+              autoComplete="email"
+              autoFocus
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Senha</Label>
-            <Input id="password" type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Mínimo 6 caracteres" className="h-11" />
+            <Input
+              id="password"
+              type="password"
+              required
+              minLength={6}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Mínimo 6 caracteres"
+              className="h-11"
+              autoComplete={mode === "signup" ? "new-password" : "current-password"}
+            />
           </div>
 
           {mode === "signup" && (
-            <>
+            <div className="space-y-2">
+              <Label htmlFor="name">Seu nome (opcional)</Label>
+              <Input
+                id="name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Como quer ser chamado"
+                className="h-11"
+                autoComplete="name"
+              />
               {showWhatsapp ? (
-                <div className="space-y-2">
+                <div className="space-y-2 pt-2">
                   <Label htmlFor="phone">WhatsApp (opcional)</Label>
                   <Input
                     id="phone"
@@ -214,6 +243,7 @@ function AuthPage() {
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="+5519996020358"
                     className="h-11"
+                    autoComplete="tel"
                   />
                   <p className="text-xs text-muted-foreground">Receba alertas e resumos automáticos.</p>
                 </div>
@@ -226,8 +256,9 @@ function AuthPage() {
                   + Adicionar WhatsApp para receber alertas (opcional)
                 </button>
               )}
-            </>
+            </div>
           )}
+
 
           <Button type="submit" className="w-full h-11 transition-transform hover:scale-[1.01]" disabled={loading || googleLoading}>
             {loading ? "Aguarde..." : mode === "signin" ? "Entrar" : "Criar conta"}
