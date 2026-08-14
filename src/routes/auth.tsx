@@ -43,7 +43,7 @@ function AuthPage() {
     setGoogleLoading(true);
     try {
       const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin + "/app",
+        redirect_uri: window.location.origin,
       });
       if (result.error) throw result.error;
       if (result.redirected) return;
@@ -53,6 +53,7 @@ function AuthPage() {
       setGoogleLoading(false);
     }
   };
+
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -102,15 +103,20 @@ function AuthPage() {
                   "Olá! Bem-vindo ao Falaí Finanças 🚀\n\nA partir de agora você vai receber por aqui:\n• Confirmação de cada gasto registrado\n• Resumo diário no fim do dia\n• Resumo semanal e mensal\n• Alertas de orçamento\n• Dica financeira semanal\n\nBoa organização! 💚",
               },
             });
-            toast.success("Conta criada! Enviamos uma mensagem no seu WhatsApp.");
           } catch (waErr) {
             console.error("Falha ao enviar WhatsApp de boas-vindas:", waErr);
-            toast.success("Conta criada! (Não foi possível enviar o WhatsApp de boas-vindas)");
           }
-        } else {
-          toast.success("Conta criada! Você já pode entrar.");
         }
+
+        if (signUpData.session) {
+          toast.success("Conta criada! Entrando...");
+          window.location.href = "/app";
+          return;
+        }
+
+        toast.success("Conta criada! Confirme seu email para entrar.");
         setMode("signin");
+
       } else {
         const { data: signInData, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
@@ -157,24 +163,26 @@ function AuthPage() {
         </Link>
         <h1 className="font-display text-2xl sm:text-3xl font-bold mb-2">{mode === "signin" ? "Entrar" : "Criar conta"}</h1>
         <p className="text-muted-foreground mb-6 text-sm">
-          {mode === "signin" ? "Acesse seus gastos" : "É rápido — só email e senha"}
+          {mode === "signin" ? "Um toque com o Google e pronto" : "Cadastro em 1 toque com o Google"}
         </p>
 
         <Button
           type="button"
-          variant="outline"
           onClick={handleGoogle}
           disabled={googleLoading || loading}
-          className="w-full h-11 mb-4 gap-2"
+          className="w-full h-12 text-base mb-2 gap-2 transition-transform hover:scale-[1.01]"
         >
-          <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
-            <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.6-6 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/>
-            <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.5 19 12 24 12c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
-            <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.5-5.2l-6.2-5.2C29.2 35 26.7 36 24 36c-5.3 0-9.7-3.4-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/>
-            <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.2 4.3-4 5.6l6.2 5.2C41 34.9 44 30 44 24c0-1.3-.1-2.4-.4-3.5z"/>
-          </svg>
-          {googleLoading ? "Abrindo..." : "Continuar com Google"}
+          <span className="bg-background rounded-full p-1 inline-flex">
+            <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
+              <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.6-6 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/>
+              <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.5 19 12 24 12c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
+              <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.5-5.2l-6.2-5.2C29.2 35 26.7 36 24 36c-5.3 0-9.7-3.4-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/>
+              <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.2 4.3-4 5.6l6.2 5.2C41 34.9 44 30 44 24c0-1.3-.1-2.4-.4-3.5z"/>
+            </svg>
+          </span>
+          {googleLoading ? "Abrindo..." : mode === "signin" ? "Entrar com Google" : "Cadastrar com Google"}
         </Button>
+        <p className="text-xs text-muted-foreground text-center mb-4">Mais rápido e sem senha para lembrar</p>
 
         <div className="flex items-center gap-3 mb-4">
           <div className="h-px flex-1 bg-border" />
@@ -182,20 +190,50 @@ function AuthPage() {
           <div className="h-px flex-1 bg-border" />
         </div>
 
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="h-11" />
+            <Input
+              id="email"
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="h-11"
+              autoComplete="email"
+              autoFocus
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Senha</Label>
-            <Input id="password" type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Mínimo 6 caracteres" className="h-11" />
+            <Input
+              id="password"
+              type="password"
+              required
+              minLength={6}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Mínimo 6 caracteres"
+              className="h-11"
+              autoComplete={mode === "signup" ? "new-password" : "current-password"}
+            />
           </div>
 
           {mode === "signup" && (
-            <>
+            <div className="space-y-2">
+              <Label htmlFor="name">Seu nome (opcional)</Label>
+              <Input
+                id="name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Como quer ser chamado"
+                className="h-11"
+                autoComplete="name"
+              />
               {showWhatsapp ? (
-                <div className="space-y-2">
+                <div className="space-y-2 pt-2">
                   <Label htmlFor="phone">WhatsApp (opcional)</Label>
                   <Input
                     id="phone"
@@ -205,6 +243,7 @@ function AuthPage() {
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="+5519996020358"
                     className="h-11"
+                    autoComplete="tel"
                   />
                   <p className="text-xs text-muted-foreground">Receba alertas e resumos automáticos.</p>
                 </div>
@@ -217,8 +256,9 @@ function AuthPage() {
                   + Adicionar WhatsApp para receber alertas (opcional)
                 </button>
               )}
-            </>
+            </div>
           )}
+
 
           <Button type="submit" className="w-full h-11 transition-transform hover:scale-[1.01]" disabled={loading || googleLoading}>
             {loading ? "Aguarde..." : mode === "signin" ? "Entrar" : "Criar conta"}
