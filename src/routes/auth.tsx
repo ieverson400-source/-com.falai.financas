@@ -103,15 +103,20 @@ function AuthPage() {
                   "Olá! Bem-vindo ao Falaí Finanças 🚀\n\nA partir de agora você vai receber por aqui:\n• Confirmação de cada gasto registrado\n• Resumo diário no fim do dia\n• Resumo semanal e mensal\n• Alertas de orçamento\n• Dica financeira semanal\n\nBoa organização! 💚",
               },
             });
-            toast.success("Conta criada! Enviamos uma mensagem no seu WhatsApp.");
           } catch (waErr) {
             console.error("Falha ao enviar WhatsApp de boas-vindas:", waErr);
-            toast.success("Conta criada! (Não foi possível enviar o WhatsApp de boas-vindas)");
           }
-        } else {
-          toast.success("Conta criada! Você já pode entrar.");
         }
+
+        if (signUpData.session) {
+          toast.success("Conta criada! Entrando...");
+          window.location.href = "/app";
+          return;
+        }
+
+        toast.success("Conta criada! Confirme seu email para entrar.");
         setMode("signin");
+
       } else {
         const { data: signInData, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
