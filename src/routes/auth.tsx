@@ -42,19 +42,8 @@ function AuthPage() {
   const handleGoogle = async () => {
     setGoogleLoading(true);
     try {
-      // Limpa estado de OAuth antigo (causa comum do erro "State verification failed")
-      try {
-        for (const store of [window.sessionStorage, window.localStorage]) {
-          Object.keys(store)
-            .filter((k) => /oauth|pkce|state/i.test(k) && !k.startsWith("sb-"))
-            .forEach((k) => store.removeItem(k));
-        }
-      } catch { /* storage indisponível */ }
-
       const result = await lovable.auth.signInWithOAuth("google", {
-        // Volta para uma rota pública que confirma a sessão antes de ir ao app
         redirect_uri: `${window.location.origin}/auth`,
-        extraParams: { prompt: "select_account" },
       });
       if (result.error) throw result.error;
       if (result.redirected) return;
@@ -75,9 +64,15 @@ function AuthPage() {
       window.history.replaceState({}, "", "/auth");
     }
 
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) window.location.href = "/app";
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" && session) window.location.replace("/app");
     });
+
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) window.location.replace("/app");
+    });
+
+    return () => authListener.subscription.unsubscribe();
   }, []);
 
 
