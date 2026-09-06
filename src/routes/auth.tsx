@@ -43,8 +43,7 @@ function AuthPage() {
     setGoogleLoading(true);
     try {
       const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin,
-        extraParams: { prompt: "select_account" },
+        redirect_uri: `${window.location.origin}/auth`,
       });
       if (result.error) throw result.error;
       if (result.redirected) return;
@@ -65,9 +64,15 @@ function AuthPage() {
       window.history.replaceState({}, "", "/auth");
     }
 
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) window.location.href = "/app";
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" && session) window.location.replace("/app");
     });
+
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) window.location.replace("/app");
+    });
+
+    return () => authListener.subscription.unsubscribe();
   }, []);
 
 
