@@ -42,18 +42,8 @@ function AuthPage() {
   const handleGoogle = async () => {
     setGoogleLoading(true);
     try {
-      // Limpa estado de OAuth antigo (causa comum do erro "State verification failed")
-      try {
-        for (const store of [window.sessionStorage, window.localStorage]) {
-          Object.keys(store)
-            .filter((k) => /oauth|pkce|state/i.test(k) && !k.startsWith("sb-"))
-            .forEach((k) => store.removeItem(k));
-        }
-      } catch { /* storage indisponível */ }
-
       const result = await lovable.auth.signInWithOAuth("google", {
-        // Volta para uma rota pública que confirma a sessão antes de ir ao app
-        redirect_uri: `${window.location.origin}/auth`,
+        redirect_uri: window.location.origin,
         extraParams: { prompt: "select_account" },
       });
       if (result.error) throw result.error;
