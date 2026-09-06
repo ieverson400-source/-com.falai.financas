@@ -2,6 +2,7 @@ import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/r
 
 import appCss from "../styles.css?url";
 import { InstallPWAButton } from "@/components/InstallPWAButton";
+import { AnimatedSplashScreen } from "@/components/animated-splash-screen";
 import "@/integrations/supabase/server-fn-fetch-patch";
 
 
@@ -101,6 +102,7 @@ function RootComponent() {
     <>
       <Outlet />
       <InstallPWAButton />
+      <AnimatedSplashScreen />
     </>
   );
 }
