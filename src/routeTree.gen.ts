@@ -19,6 +19,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as BlogGuiaGestaoDeGastosRouteImport } from './routes/blog.guia-gestao-de-gastos'
 import { Route as AppWhatsappTestRouteImport } from './routes/app.whatsapp-test'
+import { Route as AppShopRouteImport } from './routes/app.shop'
 import { Route as AppPlanosRouteImport } from './routes/app.planos'
 import { Route as AppOrcamentosRouteImport } from './routes/app.orcamentos'
 import { Route as AppConectarWhatsappRouteImport } from './routes/app.conectar-whatsapp'
@@ -87,6 +88,11 @@ const BlogGuiaGestaoDeGastosRoute = BlogGuiaGestaoDeGastosRouteImport.update({
 const AppWhatsappTestRoute = AppWhatsappTestRouteImport.update({
   id: '/app/whatsapp-test',
   path: '/app/whatsapp-test',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppShopRoute = AppShopRouteImport.update({
+  id: '/app/shop',
+  path: '/app/shop',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppPlanosRoute = AppPlanosRouteImport.update({
@@ -205,6 +211,7 @@ export interface FileRoutesByFullPath {
   '/app/conectar-whatsapp': typeof AppConectarWhatsappRoute
   '/app/orcamentos': typeof AppOrcamentosRoute
   '/app/planos': typeof AppPlanosRouteWithChildren
+  '/app/shop': typeof AppShopRoute
   '/app/whatsapp-test': typeof AppWhatsappTestRoute
   '/blog/guia-gestao-de-gastos': typeof BlogGuiaGestaoDeGastosRoute
   '/app/': typeof AppIndexRoute
@@ -236,6 +243,7 @@ export interface FileRoutesByTo {
   '/app/conectar-whatsapp': typeof AppConectarWhatsappRoute
   '/app/orcamentos': typeof AppOrcamentosRoute
   '/app/planos': typeof AppPlanosRouteWithChildren
+  '/app/shop': typeof AppShopRoute
   '/app/whatsapp-test': typeof AppWhatsappTestRoute
   '/blog/guia-gestao-de-gastos': typeof BlogGuiaGestaoDeGastosRoute
   '/app': typeof AppIndexRoute
@@ -268,6 +276,7 @@ export interface FileRoutesById {
   '/app/conectar-whatsapp': typeof AppConectarWhatsappRoute
   '/app/orcamentos': typeof AppOrcamentosRoute
   '/app/planos': typeof AppPlanosRouteWithChildren
+  '/app/shop': typeof AppShopRoute
   '/app/whatsapp-test': typeof AppWhatsappTestRoute
   '/blog/guia-gestao-de-gastos': typeof BlogGuiaGestaoDeGastosRoute
   '/app/': typeof AppIndexRoute
@@ -301,6 +310,7 @@ export interface FileRouteTypes {
     | '/app/conectar-whatsapp'
     | '/app/orcamentos'
     | '/app/planos'
+    | '/app/shop'
     | '/app/whatsapp-test'
     | '/blog/guia-gestao-de-gastos'
     | '/app/'
@@ -332,6 +342,7 @@ export interface FileRouteTypes {
     | '/app/conectar-whatsapp'
     | '/app/orcamentos'
     | '/app/planos'
+    | '/app/shop'
     | '/app/whatsapp-test'
     | '/blog/guia-gestao-de-gastos'
     | '/app'
@@ -363,6 +374,7 @@ export interface FileRouteTypes {
     | '/app/conectar-whatsapp'
     | '/app/orcamentos'
     | '/app/planos'
+    | '/app/shop'
     | '/app/whatsapp-test'
     | '/blog/guia-gestao-de-gastos'
     | '/app/'
@@ -395,6 +407,7 @@ export interface RootRouteChildren {
   AppConectarWhatsappRoute: typeof AppConectarWhatsappRoute
   AppOrcamentosRoute: typeof AppOrcamentosRoute
   AppPlanosRoute: typeof AppPlanosRouteWithChildren
+  AppShopRoute: typeof AppShopRoute
   AppWhatsappTestRoute: typeof AppWhatsappTestRoute
   BlogGuiaGestaoDeGastosRoute: typeof BlogGuiaGestaoDeGastosRoute
   AppIndexRoute: typeof AppIndexRoute
@@ -482,6 +495,13 @@ declare module '@tanstack/react-router' {
       path: '/app/whatsapp-test'
       fullPath: '/app/whatsapp-test'
       preLoaderRoute: typeof AppWhatsappTestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/shop': {
+      id: '/app/shop'
+      path: '/app/shop'
+      fullPath: '/app/shop'
+      preLoaderRoute: typeof AppShopRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app/planos': {
@@ -646,6 +666,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppConectarWhatsappRoute: AppConectarWhatsappRoute,
   AppOrcamentosRoute: AppOrcamentosRoute,
   AppPlanosRoute: AppPlanosRouteWithChildren,
+  AppShopRoute: AppShopRoute,
   AppWhatsappTestRoute: AppWhatsappTestRoute,
   BlogGuiaGestaoDeGastosRoute: BlogGuiaGestaoDeGastosRoute,
   AppIndexRoute: AppIndexRoute,
