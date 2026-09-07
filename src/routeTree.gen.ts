@@ -19,12 +19,14 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as BlogGuiaGestaoDeGastosRouteImport } from './routes/blog.guia-gestao-de-gastos'
 import { Route as AppWhatsappTestRouteImport } from './routes/app.whatsapp-test'
+import { Route as AppShopRouteImport } from './routes/app.shop'
 import { Route as AppPlanosRouteImport } from './routes/app.planos'
 import { Route as AppOrcamentosRouteImport } from './routes/app.orcamentos'
 import { Route as AppConectarWhatsappRouteImport } from './routes/app.conectar-whatsapp'
 import { Route as AppBancosRouteImport } from './routes/app.bancos'
 import { Route as AppAgendasRouteImport } from './routes/app.agendas'
 import { Route as AppAgendaMensagensRouteImport } from './routes/app.agenda-mensagens'
+import { Route as AppAdminRouteImport } from './routes/app.admin'
 import { Route as AppRecargaIndexRouteImport } from './routes/app.recarga.index'
 import { Route as AppRecargaConfiguracoesRouteImport } from './routes/app.recarga.configuracoes'
 import { Route as AppPlanosRetornoRouteImport } from './routes/app.planos.retorno'
@@ -89,6 +91,11 @@ const AppWhatsappTestRoute = AppWhatsappTestRouteImport.update({
   path: '/app/whatsapp-test',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppShopRoute = AppShopRouteImport.update({
+  id: '/app/shop',
+  path: '/app/shop',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppPlanosRoute = AppPlanosRouteImport.update({
   id: '/app/planos',
   path: '/app/planos',
@@ -117,6 +124,11 @@ const AppAgendasRoute = AppAgendasRouteImport.update({
 const AppAgendaMensagensRoute = AppAgendaMensagensRouteImport.update({
   id: '/app/agenda-mensagens',
   path: '/app/agenda-mensagens',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppAdminRoute = AppAdminRouteImport.update({
+  id: '/app/admin',
+  path: '/app/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppRecargaIndexRoute = AppRecargaIndexRouteImport.update({
@@ -199,12 +211,14 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/app/admin': typeof AppAdminRoute
   '/app/agenda-mensagens': typeof AppAgendaMensagensRoute
   '/app/agendas': typeof AppAgendasRoute
   '/app/bancos': typeof AppBancosRoute
   '/app/conectar-whatsapp': typeof AppConectarWhatsappRoute
   '/app/orcamentos': typeof AppOrcamentosRoute
   '/app/planos': typeof AppPlanosRouteWithChildren
+  '/app/shop': typeof AppShopRoute
   '/app/whatsapp-test': typeof AppWhatsappTestRoute
   '/blog/guia-gestao-de-gastos': typeof BlogGuiaGestaoDeGastosRoute
   '/app/': typeof AppIndexRoute
@@ -230,12 +244,14 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/app/admin': typeof AppAdminRoute
   '/app/agenda-mensagens': typeof AppAgendaMensagensRoute
   '/app/agendas': typeof AppAgendasRoute
   '/app/bancos': typeof AppBancosRoute
   '/app/conectar-whatsapp': typeof AppConectarWhatsappRoute
   '/app/orcamentos': typeof AppOrcamentosRoute
   '/app/planos': typeof AppPlanosRouteWithChildren
+  '/app/shop': typeof AppShopRoute
   '/app/whatsapp-test': typeof AppWhatsappTestRoute
   '/blog/guia-gestao-de-gastos': typeof BlogGuiaGestaoDeGastosRoute
   '/app': typeof AppIndexRoute
@@ -262,12 +278,14 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/app/admin': typeof AppAdminRoute
   '/app/agenda-mensagens': typeof AppAgendaMensagensRoute
   '/app/agendas': typeof AppAgendasRoute
   '/app/bancos': typeof AppBancosRoute
   '/app/conectar-whatsapp': typeof AppConectarWhatsappRoute
   '/app/orcamentos': typeof AppOrcamentosRoute
   '/app/planos': typeof AppPlanosRouteWithChildren
+  '/app/shop': typeof AppShopRoute
   '/app/whatsapp-test': typeof AppWhatsappTestRoute
   '/blog/guia-gestao-de-gastos': typeof BlogGuiaGestaoDeGastosRoute
   '/app/': typeof AppIndexRoute
@@ -295,12 +313,14 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/app/admin'
     | '/app/agenda-mensagens'
     | '/app/agendas'
     | '/app/bancos'
     | '/app/conectar-whatsapp'
     | '/app/orcamentos'
     | '/app/planos'
+    | '/app/shop'
     | '/app/whatsapp-test'
     | '/blog/guia-gestao-de-gastos'
     | '/app/'
@@ -326,12 +346,14 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/app/admin'
     | '/app/agenda-mensagens'
     | '/app/agendas'
     | '/app/bancos'
     | '/app/conectar-whatsapp'
     | '/app/orcamentos'
     | '/app/planos'
+    | '/app/shop'
     | '/app/whatsapp-test'
     | '/blog/guia-gestao-de-gastos'
     | '/app'
@@ -357,12 +379,14 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/app/admin'
     | '/app/agenda-mensagens'
     | '/app/agendas'
     | '/app/bancos'
     | '/app/conectar-whatsapp'
     | '/app/orcamentos'
     | '/app/planos'
+    | '/app/shop'
     | '/app/whatsapp-test'
     | '/blog/guia-gestao-de-gastos'
     | '/app/'
@@ -389,12 +413,14 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  AppAdminRoute: typeof AppAdminRoute
   AppAgendaMensagensRoute: typeof AppAgendaMensagensRoute
   AppAgendasRoute: typeof AppAgendasRoute
   AppBancosRoute: typeof AppBancosRoute
   AppConectarWhatsappRoute: typeof AppConectarWhatsappRoute
   AppOrcamentosRoute: typeof AppOrcamentosRoute
   AppPlanosRoute: typeof AppPlanosRouteWithChildren
+  AppShopRoute: typeof AppShopRoute
   AppWhatsappTestRoute: typeof AppWhatsappTestRoute
   BlogGuiaGestaoDeGastosRoute: typeof BlogGuiaGestaoDeGastosRoute
   AppIndexRoute: typeof AppIndexRoute
@@ -484,6 +510,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppWhatsappTestRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/shop': {
+      id: '/app/shop'
+      path: '/app/shop'
+      fullPath: '/app/shop'
+      preLoaderRoute: typeof AppShopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/app/planos': {
       id: '/app/planos'
       path: '/app/planos'
@@ -524,6 +557,13 @@ declare module '@tanstack/react-router' {
       path: '/app/agenda-mensagens'
       fullPath: '/app/agenda-mensagens'
       preLoaderRoute: typeof AppAgendaMensagensRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/admin': {
+      id: '/app/admin'
+      path: '/app/admin'
+      fullPath: '/app/admin'
+      preLoaderRoute: typeof AppAdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app/recarga/': {
@@ -640,12 +680,14 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  AppAdminRoute: AppAdminRoute,
   AppAgendaMensagensRoute: AppAgendaMensagensRoute,
   AppAgendasRoute: AppAgendasRoute,
   AppBancosRoute: AppBancosRoute,
   AppConectarWhatsappRoute: AppConectarWhatsappRoute,
   AppOrcamentosRoute: AppOrcamentosRoute,
   AppPlanosRoute: AppPlanosRouteWithChildren,
+  AppShopRoute: AppShopRoute,
   AppWhatsappTestRoute: AppWhatsappTestRoute,
   BlogGuiaGestaoDeGastosRoute: BlogGuiaGestaoDeGastosRoute,
   AppIndexRoute: AppIndexRoute,
