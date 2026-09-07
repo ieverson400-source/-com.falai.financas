@@ -26,6 +26,7 @@ import { Route as AppConectarWhatsappRouteImport } from './routes/app.conectar-w
 import { Route as AppBancosRouteImport } from './routes/app.bancos'
 import { Route as AppAgendasRouteImport } from './routes/app.agendas'
 import { Route as AppAgendaMensagensRouteImport } from './routes/app.agenda-mensagens'
+import { Route as AppAdminRouteImport } from './routes/app.admin'
 import { Route as AppRecargaIndexRouteImport } from './routes/app.recarga.index'
 import { Route as AppRecargaConfiguracoesRouteImport } from './routes/app.recarga.configuracoes'
 import { Route as AppPlanosRetornoRouteImport } from './routes/app.planos.retorno'
@@ -125,6 +126,11 @@ const AppAgendaMensagensRoute = AppAgendaMensagensRouteImport.update({
   path: '/app/agenda-mensagens',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppAdminRoute = AppAdminRouteImport.update({
+  id: '/app/admin',
+  path: '/app/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppRecargaIndexRoute = AppRecargaIndexRouteImport.update({
   id: '/app/recarga/',
   path: '/app/recarga/',
@@ -205,6 +211,7 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/app/admin': typeof AppAdminRoute
   '/app/agenda-mensagens': typeof AppAgendaMensagensRoute
   '/app/agendas': typeof AppAgendasRoute
   '/app/bancos': typeof AppBancosRoute
@@ -237,6 +244,7 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/app/admin': typeof AppAdminRoute
   '/app/agenda-mensagens': typeof AppAgendaMensagensRoute
   '/app/agendas': typeof AppAgendasRoute
   '/app/bancos': typeof AppBancosRoute
@@ -270,6 +278,7 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/app/admin': typeof AppAdminRoute
   '/app/agenda-mensagens': typeof AppAgendaMensagensRoute
   '/app/agendas': typeof AppAgendasRoute
   '/app/bancos': typeof AppBancosRoute
@@ -304,6 +313,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/app/admin'
     | '/app/agenda-mensagens'
     | '/app/agendas'
     | '/app/bancos'
@@ -336,6 +346,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/app/admin'
     | '/app/agenda-mensagens'
     | '/app/agendas'
     | '/app/bancos'
@@ -368,6 +379,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/app/admin'
     | '/app/agenda-mensagens'
     | '/app/agendas'
     | '/app/bancos'
@@ -401,6 +413,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  AppAdminRoute: typeof AppAdminRoute
   AppAgendaMensagensRoute: typeof AppAgendaMensagensRoute
   AppAgendasRoute: typeof AppAgendasRoute
   AppBancosRoute: typeof AppBancosRoute
@@ -546,6 +559,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAgendaMensagensRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/admin': {
+      id: '/app/admin'
+      path: '/app/admin'
+      fullPath: '/app/admin'
+      preLoaderRoute: typeof AppAdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/app/recarga/': {
       id: '/app/recarga/'
       path: '/app/recarga'
@@ -660,6 +680,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  AppAdminRoute: AppAdminRoute,
   AppAgendaMensagensRoute: AppAgendaMensagensRoute,
   AppAgendasRoute: AppAgendasRoute,
   AppBancosRoute: AppBancosRoute,
