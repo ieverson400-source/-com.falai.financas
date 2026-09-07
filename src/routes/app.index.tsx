@@ -30,7 +30,7 @@ import { ProfileEditDialog } from "@/components/profile-edit-dialog";
 import { GoalHighlight } from "@/components/goal-highlight";
 import { resolveAvatarUrl } from "@/lib/avatar-url";
 import { toast } from "sonner";
-import { Trash2, Mic, Hand, Home, Wallet, MessageCircle, BarChart3, User as UserIcon, Building2, PiggyBank, CreditCard, ArrowUpRight, ArrowDownRight, Sparkles, Construction, Crown, Check, Zap, Star, Shield, Calendar as CalendarIcon, TrendingUp, Heart, Share2, Moon, Sun, LogOut, Loader2, AlertTriangle, ExternalLink, RotateCcw, Gem } from "lucide-react";
+import { Trash2, Mic, Hand, Home, Wallet, ShoppingBag, BarChart3, User as UserIcon, Building2, PiggyBank, CreditCard, ArrowUpRight, ArrowDownRight, Sparkles, Construction, Crown, Check, Zap, Star, Shield, Calendar as CalendarIcon, TrendingUp, Heart, Share2, Moon, Sun, LogOut, Loader2, AlertTriangle, ExternalLink, RotateCcw, Gem } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useTheme } from "@/hooks/use-theme";
@@ -66,7 +66,7 @@ interface Expense {
   created_at: string;
 }
 
-type TabKey = "inicio" | "contas" | "agendas" | "chat" | "relatorios" | "perfil";
+type TabKey = "inicio" | "contas" | "agendas" | "shop" | "relatorios" | "perfil";
 
 function AppDashboard() {
   const { user, loading } = useAuth();
@@ -484,7 +484,7 @@ function AppDashboard() {
               { key: "inicio", label: "Início", icon: Home },
               { key: "contas", label: "Contas", icon: Wallet },
               { key: "agendas", label: "Agendas", icon: CalendarIcon },
-              { key: "chat", label: "Chat", icon: MessageCircle },
+              { key: "shop", label: "Shop", icon: ShoppingBag },
               { key: "relatorios", label: "Relatórios", icon: BarChart3 },
               { key: "perfil", label: "Perfil", icon: UserIcon },
             ] as { key: TabKey; label: string; icon: typeof Home }[]
@@ -494,8 +494,8 @@ function AppDashboard() {
               <button
                 key={key}
                 onClick={() => {
-                  if (key === "chat") {
-                    window.dispatchEvent(new Event("falai:toggle-chat"));
+                  if (key === "shop") {
+                    navigate({ to: "/app/shop" });
                     return;
                   }
                   if (key === "contas") {
