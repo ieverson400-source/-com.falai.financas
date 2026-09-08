@@ -483,6 +483,75 @@ export type Database = {
         }
         Relationships: []
       }
+      shop_offers: {
+        Row: {
+          accent: string | null
+          badges: string[]
+          brand: string | null
+          cashback: string | null
+          created_at: string
+          created_by: string | null
+          cta_label: string | null
+          ends_at: string | null
+          id: string
+          image_url: string | null
+          installments: string | null
+          is_active: boolean
+          kind: string
+          link_url: string | null
+          price: string | null
+          sort_order: number
+          starts_at: string | null
+          subtitle: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          accent?: string | null
+          badges?: string[]
+          brand?: string | null
+          cashback?: string | null
+          created_at?: string
+          created_by?: string | null
+          cta_label?: string | null
+          ends_at?: string | null
+          id?: string
+          image_url?: string | null
+          installments?: string | null
+          is_active?: boolean
+          kind?: string
+          link_url?: string | null
+          price?: string | null
+          sort_order?: number
+          starts_at?: string | null
+          subtitle?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          accent?: string | null
+          badges?: string[]
+          brand?: string | null
+          cashback?: string | null
+          created_at?: string
+          created_by?: string | null
+          cta_label?: string | null
+          ends_at?: string | null
+          id?: string
+          image_url?: string | null
+          installments?: string | null
+          is_active?: boolean
+          kind?: string
+          link_url?: string | null
+          price?: string | null
+          sort_order?: number
+          starts_at?: string | null
+          subtitle?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
           cancel_at_period_end: boolean
