@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Mic } from "lucide-react";
 
 const SESSION_KEY = "falai-splash-shown";
 
@@ -14,7 +15,7 @@ function prefersReducedMotion() {
 export function AnimatedSplashScreen() {
   const [visible, setVisible] = useState(false);
   const [leaving, setLeaving] = useState(false);
-  const [phase, setPhase] = useState(0); // 0: logo, 1: mic, 2: texto 1, 3: texto 2
+  const [phase, setPhase] = useState(0); // 0: mic in, 1: glow/ondas, 2: texto 1, 3: texto 2
   const [reduced, setReduced] = useState(false);
   const timers = useRef<number[]>([]);
 
@@ -77,18 +78,93 @@ export function AnimatedSplashScreen() {
         paddingBottom: "env(safe-area-inset-bottom)",
       }}
     >
-      {/* Logo */}
-      <img
-        src="/icon-512.png"
-        alt=""
-        width={112}
-        height={112}
-        className="h-24 w-24 rounded-3xl shadow-2xl sm:h-28 sm:w-28"
-        style={{
-          opacity: 1,
-          animation: reduced ? undefined : "splash-logo-in 700ms cubic-bezier(.16,1,.3,1) both",
-        }}
-      />
+      {/* Microfone + ondas */}
+      <div className="relative flex items-center justify-center">
+        {/* Ondas expansivas */}
+        {!reduced && (
+          <>
+            <span
+              className="absolute rounded-full"
+              style={{
+                width: 96,
+                height: 96,
+                border: "2px solid color-mix(in oklab, var(--primary) 55%, transparent)",
+                opacity: phase >= 1 ? 1 : 0,
+                animation:
+                  phase >= 1 ? "splash-wave 1.8s ease-out infinite" : undefined,
+              }}
+            />
+            <span
+              className="absolute rounded-full"
+              style={{
+                width: 96,
+                height: 96,
+                border: "2px solid color-mix(in oklab, var(--primary) 40%, transparent)",
+                opacity: phase >= 1 ? 1 : 0,
+                animation:
+                  phase >= 1
+                    ? "splash-wave 1.8s ease-out infinite 0.6s"
+                    : undefined,
+              }}
+            />
+            <span
+              className="absolute rounded-full"
+              style={{
+                width: 96,
+                height: 96,
+                border: "2px solid color-mix(in oklab, var(--primary) 30%, transparent)",
+                opacity: phase >= 1 ? 1 : 0,
+                animation:
+                  phase >= 1
+                    ? "splash-wave 1.8s ease-out infinite 1.2s"
+                    : undefined,
+              }}
+            />
+          </>
+        )}
+
+        {/* Halo de brilho */}
+        <span
+          className="absolute rounded-full blur-2xl"
+          style={{
+            width: 120,
+            height: 120,
+            background:
+              "radial-gradient(circle, color-mix(in oklab, var(--primary) 45%, transparent) 0%, transparent 70%)",
+            opacity: phase >= 1 ? 0.9 : 0,
+            transition: "opacity 500ms ease",
+            animation:
+              phase >= 1 && !reduced
+                ? "splash-pulse 1.4s ease-in-out infinite"
+                : undefined,
+          }}
+        />
+
+        {/* Ícone do microfone */}
+        <div
+          className="relative flex items-center justify-center rounded-full shadow-2xl"
+          style={{
+            width: 84,
+            height: 84,
+            background:
+              "linear-gradient(160deg, color-mix(in oklab, var(--primary) 92%, white) 0%, var(--primary) 100%)",
+            color: "white",
+            animation: reduced
+              ? undefined
+              : "splash-mic-in 700ms cubic-bezier(.16,1,.3,1) both",
+          }}
+        >
+          <Mic
+            className="size-9"
+            style={{
+              animation:
+                phase >= 1 && !reduced
+                  ? "splash-mic-bob 1.4s ease-in-out infinite"
+                  : undefined,
+            }}
+          />
+        </div>
+      </div>
 
       {/* Textos */}
       <div className="mt-10 h-7 text-center">
@@ -115,9 +191,22 @@ export function AnimatedSplashScreen() {
       </div>
 
       <style>{`
-        @keyframes splash-logo-in {
-          from { opacity: 0; transform: scale(.9); }
+        @keyframes splash-mic-in {
+          from { opacity: 0; transform: scale(.7); }
           to   { opacity: 1; transform: scale(1); }
+        }
+        @keyframes splash-mic-bob {
+          0%, 100% { transform: translateY(0); }
+          50%      { transform: translateY(-3px); }
+        }
+        @keyframes splash-pulse {
+          0%, 100% { transform: scale(1); opacity: 0.55; }
+          50%      { transform: scale(1.18); opacity: 0.9; }
+        }
+        @keyframes splash-wave {
+          0%   { transform: scale(0.85); opacity: 0.7; }
+          70%  { opacity: 0; }
+          100% { transform: scale(1.9); opacity: 0; }
         }
       `}</style>
     </div>
