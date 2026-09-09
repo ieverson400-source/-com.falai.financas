@@ -30,6 +30,7 @@ import { Route as AppAdminRouteImport } from './routes/app.admin'
 import { Route as AppRecargaIndexRouteImport } from './routes/app.recarga.index'
 import { Route as AppRecargaConfiguracoesRouteImport } from './routes/app.recarga.configuracoes'
 import { Route as AppPlanosRetornoRouteImport } from './routes/app.planos.retorno'
+import { Route as AppAdminOfertasRouteImport } from './routes/app.admin.ofertas'
 import { Route as ApiPublicZapiRouteImport } from './routes/api/public/zapi'
 import { Route as ApiPublicWhatsappRouteImport } from './routes/api/public/whatsapp'
 import { Route as ApiPublicPluggyWebhookRouteImport } from './routes/api/public/pluggy-webhook'
@@ -146,6 +147,11 @@ const AppPlanosRetornoRoute = AppPlanosRetornoRouteImport.update({
   path: '/retorno',
   getParentRoute: () => AppPlanosRoute,
 } as any)
+const AppAdminOfertasRoute = AppAdminOfertasRouteImport.update({
+  id: '/ofertas',
+  path: '/ofertas',
+  getParentRoute: () => AppAdminRoute,
+} as any)
 const ApiPublicZapiRoute = ApiPublicZapiRouteImport.update({
   id: '/api/public/zapi',
   path: '/api/public/zapi',
@@ -211,7 +217,7 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/app/admin': typeof AppAdminRoute
+  '/app/admin': typeof AppAdminRouteWithChildren
   '/app/agenda-mensagens': typeof AppAgendaMensagensRoute
   '/app/agendas': typeof AppAgendasRoute
   '/app/bancos': typeof AppBancosRoute
@@ -226,6 +232,7 @@ export interface FileRoutesByFullPath {
   '/api/public/pluggy-webhook': typeof ApiPublicPluggyWebhookRoute
   '/api/public/whatsapp': typeof ApiPublicWhatsappRoute
   '/api/public/zapi': typeof ApiPublicZapiRoute
+  '/app/admin/ofertas': typeof AppAdminOfertasRoute
   '/app/planos/retorno': typeof AppPlanosRetornoRoute
   '/app/recarga/configuracoes': typeof AppRecargaConfiguracoesRoute
   '/app/recarga/': typeof AppRecargaIndexRoute
@@ -244,7 +251,7 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/app/admin': typeof AppAdminRoute
+  '/app/admin': typeof AppAdminRouteWithChildren
   '/app/agenda-mensagens': typeof AppAgendaMensagensRoute
   '/app/agendas': typeof AppAgendasRoute
   '/app/bancos': typeof AppBancosRoute
@@ -259,6 +266,7 @@ export interface FileRoutesByTo {
   '/api/public/pluggy-webhook': typeof ApiPublicPluggyWebhookRoute
   '/api/public/whatsapp': typeof ApiPublicWhatsappRoute
   '/api/public/zapi': typeof ApiPublicZapiRoute
+  '/app/admin/ofertas': typeof AppAdminOfertasRoute
   '/app/planos/retorno': typeof AppPlanosRetornoRoute
   '/app/recarga/configuracoes': typeof AppRecargaConfiguracoesRoute
   '/app/recarga': typeof AppRecargaIndexRoute
@@ -278,7 +286,7 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/app/admin': typeof AppAdminRoute
+  '/app/admin': typeof AppAdminRouteWithChildren
   '/app/agenda-mensagens': typeof AppAgendaMensagensRoute
   '/app/agendas': typeof AppAgendasRoute
   '/app/bancos': typeof AppBancosRoute
@@ -293,6 +301,7 @@ export interface FileRoutesById {
   '/api/public/pluggy-webhook': typeof ApiPublicPluggyWebhookRoute
   '/api/public/whatsapp': typeof ApiPublicWhatsappRoute
   '/api/public/zapi': typeof ApiPublicZapiRoute
+  '/app/admin/ofertas': typeof AppAdminOfertasRoute
   '/app/planos/retorno': typeof AppPlanosRetornoRoute
   '/app/recarga/configuracoes': typeof AppRecargaConfiguracoesRoute
   '/app/recarga/': typeof AppRecargaIndexRoute
@@ -328,6 +337,7 @@ export interface FileRouteTypes {
     | '/api/public/pluggy-webhook'
     | '/api/public/whatsapp'
     | '/api/public/zapi'
+    | '/app/admin/ofertas'
     | '/app/planos/retorno'
     | '/app/recarga/configuracoes'
     | '/app/recarga/'
@@ -361,6 +371,7 @@ export interface FileRouteTypes {
     | '/api/public/pluggy-webhook'
     | '/api/public/whatsapp'
     | '/api/public/zapi'
+    | '/app/admin/ofertas'
     | '/app/planos/retorno'
     | '/app/recarga/configuracoes'
     | '/app/recarga'
@@ -394,6 +405,7 @@ export interface FileRouteTypes {
     | '/api/public/pluggy-webhook'
     | '/api/public/whatsapp'
     | '/api/public/zapi'
+    | '/app/admin/ofertas'
     | '/app/planos/retorno'
     | '/app/recarga/configuracoes'
     | '/app/recarga/'
@@ -413,7 +425,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  AppAdminRoute: typeof AppAdminRoute
+  AppAdminRoute: typeof AppAdminRouteWithChildren
   AppAgendaMensagensRoute: typeof AppAgendaMensagensRoute
   AppAgendasRoute: typeof AppAgendasRoute
   AppBancosRoute: typeof AppBancosRoute
@@ -587,6 +599,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppPlanosRetornoRouteImport
       parentRoute: typeof AppPlanosRoute
     }
+    '/app/admin/ofertas': {
+      id: '/app/admin/ofertas'
+      path: '/ofertas'
+      fullPath: '/app/admin/ofertas'
+      preLoaderRoute: typeof AppAdminOfertasRouteImport
+      parentRoute: typeof AppAdminRoute
+    }
     '/api/public/zapi': {
       id: '/api/public/zapi'
       path: '/api/public/zapi'
@@ -660,6 +679,18 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AppAdminRouteChildren {
+  AppAdminOfertasRoute: typeof AppAdminOfertasRoute
+}
+
+const AppAdminRouteChildren: AppAdminRouteChildren = {
+  AppAdminOfertasRoute: AppAdminOfertasRoute,
+}
+
+const AppAdminRouteWithChildren = AppAdminRoute._addFileChildren(
+  AppAdminRouteChildren,
+)
+
 interface AppPlanosRouteChildren {
   AppPlanosRetornoRoute: typeof AppPlanosRetornoRoute
 }
@@ -680,7 +711,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
-  AppAdminRoute: AppAdminRoute,
+  AppAdminRoute: AppAdminRouteWithChildren,
   AppAgendaMensagensRoute: AppAgendaMensagensRoute,
   AppAgendasRoute: AppAgendasRoute,
   AppBancosRoute: AppBancosRoute,

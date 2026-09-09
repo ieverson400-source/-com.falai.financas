@@ -73,11 +73,27 @@ export const adminOverview = createServerFn({ method: "POST" })
       logsQuery = logsQuery.lte("created_at", end);
     }
 
-    const [items, logs] = await Promise.all([itemsQuery, logsQuery]);
+    // Cada requisição recebida na rota /api/public/pluggy-webhook fica registrada aqui.
+    let webhookQuery = supabaseAdmin
+      .from("pluggy_webhook_events")
+      .select(
+        "id, user_id, event_id, event_type, item_id, processed_at, error_message, created_at",
+      )
+      .order("created_at", { ascending: false })
+      .limit(300);
+
+    if (data.userId) webhookQuery = webhookQuery.eq("user_id", data.userId);
+    if (data.from) webhookQuery = webhookQuery.gte("created_at", data.from);
+    if (data.to) {
+      webhookQuery = webhookQuery.lte("created_at", `${data.to.slice(0, 10)}T23:59:59.999Z`);
+    }
+
+    const [items, logs, webhooks] = await Promise.all([itemsQuery, logsQuery, webhookQuery]);
 
     return {
       users,
       items: items.data ?? [],
       logs: logs.data ?? [],
+      webhooks: webhooks.data ?? [],
     };
   });
