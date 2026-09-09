@@ -82,11 +82,7 @@ export const adminOverview = createServerFn({ method: "POST" })
       .order("created_at", { ascending: false })
       .limit(300);
 
-    if (data.userId) {
-      itemsQuery = itemsQuery.eq("user_id", data.userId);
-      logsQuery = logsQuery.eq("user_id", data.userId);
-      webhookQuery = webhookQuery.eq("user_id", data.userId);
-    }
+    if (data.userId) webhookQuery = webhookQuery.eq("user_id", data.userId);
     if (data.from) webhookQuery = webhookQuery.gte("created_at", data.from);
     if (data.to) {
       webhookQuery = webhookQuery.lte("created_at", `${data.to.slice(0, 10)}T23:59:59.999Z`);
