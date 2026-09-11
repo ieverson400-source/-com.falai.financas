@@ -253,6 +253,45 @@ function AdminPage() {
                 </table>
               </Card>
             </section>
+
+            <section aria-labelledby="webhooks">
+              <h2
+                id="webhooks"
+                className="mb-2 flex items-center gap-2 font-display text-base font-semibold"
+              >
+                <Radio className="size-4" /> Requisições recebidas do webhook ({data?.webhooks.length ?? 0})
+              </h2>
+              <Card className="overflow-x-auto p-0">
+                <table className="w-full text-sm">
+                  <thead className="bg-muted/50 text-left text-xs text-muted-foreground">
+                    <tr>
+                      <th className="p-3">Data</th>
+                      <th className="p-3">Usuário</th>
+                      <th className="p-3">Evento</th>
+                      <th className="p-3">Item</th>
+                      <th className="p-3">Processado</th>
+                      <th className="p-3">Erro</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(data?.webhooks ?? []).map((w) => (
+                      <tr key={w.id} className="border-t">
+                        <td className="p-3">{fmt(w.created_at)}</td>
+                        <td className="p-3">{w.user_id ? emailOf(w.user_id) : "—"}</td>
+                        <td className="p-3">
+                          <Badge variant="secondary">{w.event_type}</Badge>
+                        </td>
+                        <td className="p-3 text-xs text-muted-foreground">{w.item_id ?? "—"}</td>
+                        <td className="p-3">{fmt(w.processed_at)}</td>
+                        <td className="p-3 max-w-[280px] truncate text-muted-foreground">
+                          {w.error_message ?? "—"}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </Card>
+            </section>
           </>
         )}
       </main>
