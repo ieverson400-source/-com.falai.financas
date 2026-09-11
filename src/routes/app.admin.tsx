@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Loader2, ShieldCheck, Users, Landmark, History } from "lucide-react";
+import { ArrowLeft, Loader2, ShieldCheck, Users, Landmark, History, Radio, Tags } from "lucide-react";
 import { adminOverview, isCurrentUserAdmin } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/app/admin")({
