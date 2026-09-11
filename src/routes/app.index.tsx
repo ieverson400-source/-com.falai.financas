@@ -474,53 +474,8 @@ function AppDashboard() {
       </footer>
 
       {/* Bottom nav */}
-      <nav
-        className="fixed bottom-0 inset-x-0 z-40 border-t border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80"
-        aria-label="Navegação principal"
-      >
-        <div className="max-w-6xl mx-auto grid grid-cols-6">
-          {(
-            [
-              { key: "inicio", label: "Início", icon: Home },
-              { key: "contas", label: "Contas", icon: Wallet },
-              { key: "agendas", label: "Agendas", icon: CalendarIcon },
-              { key: "shop", label: "Shop", icon: ShoppingBag },
-              { key: "relatorios", label: "Relatórios", icon: BarChart3 },
-              { key: "perfil", label: "Perfil", icon: UserIcon },
-            ] as { key: TabKey; label: string; icon: typeof Home }[]
-          ).map(({ key, label, icon: Icon }) => {
-            const active = activeTab === key;
-            return (
-              <button
-                key={key}
-                onClick={() => {
-                  if (key === "shop") {
-                    navigate({ to: "/app/shop" });
-                    return;
-                  }
-                  if (key === "contas") {
-                    navigate({ to: "/app/bancos" });
-                    return;
-                  }
-                  if (key === "agendas") {
-                    navigate({ to: "/app/agendas" });
-                    return;
-                  }
-                  setActiveTab(key);
-                }}
-                aria-current={active ? "page" : undefined}
-                className={`min-h-[56px] flex flex-col items-center justify-center gap-0.5 text-[11px] font-medium transition-colors ${
-                  active ? "text-primary" : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                <Icon className={`size-5 ${active ? "scale-110" : ""} transition-transform`} />
-                <span>{label}</span>
-              </button>
-            );
-          })}
-        </div>
-        <div className="h-[env(safe-area-inset-bottom)]" />
-      </nav>
+      <BottomNav current={activeTab} onSelectLocal={(k) => setActiveTab(k)} />
+
 
     </div>
   );
