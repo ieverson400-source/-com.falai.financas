@@ -38,6 +38,14 @@ export const Route = createFileRoute("/app/shop")({
   }),
 });
 
+// Tamanho do anúncio no carrossel, ajustável pelo administrador.
+const cardSizeClass: Record<string, string> = {
+  sm: "min-w-[220px] max-w-[240px]",
+  md: "min-w-[280px] max-w-[320px]",
+  lg: "min-w-[340px] max-w-[420px]",
+  full: "min-w-[calc(100vw-2rem)] max-w-[100%] sm:min-w-[640px]",
+};
+
 function expiresLabel(endsAt: string | null) {
   if (!endsAt) return null;
   const diff = new Date(endsAt).getTime() - Date.now();
