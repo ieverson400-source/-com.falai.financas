@@ -510,7 +510,7 @@ function BancosPage() {
         </DialogContent>
       </Dialog>
 
-      <footer className="border-t bg-background px-4 py-6 text-center text-xs text-muted-foreground">
+      <footer className="border-t bg-background px-4 py-6 pb-24 text-center text-xs text-muted-foreground">
         <div className="mx-auto flex max-w-3xl items-center justify-center gap-4">
           <span>© 2026 Falaí Finanças</span>
           <Link to="/privacy" className="hover:underline underline-offset-2">
