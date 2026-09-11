@@ -6,7 +6,7 @@ import { assertAdmin } from "@/lib/assert-admin";
 import type { Database } from "@/integrations/supabase/types";
 
 const SELECT =
-  "id, kind, brand, title, subtitle, price, installments, cashback, badges, cta_label, link_url, image_url, accent, sort_order, is_active, starts_at, ends_at, created_at";
+  "id, kind, brand, title, subtitle, price, installments, cashback, badges, cta_label, link_url, image_url, accent, sort_order, is_active, card_size, starts_at, ends_at, created_at";
 
 const offerSchema = z.object({
   id: z.string().uuid().optional().nullable(),
@@ -23,6 +23,7 @@ const offerSchema = z.object({
   image_url: z.string().url().max(500).optional().nullable().or(z.literal("")),
   accent: z.string().max(120).optional().nullable(),
   sort_order: z.number().int().min(0).max(999).optional(),
+  card_size: z.enum(["sm", "md", "lg", "full"]).optional(),
   is_active: z.boolean().optional(),
   starts_at: z.string().max(40).optional().nullable(),
   ends_at: z.string().max(40).optional().nullable(),
@@ -101,6 +102,7 @@ export const adminSaveOffer = createServerFn({ method: "POST" })
       image_url: data.image_url || null,
       accent: data.accent || null,
       sort_order: data.sort_order ?? 0,
+      card_size: data.card_size ?? "md",
       is_active: data.is_active ?? true,
       starts_at: data.starts_at ? new Date(data.starts_at).toISOString() : null,
       ends_at: data.ends_at ? new Date(data.ends_at).toISOString() : null,

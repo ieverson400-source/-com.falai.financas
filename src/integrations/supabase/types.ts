@@ -488,6 +488,7 @@ export type Database = {
           accent: string | null
           badges: string[]
           brand: string | null
+          card_size: string
           cashback: string | null
           created_at: string
           created_by: string | null
@@ -510,6 +511,7 @@ export type Database = {
           accent?: string | null
           badges?: string[]
           brand?: string | null
+          card_size?: string
           cashback?: string | null
           created_at?: string
           created_by?: string | null
@@ -532,6 +534,7 @@ export type Database = {
           accent?: string | null
           badges?: string[]
           brand?: string | null
+          card_size?: string
           cashback?: string | null
           created_at?: string
           created_by?: string | null

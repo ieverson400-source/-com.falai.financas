@@ -39,8 +39,16 @@ import { format, parseISO, startOfMonth } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
 
+import { BottomNav, type NavTabKey } from "@/components/bottom-nav";
+
+const validTabs: NavTabKey[] = ["inicio", "contas", "agendas", "shop", "relatorios", "perfil"];
+
 export const Route = createFileRoute("/app/")({
   component: AppDashboard,
+  validateSearch: (search: Record<string, unknown>): { tab?: NavTabKey } => {
+    const tab = typeof search.tab === "string" ? (search.tab as NavTabKey) : undefined;
+    return tab && validTabs.includes(tab) ? { tab } : {};
+  },
   head: () => ({
     meta: [
       { title: "Dashboard — Falaí Finanças" },
@@ -77,7 +85,8 @@ function AppDashboard() {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [whatsAppInbox, setWhatsAppInbox] = useState<WhatsAppInboxItem[]>([]);
   const [refreshing, setRefreshing] = useState(false);
-  const [activeTab, setActiveTab] = useState<TabKey>("inicio");
+  const { tab: initialTab } = Route.useSearch();
+  const [activeTab, setActiveTab] = useState<TabKey>(initialTab ?? "inicio");
   const [isAdmin, setIsAdmin] = useState(false);
   const [bankAccounts, setBankAccounts] = useState<Array<{ id: string; name: string | null; type: string | null; number: string | null; balance: number | null; institution: string | null }>>([]);
   const fetchBankData = useServerFn(listBankData);
@@ -474,53 +483,8 @@ function AppDashboard() {
       </footer>
 
       {/* Bottom nav */}
-      <nav
-        className="fixed bottom-0 inset-x-0 z-40 border-t border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80"
-        aria-label="Navegação principal"
-      >
-        <div className="max-w-6xl mx-auto grid grid-cols-6">
-          {(
-            [
-              { key: "inicio", label: "Início", icon: Home },
-              { key: "contas", label: "Contas", icon: Wallet },
-              { key: "agendas", label: "Agendas", icon: CalendarIcon },
-              { key: "shop", label: "Shop", icon: ShoppingBag },
-              { key: "relatorios", label: "Relatórios", icon: BarChart3 },
-              { key: "perfil", label: "Perfil", icon: UserIcon },
-            ] as { key: TabKey; label: string; icon: typeof Home }[]
-          ).map(({ key, label, icon: Icon }) => {
-            const active = activeTab === key;
-            return (
-              <button
-                key={key}
-                onClick={() => {
-                  if (key === "shop") {
-                    navigate({ to: "/app/shop" });
-                    return;
-                  }
-                  if (key === "contas") {
-                    navigate({ to: "/app/bancos" });
-                    return;
-                  }
-                  if (key === "agendas") {
-                    navigate({ to: "/app/agendas" });
-                    return;
-                  }
-                  setActiveTab(key);
-                }}
-                aria-current={active ? "page" : undefined}
-                className={`min-h-[56px] flex flex-col items-center justify-center gap-0.5 text-[11px] font-medium transition-colors ${
-                  active ? "text-primary" : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                <Icon className={`size-5 ${active ? "scale-110" : ""} transition-transform`} />
-                <span>{label}</span>
-              </button>
-            );
-          })}
-        </div>
-        <div className="h-[env(safe-area-inset-bottom)]" />
-      </nav>
+      <BottomNav current={activeTab} onSelectLocal={(k: NavTabKey) => setActiveTab(k)} />
+
 
     </div>
   );

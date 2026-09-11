@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { BottomNav } from "@/components/bottom-nav";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -301,7 +302,7 @@ function AgendasPage() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-2xl space-y-6 px-4 py-6">
+      <main className="mx-auto max-w-2xl space-y-6 px-4 py-6 pb-28">
         {/* Vincular WhatsApp */}
         <Card className="p-6">
           <div className="flex items-start gap-3">
@@ -434,6 +435,7 @@ function AgendasPage() {
           )}
         </Card>
       </main>
+      <BottomNav current="agendas" />
     </div>
   );
 }

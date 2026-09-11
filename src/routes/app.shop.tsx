@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { Card } from "@/components/ui/card";
+import { BottomNav } from "@/components/bottom-nav";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, ShoppingBag, Tag, Clock, Percent } from "lucide-react";
@@ -36,6 +37,14 @@ export const Route = createFileRoute("/app/shop")({
     ],
   }),
 });
+
+// Tamanho do anúncio no carrossel, ajustável pelo administrador.
+const cardSizeClass: Record<string, string> = {
+  sm: "min-w-[220px] max-w-[240px]",
+  md: "min-w-[280px] max-w-[320px]",
+  lg: "min-w-[340px] max-w-[420px]",
+  full: "min-w-[calc(100vw-2rem)] max-w-[100%] sm:min-w-[640px]",
+};
 
 function expiresLabel(endsAt: string | null) {
   if (!endsAt) return null;
@@ -90,7 +99,7 @@ function ShopPage() {
               {highlights.map((h) => (
                 <Card
                   key={h.id}
-                  className={`min-w-[280px] max-w-[320px] snap-start rounded-2xl border bg-gradient-to-br ${
+                  className={`${cardSizeClass[h.card_size ?? "md"] ?? cardSizeClass.md} snap-start rounded-2xl border bg-gradient-to-br ${
                     h.accent ?? "from-primary/20 to-primary/5"
                   } p-5 shadow-sm`}
                 >
@@ -99,7 +108,7 @@ function ShopPage() {
                       src={h.image_url}
                       alt={h.title}
                       loading="lazy"
-                      className="mb-3 h-32 w-full rounded-xl object-cover"
+                      className={`mb-3 w-full rounded-xl object-cover ${h.card_size === "lg" || h.card_size === "full" ? "h-44" : "h-32"}`}
                     />
                   )}
                   <div className="mb-3 flex flex-wrap gap-2">
@@ -230,6 +239,7 @@ function ShopPage() {
           </Link>
         </div>
       </footer>
+      <BottomNav current="shop" />
     </div>
   );
 }

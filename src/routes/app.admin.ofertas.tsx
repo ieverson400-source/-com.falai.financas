@@ -47,6 +47,7 @@ type Form = {
   image_url: string;
   accent: string;
   sort_order: string;
+  card_size: "sm" | "md" | "lg" | "full";
   is_active: boolean;
   starts_at: string;
   ends_at: string;
@@ -67,6 +68,7 @@ const empty: Form = {
   image_url: "",
   accent: "",
   sort_order: "0",
+  card_size: "md",
   is_active: true,
   starts_at: "",
   ends_at: "",
@@ -145,6 +147,7 @@ function AdminOffersPage() {
       image_url: o.image_url ?? "",
       accent: o.accent ?? "",
       sort_order: String(o.sort_order ?? 0),
+      card_size: (o.card_size ?? "md") as Form["card_size"],
       is_active: o.is_active,
       starts_at: toDateInput(o.starts_at),
       ends_at: toDateInput(o.ends_at),
@@ -178,6 +181,7 @@ function AdminOffersPage() {
           image_url: form.image_url.trim() || null,
           accent: form.accent.trim() || null,
           sort_order: Number(form.sort_order) || 0,
+          card_size: form.card_size,
           is_active: form.is_active,
           starts_at: form.starts_at || null,
           ends_at: form.ends_at || null,
@@ -393,6 +397,22 @@ function AdminOffersPage() {
                     value={form.ends_at}
                     onChange={(e) => set("ends_at", e.target.value)}
                   />
+                </div>
+                <div>
+                  <label className="text-xs text-muted-foreground" htmlFor="o-size">
+                    Tamanho do anúncio (carrossel)
+                  </label>
+                  <select
+                    id="o-size"
+                    className="h-10 w-full rounded-md border bg-background px-3 text-sm"
+                    value={form.card_size}
+                    onChange={(e) => set("card_size", e.target.value as Form["card_size"])}
+                  >
+                    <option value="sm">Pequeno</option>
+                    <option value="md">Médio</option>
+                    <option value="lg">Grande</option>
+                    <option value="full">Largura total</option>
+                  </select>
                 </div>
                 <div className="flex items-end gap-2">
                   <label className="flex items-center gap-2 text-sm" htmlFor="o-active">
