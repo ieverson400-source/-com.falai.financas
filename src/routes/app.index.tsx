@@ -39,8 +39,16 @@ import { format, parseISO, startOfMonth } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
 
+import { BottomNav, type NavTabKey } from "@/components/bottom-nav";
+
+const validTabs: NavTabKey[] = ["inicio", "contas", "agendas", "shop", "relatorios", "perfil"];
+
 export const Route = createFileRoute("/app/")({
   component: AppDashboard,
+  validateSearch: (search: Record<string, unknown>): { tab?: NavTabKey } => {
+    const tab = typeof search.tab === "string" ? (search.tab as NavTabKey) : undefined;
+    return tab && validTabs.includes(tab) ? { tab } : {};
+  },
   head: () => ({
     meta: [
       { title: "Dashboard — Falaí Finanças" },
