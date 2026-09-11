@@ -99,7 +99,7 @@ function ShopPage() {
               {highlights.map((h) => (
                 <Card
                   key={h.id}
-                  className={`min-w-[280px] max-w-[320px] snap-start rounded-2xl border bg-gradient-to-br ${
+                  className={`${cardSizeClass[h.card_size ?? "md"] ?? cardSizeClass.md} snap-start rounded-2xl border bg-gradient-to-br ${
                     h.accent ?? "from-primary/20 to-primary/5"
                   } p-5 shadow-sm`}
                 >
@@ -108,7 +108,7 @@ function ShopPage() {
                       src={h.image_url}
                       alt={h.title}
                       loading="lazy"
-                      className="mb-3 h-32 w-full rounded-xl object-cover"
+                      className={`mb-3 w-full rounded-xl object-cover ${h.card_size === "lg" || h.card_size === "full" ? "h-44" : "h-32"}`}
                     />
                   )}
                   <div className="mb-3 flex flex-wrap gap-2">
