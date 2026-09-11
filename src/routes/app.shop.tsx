@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { Card } from "@/components/ui/card";
+import { BottomNav } from "@/components/bottom-nav";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, ShoppingBag, Tag, Clock, Percent } from "lucide-react";
@@ -230,6 +231,7 @@ function ShopPage() {
           </Link>
         </div>
       </footer>
+      <BottomNav current="shop" />
     </div>
   );
 }

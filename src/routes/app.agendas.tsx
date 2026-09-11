@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { BottomNav } from "@/components/bottom-nav";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -434,6 +435,7 @@ function AgendasPage() {
           )}
         </Card>
       </main>
+      <BottomNav current="agendas" />
     </div>
   );
 }
