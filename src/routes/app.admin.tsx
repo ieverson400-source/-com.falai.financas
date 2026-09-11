@@ -95,6 +95,11 @@ function AdminPage() {
             <ShieldCheck className="size-5 text-primary" />
             <h1 className="font-display text-lg font-semibold">Administração</h1>
           </div>
+          <Button variant="outline" size="sm" className="ml-auto" asChild>
+            <Link to="/app/admin/ofertas">
+              <Tags className="mr-2 size-4" /> Ofertas da Shop
+            </Link>
+          </Button>
         </div>
       </header>
 
