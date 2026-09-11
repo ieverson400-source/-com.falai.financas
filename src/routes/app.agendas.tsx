@@ -302,7 +302,7 @@ function AgendasPage() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-2xl space-y-6 px-4 py-6">
+      <main className="mx-auto max-w-2xl space-y-6 px-4 py-6 pb-28">
         {/* Vincular WhatsApp */}
         <Card className="p-6">
           <div className="flex items-start gap-3">
