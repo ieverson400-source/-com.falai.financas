@@ -243,13 +243,85 @@ function AppDashboard() {
         <h1 className="sr-only">Painel de finanças: gastos do mês, contas e fluxo de caixa</h1>
         {activeTab === "inicio" && (
           <>
-            {/* Saldo geral */}
-            <Card className="p-5 sm:p-6 bg-gradient-hero text-primary-foreground border-0 shadow-elevated">
-              <p className="text-[11px] uppercase tracking-wider opacity-80">Saldo geral</p>
-              <p className="font-display text-3xl sm:text-4xl font-bold mt-1 break-words">
-                {formatBRL(totalAll * 0 /* saldo geral demo */)}
+            {/* Saudação */}
+            <div className="animate-rise">
+              <p className="font-display text-2xl sm:text-3xl font-semibold">
+                Olá{primeiroNome ? `, ${primeiroNome}` : ""} 👋
               </p>
-              <p className="text-xs opacity-80 mt-2">Atualizado agora</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                Como estão suas finanças hoje?
+              </p>
+            </div>
+
+            {/* Saldo disponível */}
+            <Card className="animate-rise p-5 sm:p-6 bg-gradient-hero text-primary-foreground border-0 shadow-elevated">
+              <p className="text-[11px] uppercase tracking-wider opacity-80">Saldo disponível</p>
+              <p className="font-display text-3xl sm:text-4xl font-bold mt-1 break-words tabular-nums">
+                {formatBRL(saldoDisponivel)}
+              </p>
+              <p className="text-xs opacity-80 mt-2">
+                {hasBankData
+                  ? "Atualizado agora · contas conectadas"
+                  : "Conecte um banco para ver seu saldo real"}
+              </p>
+            </Card>
+
+            {/* Indicadores do mês (dados reais) */}
+            <div className="grid grid-cols-3 gap-2.5 sm:gap-4 animate-rise">
+              <Card className="p-3.5 sm:p-5 bg-card shadow-soft">
+                <div className="flex items-center gap-1.5 text-[10.5px] sm:text-xs text-muted-foreground">
+                  <ArrowUpRight className="size-3.5 text-success shrink-0" />
+                  <span className="truncate">Receitas</span>
+                </div>
+                <p className="font-display text-base sm:text-2xl font-semibold mt-1.5 tabular-nums break-words">
+                  {formatBRL(0)}
+                </p>
+              </Card>
+              <Card className="p-3.5 sm:p-5 bg-card shadow-soft">
+                <div className="flex items-center gap-1.5 text-[10.5px] sm:text-xs text-muted-foreground">
+                  <ArrowDownRight className="size-3.5 text-destructive shrink-0" />
+                  <span className="truncate">Gastos</span>
+                </div>
+                <p className="font-display text-base sm:text-2xl font-semibold mt-1.5 tabular-nums break-words">
+                  {formatBRL(totalMonth)}
+                </p>
+              </Card>
+              <Card className="p-3.5 sm:p-5 bg-card shadow-soft">
+                <div className="flex items-center gap-1.5 text-[10.5px] sm:text-xs text-muted-foreground">
+                  <PiggyBank className="size-3.5 text-primary shrink-0" />
+                  <span className="truncate">Saldo</span>
+                </div>
+                <p className="font-display text-base sm:text-2xl font-semibold mt-1.5 tabular-nums break-words">
+                  {formatBRL(saldoDisponivel - totalMonth)}
+                </p>
+              </Card>
+            </div>
+
+            {/* Destaque de voz */}
+            <Card className="animate-rise p-5 sm:p-6 bg-card shadow-soft border border-primary/20">
+              <div className="flex items-start gap-3">
+                <div className="size-11 rounded-xl bg-primary/12 flex items-center justify-center shrink-0">
+                  <Mic className="size-5 text-primary" aria-hidden="true" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h2 className="font-display font-semibold">
+                    🎙️ Falaí — Registre seus gastos falando
+                  </h2>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Experimente: “Gastei R$ 35 no almoço”
+                  </p>
+                  <Button
+                    className="press mt-4 gap-2 w-full sm:w-auto"
+                    onClick={() =>
+                      document
+                        .getElementById("falai-voz")
+                        ?.scrollIntoView({ behavior: "smooth", block: "center" })
+                    }
+                  >
+                    <Mic className="size-4" /> Falar agora
+                  </Button>
+                </div>
+              </div>
             </Card>
 
             {/* Destaque de objetivo */}
@@ -273,6 +345,7 @@ function AppDashboard() {
 
             {/* Importar planilhas */}
             <ImportSpreadsheetButton />
+
 
             {/* Top stats + recorder */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5">
