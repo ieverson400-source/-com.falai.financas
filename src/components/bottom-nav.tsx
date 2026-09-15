@@ -43,10 +43,10 @@ export function BottomNav({
 
   return (
     <nav
-      className="fixed bottom-0 inset-x-0 z-40 border-t border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80"
+      className="fixed bottom-0 inset-x-0 z-40 border-t border-border bg-card/90 backdrop-blur-xl supports-[backdrop-filter]:bg-card/70"
       aria-label="Navegação principal"
     >
-      <div className="max-w-6xl mx-auto grid grid-cols-6">
+      <div className="max-w-6xl mx-auto grid grid-cols-6 px-1 pt-1.5">
         {tabs.map(({ key, label, icon: Icon }) => {
           const active = current === key;
           return (
@@ -55,12 +55,19 @@ export function BottomNav({
               type="button"
               onClick={() => go(key)}
               aria-current={active ? "page" : undefined}
-              className={`min-h-[56px] flex flex-col items-center justify-center gap-0.5 text-[11px] font-medium transition-colors ${
+              aria-label={label}
+              className={`press relative min-h-[58px] flex flex-col items-center justify-center gap-1 rounded-xl text-[10.5px] font-medium transition-colors ${
                 active ? "text-primary" : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              <Icon className={`size-5 ${active ? "scale-110" : ""} transition-transform`} />
-              <span>{label}</span>
+              <span
+                className={`flex size-8 items-center justify-center rounded-lg transition-colors ${
+                  active ? "bg-primary/12" : "bg-transparent"
+                }`}
+              >
+                <Icon className={`size-[19px] transition-transform ${active ? "scale-110" : ""}`} />
+              </span>
+              <span className="truncate max-w-full leading-none">{label}</span>
             </button>
           );
         })}
@@ -69,3 +76,4 @@ export function BottomNav({
     </nav>
   );
 }
+
