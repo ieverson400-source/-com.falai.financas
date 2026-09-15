@@ -180,6 +180,15 @@ function AppDashboard() {
   const monthExpenses = expenses.filter((e) => parseISO(e.expense_date) >= monthStart);
   const totalMonth = monthExpenses.reduce((s, e) => s + Number(e.amount), 0);
   const totalAll = expenses.reduce((s, e) => s + Number(e.amount), 0);
+  // Saldo disponível real: soma dos saldos das contas conectadas (Open Finance)
+  const saldoDisponivel = bankAccounts.reduce((s, a) => s + Number(a.balance ?? 0), 0);
+  const hasBankData = bankAccounts.length > 0;
+  const primeiroNome = (
+    (user.user_metadata?.display_name as string | undefined) ||
+    user.email?.split("@")[0] ||
+    ""
+  ).split(" ")[0];
+
 
   return (
     <div className="min-h-screen bg-background">
