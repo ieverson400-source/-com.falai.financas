@@ -41,7 +41,7 @@ import { ptBR } from "date-fns/locale";
 
 import { BottomNav, type NavTabKey } from "@/components/bottom-nav";
 
-const validTabs: NavTabKey[] = ["inicio", "contas", "agendas", "shop", "relatorios", "perfil"];
+const validTabs: NavTabKey[] = ["inicio", "contas", "consorcio", "shop", "relatorios", "perfil"];
 
 export const Route = createFileRoute("/app/")({
   component: AppDashboard,
@@ -74,7 +74,7 @@ interface Expense {
   created_at: string;
 }
 
-type TabKey = "inicio" | "contas" | "agendas" | "shop" | "relatorios" | "perfil";
+type TabKey = NavTabKey;
 
 function AppDashboard() {
   const { user, loading } = useAuth();
@@ -1192,6 +1192,14 @@ function ProfileTab({
           Conta
         </h3>
         <Card className="bg-card shadow-soft overflow-hidden divide-y divide-border">
+          <Link
+            to="/app/agendas"
+            className="w-full px-4 py-3.5 flex items-center gap-3 text-left hover:bg-muted/40 transition-colors"
+          >
+            <CalendarIcon className="size-4 text-muted-foreground" />
+            <span className="text-sm font-medium flex-1">Agendas & WhatsApp</span>
+            <ExternalLink className="size-3.5 text-muted-foreground" />
+          </Link>
           <ProfileEditDialog
             userId={user.id}
             email={user.email}

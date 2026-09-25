@@ -435,7 +435,7 @@ function AgendasPage() {
           )}
         </Card>
       </main>
-      <BottomNav current="agendas" />
+      <BottomNav current="perfil" />
     </div>
   );
 }
