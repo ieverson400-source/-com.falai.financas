@@ -2,18 +2,19 @@ import { useNavigate } from "@tanstack/react-router";
 import {
   Home,
   Wallet,
-  Calendar as CalendarIcon,
+  PiggyBank,
   ShoppingBag,
   BarChart3,
   User as UserIcon,
 } from "lucide-react";
+import { toast } from "sonner";
 
-export type NavTabKey = "inicio" | "contas" | "agendas" | "shop" | "relatorios" | "perfil";
+export type NavTabKey = "inicio" | "contas" | "consorcio" | "shop" | "relatorios" | "perfil";
 
 const tabs: { key: NavTabKey; label: string; icon: typeof Home }[] = [
   { key: "inicio", label: "Início", icon: Home },
   { key: "contas", label: "Contas", icon: Wallet },
-  { key: "agendas", label: "Agendas", icon: CalendarIcon },
+  { key: "consorcio", label: "Consórcio", icon: PiggyBank },
   { key: "shop", label: "Shop", icon: ShoppingBag },
   { key: "relatorios", label: "Relatórios", icon: BarChart3 },
   { key: "perfil", label: "Perfil", icon: UserIcon },
@@ -36,7 +37,15 @@ export function BottomNav({
   const go = (key: NavTabKey) => {
     if (key === "shop") return void navigate({ to: "/app/shop" });
     if (key === "contas") return void navigate({ to: "/app/bancos" });
-    if (key === "agendas") return void navigate({ to: "/app/agendas" });
+    if (key === "consorcio") {
+      const consorcioUrl = import.meta.env.VITE_CONSORCIO_URL?.trim();
+      if (consorcioUrl) {
+        window.open(consorcioUrl, "_blank", "noopener,noreferrer");
+      } else {
+        toast.info("O endereço do Consórcio ainda será configurado.");
+      }
+      return;
+    }
     if (onSelectLocal) return onSelectLocal(key);
     void navigate({ to: "/app", search: { tab: key } });
   };
