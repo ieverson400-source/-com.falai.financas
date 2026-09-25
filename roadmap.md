@@ -5,3 +5,8 @@
 - [x] Requisições do webhook /api/public/pluggy-webhook listadas na administração
 - [x] Menu inferior visível nas telas Contas, Agendas e Shop
 - [x] Carrossel de anúncios ajustável (tamanho definido pelo admin)
+- [x] Painel administrativo completo em /admin com métricas reais e proteção por função
+- [x] Gestão de usuários, bloqueio, permissões e histórico financeiro somente leitura
+- [x] Templates e registros de notificações preparados para n8n sem substituir Twilio/Z-API
+- [x] Configurações globais de manutenção, cadastro, WhatsApp automático e aviso inicial
+- [x] Pré-visualização de anúncios antes de salvar
