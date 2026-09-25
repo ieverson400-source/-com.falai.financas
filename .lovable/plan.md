@@ -1,66 +1,86 @@
+# Painel Administrativo Falaí Finanças
 
 ## Objetivo
 
-Tornar o WhatsApp o canal central do app. Todo usuário novo vincula o número antes de usar qualquer tela; a partir daí o app envia automaticamente boas-vindas, confirmação de cada gasto, resumo diário/semanal/mensal, alertas de orçamento, dica financeira semanal com IA e lembrete se ficar dias sem lançar.
+Evoluir o painel administrativo existente para uma área completa em `/admin`, sem reconstruir o app e sem alterar o funcionamento de Open Finance, WhatsApp atual, Shop ou pagamentos.
 
-## O que muda para o usuário
+## Decisões confirmadas
 
-1. **Onboarding obrigatório**: ao entrar no app pela primeira vez sem WhatsApp vinculado, cai numa tela dedicada `/app/onboarding-whatsapp`. Não é possível navegar para Home, Bancos, Recarga etc. até salvar um número válido. Ao salvar, dispara a mensagem de boas-vindas e libera o app.
-2. **Boas-vindas** (já existe, fica automática no onboarding).
-3. **Confirmação de gasto** (já existe, passa a vir ativada por padrão).
-4. **Resumo diário** — todo dia 21h (Brasília): total do dia + top 3 categorias. Só envia se houver lançamentos.
-5. **Resumo semanal** — toda segunda 8h: total, nº de lançamentos, top 3 categorias e variação vs semana anterior.
-6. **Resumo mensal** (já existe).
-7. **Alerta de orçamento** — quando um gasto criado leva a categoria a ultrapassar 80% e 100% da meta mensal do usuário (usa a tabela de metas já existente / a criar se não houver).
-8. **Dica financeira semanal com IA** — toda sexta 18h: manda 2-3 frases personalizadas a partir dos gastos da semana, via Lovable AI (`google/gemini-2.5-flash`).
-9. **Lembrete de inatividade** — se o usuário passa 5 dias sem registrar nada, recebe um cutuque amigável (no máximo 1 por semana).
+- A conta `ieverson400@gmail.com` será o primeiro administrador.
+- O painel principal ficará em `/admin`; os endereços administrativos atuais continuarão funcionando por compatibilidade.
+- A área de notificações será preparada para n8n, sem substituir Twilio/Z-API.
+- Funções administrativas continuarão na tabela segura `user_roles`; não será criada coluna de função em `profiles`.
+- O painel não aparecerá no menu inferior do aplicativo comum.
 
-## O que sai / fica escondido
+## Entregas
 
-- Card avançado atual em `app/conectar-whatsapp` (com logs de envio, "testar envio real", diagnósticos, mapeamentos, inbox) deixa de ser a porta de entrada. Fica acessível só em `/app/conectar-whatsapp` como página de configuração/diagnóstico (link discreto nas configurações), sem alterar seu comportamento.
-- Toggles individuais somem do onboarding. Todas as notificações vêm ligadas por padrão; usuário desliga na página de configuração.
+### 1. Segurança e dados
 
-## Estrutura técnica
+- Conceder a função `admin` à conta informada por uma migração segura e idempotente.
+- Adicionar estado de acesso ativo/bloqueado ao perfil, sem apagar usuários ou transações.
+- Criar tabelas administrativas para:
+  - configurações globais do app;
+  - modelos de mensagens;
+  - registros de notificações preparados para n8n e compatíveis com os provedores atuais.
+- Aplicar permissões de banco para que somente administradores leiam ou alterem esses dados.
+- Manter `user_roles` + `has_role` como fonte única de permissões.
 
-### Rotas
-- `src/routes/app.onboarding-whatsapp.tsx` (novo) — tela dedicada, minimalista: título, campo telefone (com `normalizeWhatsAppPhone`), botão salvar. Redireciona pra `/app/home` ao concluir.
-- Guard em `src/routes/_authenticated/route.tsx` (ou wrapper equivalente): após validar sessão, checa `profiles.whatsapp_phone`; se null → `redirect({ to: '/app/onboarding-whatsapp' })`. A própria rota do onboarding não é redirecionada.
+### 2. Estrutura do painel
 
-### Banco (migração)
-- `profiles`: adicionar coluna `notify_daily_summary boolean not null default true`, `notify_weekly_summary boolean not null default true`, `notify_budget_alert boolean not null default true`, `notify_weekly_tip boolean not null default true`, `notify_inactivity boolean not null default true`, `last_inactivity_reminder_at timestamptz`.
-- Default dos toggles `notify_expense_confirmation` e `notify_monthly_summary` já é true; sem mudança.
-- Nova tabela `budget_alerts_sent(user_id, category, month, threshold)` para não enviar o mesmo alerta 80%/100% duas vezes no mês. GRANTs + RLS por `auth.uid()`.
-- Se o app ainda não tem tabela de metas por categoria: criar `category_budgets(user_id, category, monthly_limit numeric)` com RLS. (Confirmo antes de gerar.)
+- Criar layout protegido em `/admin` com barra lateral no computador e menu administrativo compacto no celular.
+- Seções: Visão geral, Usuários, Anúncios, Notificações e Configurações.
+- Exibir acesso negado para contas comuns e redirecionar visitantes sem sessão para o login.
+- Preservar `/app/admin` e `/app/admin/ofertas`, encaminhando-os para as novas telas equivalentes.
 
-### Rotas cron (`/api/public/hooks/...`) — todas com header `apikey`
-- `whatsapp-daily-summary.ts` — 21h Brasília (00 UTC).
-- `whatsapp-weekly-summary.ts` — segunda 8h Brasília (11 UTC).
-- `whatsapp-weekly-tip.ts` — sexta 18h Brasília (21 UTC), usa Lovable AI.
-- `whatsapp-inactivity.ts` — diário 19h Brasília.
-- `whatsapp-monthly-summary.ts` — já existe, mantém.
+### 3. Visão geral
 
-### Alerta de orçamento (tempo real)
-- Novo helper server-only `maybeSendBudgetAlert(userId, category, month)` chamado após cada insert de expense (ao criar gasto por chat, áudio, manual, WhatsApp, spreadsheet, receipt).
-- Compara soma do mês com `category_budgets.monthly_limit`; se cruzou 80% ou 100% e ainda não avisou no mês, envia WhatsApp e grava em `budget_alerts_sent`.
+- Cards com dados reais: total de usuários, ativos hoje, anúncios ativos, mensagens registradas e volume transacionado.
+- Gráfico de crescimento de usuários nos últimos 30 dias.
+- Resumo de saúde de Open Finance e notificações sem alterar as integrações.
 
-### Provedor
-Mantém Twilio via `src/lib/whatsapp-notify.server.ts` (já usa `TWILIO_MESSAGING_SERVICE_SID`/`TWILIO_WHATSAPP_FROM`).
+### 4. Usuários
 
-### Página de configuração
-`app/conectar-whatsapp` passa a mostrar apenas: número atual, botão trocar, 6 switches (confirmação de gasto, resumo diário, semanal, mensal, alerta de orçamento, dica IA, inatividade). Cards de diagnóstico/inbox/mapping ficam num `<details>` "Ferramentas avançadas".
+- Busca por nome ou e-mail.
+- Lista com nome, e-mail, telefone, cadastro, saldo disponível e função.
+- Modal de edição para promover/rebaixar função e bloquear/desbloquear acesso.
+- Histórico financeiro somente leitura, paginado e protegido no servidor.
+- Impedir que o administrador remova acidentalmente o próprio último acesso administrativo.
 
-## Cron scheduling
+### 5. Anúncios
 
-Cria com `supabase--insert` chamando `cron.schedule` para os 4 novos jobs, usando a URL `https://project--724889f1-e026-4a50-8f4a-842975d93e05.lovable.app/api/public/hooks/...` e `apikey` = anon key.
+- Reutilizar o CRUD atual de `shop_offers`; não criar tabela `ads` duplicada.
+- Manter criação, edição, exclusão, vigência, ativação e destaque no carrossel.
+- Adicionar pré-visualização fiel do card antes de salvar.
+- Trocar mensagens soltas por feedback visual consistente.
 
-## Fora do escopo agora
+### 6. Notificações
 
-- Não vamos mexer no fluxo Z-API existente (o webhook `/api/public/zapi` fica como está).
-- Não vamos remover código das antigas funções `whatsapp-*` para não quebrar a página avançada — apenas escondê-las.
+- Lista de registros com data, usuário, tipo, provedor, status e erro.
+- Preparar o modelo de dados e a interface para n8n; a conexão externa ficará pendente até existir URL e segredo compartilhado.
+- Manter os registros e envios atuais de Twilio/Z-API intactos.
+- Permitir reenvio somente quando houver conteúdo e destino válidos, sempre pelo servidor.
+- CRUD de modelos de boas-vindas, resumo diário e resumo semanal.
 
-## Perguntas antes de começar
+### 7. Configurações
 
-1. **Metas por categoria já existem?** Vi `goal-highlight` no código mas não uma tabela de orçamento mensal por categoria. Posso criar `category_budgets` do zero? (Sem ela o alerta de orçamento não tem como funcionar.)
-2. **Onboarding pode pular telefone estrangeiro?** Assumo aceitar qualquer DDI válido (função `normalizeWhatsAppPhone` já cuida disso). Ok?
+- Controles para manutenção, novos cadastros e notificações automáticas.
+- Campo para o aviso exibido no início.
+- Aplicar as regras globais nos pontos de entrada necessários, com exceção segura para administradores durante manutenção.
 
-Responda "pode ir" (ou aponte ajustes) que eu implemento tudo numa sequência: migração → guard + rota onboarding → 4 rotas cron + hook de alerta → agendamento no cron → limpeza da página de configuração.
+## Direção visual
+
+- Tema escuro atual com verde/turquesa dos tokens existentes.
+- Cards compactos, ícones Lucide, hierarquia clara e animações discretas.
+- Tabelas adaptadas para cartões no celular, áreas de toque confortáveis e navegação separada do app comum.
+- Reutilizar componentes de diálogo, formulário, tabela, seletor, gráfico e notificações já instalados.
+
+## Verificação
+
+- Testar acesso como administrador, usuário comum e visitante.
+- Validar busca, alteração de função, bloqueio, histórico, CRUD e prévia de anúncios, modelos e configurações.
+- Confirmar que login/logout, Shop pública, Open Finance, Twilio/Z-API, assinaturas e menu inferior permanecem funcionando.
+- Verificar telas mobile e desktop, erros no navegador e compilação final.
+
+## Limite desta entrega
+
+A preparação para n8n será concluída, mas o envio real pelo n8n dependerá da URL do webhook e de um segredo compartilhado configurados posteriormente.
