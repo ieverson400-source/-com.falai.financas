@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { assertAdmin } from "@/lib/assert-admin";
+import { sendN8nWebhook } from "@/lib/n8n-webhook.server";
 
 const userActionSchema = z.object({
   userId: z.string().uuid(),
@@ -155,6 +156,37 @@ export const adminRetryNotification = createServerFn({ method: "POST" })
     await supabaseAdmin.from("notification_logs").update({ status: response.ok ? "success" : "error", sent_at: response.ok ? new Date().toISOString() : null, provider_message_id: payload.sid ?? null, error_message: response.ok ? null : payload.message ?? "Falha no reenvio" }).eq("id", data.id);
     if (!response.ok) throw new Error(payload.message ?? "Falha no reenvio.");
     return { queued: false };
+  });
+
+export const adminTestN8nWebhook = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabaseAdmin } = await authorizedAdmin(context);
+    const { data: identity, error: identityError } = await context.supabase.auth.getUser();
+    const email = identity.user?.email;
+    if (identityError || !email) throw new Error("Não foi possível confirmar o e-mail do usuário.");
+
+    const timestamp = new Date().toISOString();
+    const result = await sendN8nWebhook({
+      user_id: context.userId,
+      email,
+      event: "teste",
+      timestamp,
+    });
+    const { error: logError } = await supabaseAdmin.from("notification_logs").insert({
+      user_id: context.userId,
+      notification_type: "teste",
+      provider: "n8n",
+      recipient: email,
+      status: result.ok ? "success" : "error",
+      message_content: "teste",
+      error_message: result.error,
+      sent_at: result.ok ? timestamp : null,
+      metadata: { event: "teste", http_status: result.status },
+    });
+    if (logError) console.error("Failed to record n8n webhook attempt", logError.message);
+    if (!result.ok) throw new Error(result.error ?? "Não foi possível enviar o teste ao n8n.");
+    return { ok: true };
   });
 
 export const adminGetSettings = createServerFn({ method: "GET" })

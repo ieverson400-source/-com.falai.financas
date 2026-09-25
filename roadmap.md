@@ -10,3 +10,4 @@
 - [x] Templates e registros de notificações preparados para n8n sem substituir Twilio/Z-API
 - [x] Configurações globais de manutenção, cadastro, WhatsApp automático e aviso inicial
 - [x] Pré-visualização de anúncios antes de salvar
+- [x] Integração segura de teste com webhook n8n e registro das tentativas
