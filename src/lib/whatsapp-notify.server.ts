@@ -3,6 +3,7 @@
 // Failures are swallowed by the caller (notifications are best-effort).
 
 import { normalizeWhatsAppPhone } from "@/lib/phone";
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 export interface SendWhatsAppTextOptions {
   toPhone: string;
@@ -21,6 +22,15 @@ export async function sendWhatsAppText({
 }: SendWhatsAppTextOptions): Promise<SendWhatsAppTextResult> {
   const normalized = normalizeWhatsAppPhone(toPhone);
   if (!normalized) return { ok: false, sid: null, error: "Número inválido" };
+
+  const { data: globalSettings } = await supabaseAdmin
+    .from("app_settings")
+    .select("automatic_whatsapp_enabled")
+    .eq("setting_key", "global")
+    .maybeSingle();
+  if (globalSettings?.automatic_whatsapp_enabled === false) {
+    return { ok: false, sid: null, error: "Notificações automáticas desativadas" };
+  }
 
   const accountSid = process.env.TWILIO_ACCOUNT_SID;
   const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -61,15 +71,41 @@ export async function sendWhatsAppText({
     );
     const payload = (await res.json()) as { sid?: string; message?: string; code?: number };
     if (!res.ok) {
+      await supabaseAdmin.from("notification_logs").insert({
+        notification_type: "automatic",
+        provider: "twilio",
+        recipient: normalized,
+        status: "error",
+        message_content: body.slice(0, 1500),
+        error_message: `Twilio ${payload.code ?? res.status}: ${payload.message ?? "erro"}`,
+      });
       return {
         ok: false,
         sid: null,
         error: `Twilio ${payload.code ?? res.status}: ${payload.message ?? "erro"}`,
       };
     }
+    await supabaseAdmin.from("notification_logs").insert({
+      notification_type: "automatic",
+      provider: "twilio",
+      recipient: normalized,
+      status: "success",
+      message_content: body.slice(0, 1500),
+      provider_message_id: payload.sid ?? null,
+      sent_at: new Date().toISOString(),
+    });
     return { ok: true, sid: payload.sid ?? null };
   } catch (e) {
-    return { ok: false, sid: null, error: e instanceof Error ? e.message : "Falha desconhecida" };
+    const error = e instanceof Error ? e.message : "Falha desconhecida";
+    await supabaseAdmin.from("notification_logs").insert({
+      notification_type: "automatic",
+      provider: "twilio",
+      recipient: normalized,
+      status: "error",
+      message_content: body.slice(0, 1500),
+      error_message: error,
+    });
+    return { ok: false, sid: null, error };
   }
 }
 

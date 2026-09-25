@@ -14,6 +14,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AccountDeleteRouteImport } from './routes/account-delete'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
@@ -65,6 +66,11 @@ const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AccountDeleteRoute = AccountDeleteRouteImport.update({
@@ -212,6 +218,7 @@ const ApiPublicHooksWhatsappDailySummaryRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/account-delete': typeof AccountDeleteRoute
+  '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/privacy': typeof PrivacyRoute
@@ -246,6 +253,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/account-delete': typeof AccountDeleteRoute
+  '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/privacy': typeof PrivacyRoute
@@ -281,6 +289,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/account-delete': typeof AccountDeleteRoute
+  '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/privacy': typeof PrivacyRoute
@@ -317,6 +326,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/account-delete'
+    | '/admin'
     | '/auth'
     | '/forgot-password'
     | '/privacy'
@@ -351,6 +361,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/account-delete'
+    | '/admin'
     | '/auth'
     | '/forgot-password'
     | '/privacy'
@@ -385,6 +396,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/account-delete'
+    | '/admin'
     | '/auth'
     | '/forgot-password'
     | '/privacy'
@@ -420,6 +432,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountDeleteRoute: typeof AccountDeleteRoute
+  AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -485,6 +498,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/account-delete': {
@@ -706,6 +726,7 @@ const AppPlanosRouteWithChildren = AppPlanosRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountDeleteRoute: AccountDeleteRoute,
+  AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   PrivacyRoute: PrivacyRoute,

@@ -37,6 +37,7 @@ function AuthPage() {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [showWhatsapp, setShowWhatsapp] = useState(false);
+  const [registrationsEnabled, setRegistrationsEnabled] = useState(true);
   const sendWelcome = useServerFn(sendWhatsAppMessage);
 
   const handleGoogle = async () => {
@@ -68,6 +69,13 @@ function AuthPage() {
       if (event === "SIGNED_IN" && session) window.location.replace("/app");
     });
 
+    void supabase
+      .from("app_settings")
+      .select("registrations_enabled")
+      .eq("setting_key", "global")
+      .maybeSingle()
+      .then(({ data }) => setRegistrationsEnabled(data?.registrations_enabled ?? true));
+
     supabase.auth.getUser().then(({ data }) => {
       if (data.user) window.location.replace("/app");
     });
@@ -81,6 +89,7 @@ function AuthPage() {
     setLoading(true);
     try {
       if (mode === "signup") {
+        if (!registrationsEnabled) throw new Error("Novos cadastros estão temporariamente desativados.");
         const normalized = normalizeWhatsAppPhone(phone);
         const { data: signUpData, error } = await supabase.auth.signUp({
           email,
@@ -275,7 +284,10 @@ function AuthPage() {
           )}
 
 
-          <Button type="submit" className="w-full h-11 transition-transform hover:scale-[1.01]" disabled={loading || googleLoading}>
+          {mode === "signup" && !registrationsEnabled && (
+            <p className="rounded-lg border border-warning/30 bg-warning/10 p-3 text-sm text-warning">Novos cadastros estão temporariamente desativados.</p>
+          )}
+          <Button type="submit" className="w-full h-11 transition-transform hover:scale-[1.01]" disabled={loading || googleLoading || (mode === "signup" && !registrationsEnabled)}>
             {loading ? "Aguarde..." : mode === "signin" ? "Entrar" : "Criar conta"}
           </Button>
         </form>
@@ -290,6 +302,7 @@ function AuthPage() {
 
         <button
           onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
+          disabled={mode === "signin" && !registrationsEnabled}
           className="mt-4 text-sm text-primary hover:underline w-full text-center min-h-11"
         >
           {mode === "signin" ? "Não tem conta? Criar uma" : "Já tem conta? Entrar"}

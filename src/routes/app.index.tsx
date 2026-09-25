@@ -83,6 +83,9 @@ function AppDashboard() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [whatsAppPhone, setWhatsAppPhone] = useState<string | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [accessActive, setAccessActive] = useState(true);
+  const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [homeBanner, setHomeBanner] = useState<string | null>(null);
   const [whatsAppInbox, setWhatsAppInbox] = useState<WhatsAppInboxItem[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const { tab: initialTab } = Route.useSearch();
@@ -105,18 +108,19 @@ function AppDashboard() {
   const load = useCallback(async () => {
     if (!user) return;
     setRefreshing(true);
-    const [expensesRes, profileRes, inboxRes] = await Promise.all([
+    const [expensesRes, profileRes, inboxRes, settingsRes] = await Promise.all([
       supabase
         .from("expenses")
         .select("*")
         .order("expense_date", { ascending: false })
         .order("created_at", { ascending: false }),
-      supabase.from("profiles").select("whatsapp_phone, avatar_url").eq("user_id", user.id).maybeSingle(),
+      supabase.from("profiles").select("whatsapp_phone, avatar_url, is_active").eq("user_id", user.id).maybeSingle(),
       supabase
         .from("whatsapp_inbox")
         .select("id, from_phone, transcript, processing_status, error_message, created_at")
         .order("created_at", { ascending: false })
         .limit(8),
+      supabase.from("app_settings").select("maintenance_mode, home_banner_text").eq("setting_key", "global").maybeSingle(),
     ]);
     setRefreshing(false);
     if (expensesRes.error || profileRes.error || inboxRes.error) {
@@ -132,6 +136,9 @@ function AppDashboard() {
     setWhatsAppPhone(profileRes.data?.whatsapp_phone ?? null);
     const storedAvatar = profileRes.data?.avatar_url ?? user.user_metadata?.avatar_path ?? user.user_metadata?.avatar_url ?? null;
     setAvatarUrl(await resolveAvatarUrl(storedAvatar));
+    setAccessActive(profileRes.data?.is_active ?? true);
+    setMaintenanceMode(settingsRes.data?.maintenance_mode ?? false);
+    setHomeBanner(settingsRes.data?.home_banner_text ?? null);
     setWhatsAppInbox((inboxRes.data ?? []) as WhatsAppInboxItem[]);
     try {
       const bank = await fetchBankData();
@@ -173,6 +180,19 @@ function AppDashboard() {
       <div className="min-h-screen flex items-center justify-center text-muted-foreground">
         Carregando...
       </div>
+    );
+  }
+
+  if (!accessActive || (maintenanceMode && !isAdmin)) {
+    return (
+      <main className="grid min-h-screen place-items-center bg-background px-4">
+        <Card className="max-w-md p-7 text-center">
+          <AlertTriangle className="mx-auto size-10 text-warning" />
+          <h1 className="mt-4 font-display text-xl font-semibold">{!accessActive ? "Acesso temporariamente bloqueado" : "Estamos em manutenção"}</h1>
+          <p className="mt-2 text-sm text-muted-foreground">{!accessActive ? "Entre em contato com o suporte para revisar sua conta." : "Voltaremos em instantes. Administradores continuam com acesso normal."}</p>
+          <Button variant="outline" className="mt-5" onClick={handleLogout}>Sair</Button>
+        </Card>
+      </main>
     );
   }
 
@@ -243,6 +263,7 @@ function AppDashboard() {
         <h1 className="sr-only">Painel de finanças: gastos do mês, contas e fluxo de caixa</h1>
         {activeTab === "inicio" && (
           <>
+            {homeBanner && <div role="status" className="rounded-lg border border-primary/25 bg-primary/10 px-4 py-3 text-sm text-foreground">{homeBanner}</div>}
             {/* Saudação */}
             <div className="animate-rise">
               <p className="font-display text-2xl sm:text-3xl font-semibold">

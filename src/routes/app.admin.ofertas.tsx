@@ -6,7 +6,10 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Loader2, Tags, Pencil, Trash2, Plus } from "lucide-react";
+import { ArrowLeft, Eye, Loader2, Tags, Pencil, Trash2, Plus } from "lucide-react";
+import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { isCurrentUserAdmin } from "@/lib/admin.functions";
 import { adminDeleteOffer, adminListOffers, adminSaveOffer } from "@/lib/shop.functions";
 
@@ -100,6 +103,7 @@ function AdminOffersPage() {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [form, setForm] = useState<Form>(empty);
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth" });
@@ -189,9 +193,12 @@ function AdminOffersPage() {
       });
       setForm(empty);
       setMessage("Oferta salva.");
+      toast.success("Oferta salva.");
       await load();
     } catch (e) {
-      setMessage(e instanceof Error ? e.message : "Não foi possível salvar.");
+      const message = e instanceof Error ? e.message : "Não foi possível salvar.";
+      setMessage(message);
+      toast.error(message);
     } finally {
       setSaving(false);
     }
@@ -201,6 +208,7 @@ function AdminOffersPage() {
     setBusy(true);
     try {
       await deleteOffer({ data: { id } });
+      toast.success("Oferta excluída.");
       await load();
     } finally {
       setBusy(false);
@@ -209,6 +217,7 @@ function AdminOffersPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <Toaster richColors />
       <header className="sticky top-0 z-30 border-b bg-card/95 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3">
           <Button variant="ghost" size="icon" asChild aria-label="Voltar para a administração">
@@ -431,6 +440,9 @@ function AdminOffersPage() {
                   {saving ? <Loader2 className="mr-2 size-4 animate-spin" /> : null}
                   {form.id ? "Salvar alterações" : "Cadastrar oferta"}
                 </Button>
+                <Button variant="outline" onClick={() => setPreviewOpen(true)} disabled={!form.title.trim()}>
+                  <Eye className="mr-2 size-4" /> Pré-visualizar
+                </Button>
                 {form.id && (
                   <Button variant="outline" onClick={() => setForm(empty)}>
                     Cancelar edição
@@ -508,6 +520,19 @@ function AdminOffersPage() {
           </>
         )}
       </main>
+      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Prévia do anúncio</DialogTitle><DialogDescription>Visual aproximado do card exibido na Shop.</DialogDescription></DialogHeader>
+          <Card className="overflow-hidden border-primary/20 bg-card">
+            {form.image_url && <img src={form.image_url} alt="" className="aspect-[16/7] w-full object-cover" />}
+            <div className="p-5">
+              <div className="flex items-start justify-between gap-3"><div>{form.brand && <p className="text-xs font-medium uppercase text-primary">{form.brand}</p>}<h3 className="mt-1 font-display text-xl font-semibold">{form.title || "Título do anúncio"}</h3></div><Badge variant="secondary">{kindLabel[form.kind]}</Badge></div>
+              {form.subtitle && <p className="mt-2 text-sm text-muted-foreground">{form.subtitle}</p>}
+              <div className="mt-4 flex items-end justify-between gap-3"><div>{form.price && <p className="text-xl font-semibold">{form.price}</p>}<p className="text-xs text-muted-foreground">{form.installments}</p></div><Button size="sm">{form.cta_label || "Ver oferta"}</Button></div>
+            </div>
+          </Card>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

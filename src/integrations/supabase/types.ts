@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_settings: {
+        Row: {
+          automatic_whatsapp_enabled: boolean
+          created_at: string
+          home_banner_text: string | null
+          id: string
+          maintenance_mode: boolean
+          registrations_enabled: boolean
+          setting_key: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          automatic_whatsapp_enabled?: boolean
+          created_at?: string
+          home_banner_text?: string | null
+          id?: string
+          maintenance_mode?: boolean
+          registrations_enabled?: boolean
+          setting_key?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          automatic_whatsapp_enabled?: boolean
+          created_at?: string
+          home_banner_text?: string | null
+          id?: string
+          maintenance_mode?: boolean
+          registrations_enabled?: boolean
+          setting_key?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       budget_alerts_sent: {
         Row: {
           category: string
@@ -125,6 +161,54 @@ export type Database = {
           raw_transcript?: string | null
           source?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      notification_logs: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          id: string
+          message_content: string | null
+          metadata: Json
+          notification_type: string
+          provider: string
+          provider_message_id: string | null
+          recipient: string | null
+          sent_at: string | null
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          message_content?: string | null
+          metadata?: Json
+          notification_type: string
+          provider?: string
+          provider_message_id?: string | null
+          recipient?: string | null
+          sent_at?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          message_content?: string | null
+          metadata?: Json
+          notification_type?: string
+          provider?: string
+          provider_message_id?: string | null
+          recipient?: string | null
+          sent_at?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -351,9 +435,12 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          blocked_at: string | null
+          blocked_reason: string | null
           created_at: string
           display_name: string | null
           id: string
+          is_active: boolean
           last_inactivity_reminder_at: string | null
           notify_budget_alert: boolean
           notify_daily_summary: boolean
@@ -368,9 +455,12 @@ export type Database = {
         }
         Insert: {
           avatar_url?: string | null
+          blocked_at?: string | null
+          blocked_reason?: string | null
           created_at?: string
           display_name?: string | null
           id?: string
+          is_active?: boolean
           last_inactivity_reminder_at?: string | null
           notify_budget_alert?: boolean
           notify_daily_summary?: boolean
@@ -385,9 +475,12 @@ export type Database = {
         }
         Update: {
           avatar_url?: string | null
+          blocked_at?: string | null
+          blocked_reason?: string | null
           created_at?: string
           display_name?: string | null
           id?: string
+          is_active?: boolean
           last_inactivity_reminder_at?: string | null
           notify_budget_alert?: boolean
           notify_daily_summary?: boolean
@@ -689,6 +782,42 @@ export type Database = {
             referencedColumns: ["user_id"]
           },
         ]
+      }
+      whatsapp_templates: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          is_active: boolean
+          message_type: string
+          name: string
+          template_key: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          message_type: string
+          name: string
+          template_key: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          message_type?: string
+          name?: string
+          template_key?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
       }
       whatsapp_unmapped_numbers: {
         Row: {
