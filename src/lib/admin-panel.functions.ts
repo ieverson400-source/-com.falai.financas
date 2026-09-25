@@ -185,8 +185,14 @@ export const adminTestN8nWebhook = createServerFn({ method: "POST" })
       metadata: { event: "teste", http_status: result.status },
     });
     if (logError) console.error("Failed to record n8n webhook attempt", logError.message);
-    if (!result.ok) throw new Error(result.error ?? "Não foi possível enviar o teste ao n8n.");
-    return { ok: true };
+    if (!result.ok) {
+      return {
+        ok: false as const,
+        error: result.error ?? "Não foi possível enviar o teste ao n8n.",
+        status: result.status,
+      };
+    }
+    return { ok: true as const, error: null, status: result.status };
   });
 
 export const adminGetSettings = createServerFn({ method: "GET" })
