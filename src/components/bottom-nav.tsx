@@ -7,7 +7,6 @@ import {
   BarChart3,
   User as UserIcon,
 } from "lucide-react";
-import { toast } from "sonner";
 
 export type NavTabKey = "inicio" | "contas" | "consorcio" | "shop" | "relatorios" | "perfil";
 
@@ -37,15 +36,6 @@ export function BottomNav({
   const go = (key: NavTabKey) => {
     if (key === "shop") return void navigate({ to: "/app/shop" });
     if (key === "contas") return void navigate({ to: "/app/bancos" });
-    if (key === "consorcio") {
-      const consorcioUrl = import.meta.env.VITE_CONSORCIO_URL?.trim();
-      if (consorcioUrl) {
-        window.open(consorcioUrl, "_blank", "noopener,noreferrer");
-      } else {
-        toast.info("O endereço do Consórcio ainda será configurado.");
-      }
-      return;
-    }
     if (onSelectLocal) return onSelectLocal(key);
     void navigate({ to: "/app", search: { tab: key } });
   };
