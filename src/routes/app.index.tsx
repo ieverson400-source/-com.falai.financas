@@ -564,7 +564,28 @@ function AppDashboard() {
           <ReportsTab monthExpenses={monthExpenses} totalMonth={totalMonth} />
         )}
 
-        {activeTab !== "inicio" && activeTab !== "perfil" && activeTab !== "relatorios" && (
+        {activeTab === "consorcio" && (
+          <section className="space-y-4" aria-labelledby="consorcio-title">
+            <div>
+              <h2 id="consorcio-title" className="font-display text-2xl font-semibold">Consórcio</h2>
+              <p className="mt-1 text-sm text-muted-foreground">Acompanhe por aqui quando o acesso ao parceiro estiver disponível.</p>
+            </div>
+            <Card className="p-6 sm:p-8 bg-card shadow-soft text-center">
+              <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-primary/10">
+                <PiggyBank className="size-6 text-primary" aria-hidden="true" />
+              </div>
+              <h3 className="mt-4 font-display text-lg font-semibold">Acesso em preparação</h3>
+              <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+                Nenhuma oferta de consórcio está disponível no momento. Você será avisado quando houver uma opção ativa.
+              </p>
+              <Button className="mt-5" variant="outline" onClick={() => setActiveTab("inicio")}>
+                Voltar ao início
+              </Button>
+            </Card>
+          </section>
+        )}
+
+        {activeTab !== "inicio" && activeTab !== "perfil" && activeTab !== "relatorios" && activeTab !== "consorcio" && (
           <Card className="p-10 sm:p-16 bg-card shadow-soft text-center">
             <div className="mx-auto size-14 rounded-2xl bg-muted flex items-center justify-center mb-4">
               <Construction className="size-6 text-muted-foreground" />
