@@ -44,14 +44,14 @@ export function AnimatedSplashScreen() {
 
     if (rm) {
       setPhase(3);
-      timers.current.push(window.setTimeout(() => setLeaving(true), 700));
-      timers.current.push(window.setTimeout(() => setVisible(false), 1100));
+      timers.current.push(window.setTimeout(() => setLeaving(true), 4550));
+      timers.current.push(window.setTimeout(() => setVisible(false), 5000));
     } else {
       timers.current.push(window.setTimeout(() => setPhase(1), 500));
       timers.current.push(window.setTimeout(() => setPhase(2), 950));
       timers.current.push(window.setTimeout(() => setPhase(3), 1950));
-      timers.current.push(window.setTimeout(() => setLeaving(true), 2650));
-      timers.current.push(window.setTimeout(() => setVisible(false), 3050));
+      timers.current.push(window.setTimeout(() => setLeaving(true), 4550));
+      timers.current.push(window.setTimeout(() => setVisible(false), 5000));
     }
 
     return () => {
@@ -189,6 +189,10 @@ export function AnimatedSplashScreen() {
           Seu dinheiro, sob controle.
         </p>
       </div>
+
+      <p className="absolute bottom-[calc(env(safe-area-inset-bottom)+1.5rem)] left-0 right-0 px-6 text-center text-xs font-medium text-primary-foreground/70">
+        GRUPO IOS TRIPLE CONECTE
+      </p>
 
       <style>{`
         @keyframes splash-mic-in {
