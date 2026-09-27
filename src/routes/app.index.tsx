@@ -30,7 +30,7 @@ import { ProfileEditDialog } from "@/components/profile-edit-dialog";
 import { GoalHighlight } from "@/components/goal-highlight";
 import { resolveAvatarUrl } from "@/lib/avatar-url";
 import { toast } from "sonner";
-import { Trash2, Mic, Hand, Home, Wallet, ShoppingBag, BarChart3, User as UserIcon, Building2, PiggyBank, CreditCard, ArrowUpRight, ArrowDownRight, Sparkles, Construction, Crown, Check, Zap, Star, Shield, Calendar as CalendarIcon, TrendingUp, Heart, Share2, Moon, Sun, LogOut, Loader2, AlertTriangle, ExternalLink, RotateCcw, Gem } from "lucide-react";
+import { Trash2, Mic, Hand, Home, Wallet, ShoppingBag, BarChart3, User as UserIcon, Building2, PiggyBank, CreditCard, ArrowUpRight, ArrowDownRight, Sparkles, Construction, Crown, Check, Zap, Star, Shield, ShieldCheck, Calendar as CalendarIcon, TrendingUp, Heart, Share2, Moon, Sun, LogOut, Loader2, AlertTriangle, ExternalLink, RotateCcw, Gem } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useTheme } from "@/hooks/use-theme";
@@ -224,6 +224,14 @@ function AppDashboard() {
             <span className="font-display font-semibold truncate">Falaí</span>
           </Link>
           <div className="flex items-center gap-1">
+            {isAdmin && (
+              <Button asChild size="sm" variant="outline" className="border-primary/40 text-primary">
+                <Link to="/admin" aria-label="Abrir painel administrativo">
+                  <ShieldCheck className="size-4" />
+                  <span className="hidden sm:inline">Admin</span>
+                </Link>
+              </Button>
+            )}
             <NotificationsButton userId={user.id} />
             <button
               onClick={() => setActiveTab("perfil")}
