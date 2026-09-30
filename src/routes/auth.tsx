@@ -13,9 +13,6 @@ import { sendWhatsAppMessage } from "@/lib/twilio";
 import { normalizeWhatsAppPhone } from "@/lib/phone";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    mode: search.mode === "signup" ? ("signup" as const) : ("signin" as const),
-  }),
   component: AuthPage,
   head: () => ({
     meta: [
@@ -34,8 +31,7 @@ export const Route = createFileRoute("/auth")({
 });
 
 function AuthPage() {
-  const search = Route.useSearch();
-  const [mode, setMode] = useState<"signin" | "signup">(search.mode);
+  const [mode, setMode] = useState<"signin" | "signup">("signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");

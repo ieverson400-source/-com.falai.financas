@@ -8,7 +8,7 @@ export const Route = createFileRoute("/")({
     if (session) {
       throw redirect({ to: "/app", replace: true });
     }
-    throw redirect({ to: "/auth", search: { mode: "signup" }, replace: true });
+    throw redirect({ to: "/auth", replace: true });
   },
   head: () => ({
     meta: [
