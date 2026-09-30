@@ -13,6 +13,9 @@ import { sendWhatsAppMessage } from "@/lib/twilio";
 import { normalizeWhatsAppPhone } from "@/lib/phone";
 
 export const Route = createFileRoute("/auth")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    mode: search.mode === "signup" ? ("signup" as const) : ("signin" as const),
+  }),
   component: AuthPage,
   head: () => ({
     meta: [
@@ -21,6 +24,8 @@ export const Route = createFileRoute("/auth")({
       { property: "og:title", content: "Entrar — Falaí Finanças" },
       { property: "og:description", content: "Acesse o Falaí Finanças para registrar gastos por voz, foto ou WhatsApp e ver relatórios automáticos." },
       { property: "og:url", content: "https://falai-finan-as.lovable.app/auth" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
     links: [
       { rel: "canonical", href: "https://falai-finan-as.lovable.app/auth" },
@@ -29,7 +34,8 @@ export const Route = createFileRoute("/auth")({
 });
 
 function AuthPage() {
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const search = Route.useSearch();
+  const [mode, setMode] = useState<"signin" | "signup">(search.mode);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -182,9 +188,6 @@ function AuthPage() {
     <main className="min-h-screen flex items-center justify-center px-4 py-8 bg-gradient-hero">
       <Toaster richColors />
       <Card className="w-full max-w-md p-6 sm:p-8 shadow-elevated bg-card rounded-2xl">
-        <Link to="/" className="text-sm text-muted-foreground hover:text-primary mb-6 inline-flex items-center min-h-11">
-          ← Voltar
-        </Link>
         <h1 className="font-display text-2xl sm:text-3xl font-bold mb-2">{mode === "signin" ? "Entrar" : "Criar conta"}</h1>
         <p className="text-muted-foreground mb-6 text-sm">
           {mode === "signin" ? "Um toque com o Google e pronto" : "Cadastro em 1 toque com o Google"}
