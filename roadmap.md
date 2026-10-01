@@ -11,4 +11,4 @@
 - [x] Configurações globais de manutenção, cadastro, WhatsApp automático e aviso inicial
 - [x] Pré-visualização de anúncios antes de salvar
 - [x] Integração segura de teste com webhook n8n e registro das tentativas
-- [x] Entrada inicial direta na criação de conta, sem homepage promocional
+- [x] Página inicial pública minimalista com acesso opcional à autenticação
