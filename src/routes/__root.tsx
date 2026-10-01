@@ -58,7 +58,7 @@ export const Route = createRootRoute({
     links: [
       { rel: "stylesheet", href: appCss },
       // PWA manifest — descreve nome, ícones, cores e modo standalone
-      { rel: "manifest", href: "/manifest.webmanifest" },
+      { rel: "manifest", href: "/manifest.json" },
       // Ícone na home screen do iOS
       { rel: "apple-touch-icon", href: "/icon-192.png" },
       { rel: "apple-touch-icon", sizes: "152x152", href: "/icon-152.png" },
