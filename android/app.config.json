@@ -6,7 +6,7 @@
   "launcherName": "Falai",
   "themeColor": "#0f1b2d",
   "backgroundColor": "#0f1b2d",
-  "manifestUrl": "https://falai-finan-as.lovable.app/manifest.webmanifest",
+  "manifestUrl": "https://falai-finan-as.lovable.app/manifest.json",
   "iconUrl": "https://falai-finan-as.lovable.app/icon-android-512.png",
   "maskableIconUrl": "https://falai-finan-as.lovable.app/icon-android-512.png"
 }
