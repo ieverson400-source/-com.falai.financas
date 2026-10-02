@@ -190,7 +190,10 @@ export function AnimatedSplashScreen() {
         </p>
       </div>
 
-      <p className="absolute bottom-[calc(env(safe-area-inset-bottom)+1.5rem)] left-0 right-0 px-6 text-center text-base font-extrabold text-foreground">
+      <p
+        className="absolute bottom-[calc(env(safe-area-inset-bottom)+1.5rem)] left-0 right-0 px-6 text-center text-base font-extrabold"
+        style={{ color: "oklch(0.97 0.01 180)" }}
+      >
         GRUPO IOS TRIPLE CONECTE
       </p>
 
