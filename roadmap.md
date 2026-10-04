@@ -12,3 +12,8 @@
 - [x] Pré-visualização de anúncios antes de salvar
 - [x] Integração segura de teste com webhook n8n e registro das tentativas
 - [x] Página inicial pública minimalista com acesso opcional à autenticação
+- [ ] Shop: AdSense real configurável, sem anúncios simulados
+- [ ] Shop: publicidade de parceiros com posições, destaque e categorias
+- [ ] Admin: monetização, empresas, anúncios e métricas
+- [ ] Backend: anunciantes, anúncios, eventos, RLS e limitação por sessão
+- [ ] Validar Shop/Admin em mobile, permissões, console e build
