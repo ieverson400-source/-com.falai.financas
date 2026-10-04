@@ -14,6 +14,262 @@ export type Database = {
   }
   public: {
     Tables: {
+      adsense_settings: {
+        Row: {
+          ad_format: string
+          ad_slot_id: string | null
+          created_at: string
+          enabled: boolean
+          id: string
+          margin_bottom: number
+          margin_top: number
+          max_width: number
+          position: string
+          publisher_id: string | null
+          setting_key: string
+          show_in_other_screens: boolean
+          show_in_shop: boolean
+          test_mode: boolean
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          ad_format?: string
+          ad_slot_id?: string | null
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          margin_bottom?: number
+          margin_top?: number
+          max_width?: number
+          position?: string
+          publisher_id?: string | null
+          setting_key?: string
+          show_in_other_screens?: boolean
+          show_in_shop?: boolean
+          test_mode?: boolean
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          ad_format?: string
+          ad_slot_id?: string | null
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          margin_bottom?: number
+          margin_top?: number
+          max_width?: number
+          position?: string
+          publisher_id?: string | null
+          setting_key?: string
+          show_in_other_screens?: boolean
+          show_in_shop?: boolean
+          test_mode?: boolean
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      advertisement_events: {
+        Row: {
+          advertisement_id: string
+          created_at: string
+          event_day: string
+          event_type: string
+          id: string
+          session_id: string
+          user_id: string | null
+        }
+        Insert: {
+          advertisement_id: string
+          created_at?: string
+          event_day?: string
+          event_type: string
+          id?: string
+          session_id: string
+          user_id?: string | null
+        }
+        Update: {
+          advertisement_id?: string
+          created_at?: string
+          event_day?: string
+          event_type?: string
+          id?: string
+          session_id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "advertisement_events_advertisement_id_fkey"
+            columns: ["advertisement_id"]
+            isOneToOne: false
+            referencedRelation: "advertisements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      advertisement_placement_settings: {
+        Row: {
+          created_at: string
+          id: string
+          is_enabled: boolean
+          max_ads: number
+          placement: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_enabled?: boolean
+          max_ads?: number
+          placement: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_enabled?: boolean
+          max_ads?: number
+          placement?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      advertisements: {
+        Row: {
+          advertiser_id: string
+          badge_text: string | null
+          billing_provider: string | null
+          billing_reference: string | null
+          billing_status: string
+          category: string | null
+          contracted_revenue: number
+          created_at: string
+          description: string | null
+          destination_url: string
+          end_date: string | null
+          id: string
+          image_url: string | null
+          is_featured: boolean
+          is_sponsored: boolean
+          logo_url: string | null
+          offer_text: string | null
+          placement: string
+          priority: number
+          sort_order: number
+          start_date: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          advertiser_id: string
+          badge_text?: string | null
+          billing_provider?: string | null
+          billing_reference?: string | null
+          billing_status?: string
+          category?: string | null
+          contracted_revenue?: number
+          created_at?: string
+          description?: string | null
+          destination_url: string
+          end_date?: string | null
+          id?: string
+          image_url?: string | null
+          is_featured?: boolean
+          is_sponsored?: boolean
+          logo_url?: string | null
+          offer_text?: string | null
+          placement?: string
+          priority?: number
+          sort_order?: number
+          start_date?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          advertiser_id?: string
+          badge_text?: string | null
+          billing_provider?: string | null
+          billing_reference?: string | null
+          billing_status?: string
+          category?: string | null
+          contracted_revenue?: number
+          created_at?: string
+          description?: string | null
+          destination_url?: string
+          end_date?: string | null
+          id?: string
+          image_url?: string | null
+          is_featured?: boolean
+          is_sponsored?: boolean
+          logo_url?: string | null
+          offer_text?: string | null
+          placement?: string
+          priority?: number
+          sort_order?: number
+          start_date?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "advertisements_advertiser_id_fkey"
+            columns: ["advertiser_id"]
+            isOneToOne: false
+            referencedRelation: "advertisers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      advertisers: {
+        Row: {
+          company_name: string
+          contact_email: string | null
+          contact_phone: string | null
+          created_at: string
+          description: string | null
+          id: string
+          logo_url: string | null
+          owner_user_id: string | null
+          status: string
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          company_name: string
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          logo_url?: string | null
+          owner_user_id?: string | null
+          status?: string
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          company_name?: string
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          logo_url?: string | null
+          owner_user_id?: string | null
+          status?: string
+          updated_at?: string
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       app_settings: {
         Row: {
           automatic_whatsapp_enabled: boolean
