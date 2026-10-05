@@ -17,3 +17,4 @@
 - [ ] Admin: monetização, empresas, anúncios e métricas
 - [ ] Backend: anunciantes, anúncios, eventos, RLS e limitação por sessão
 - [ ] Validar Shop/Admin em mobile, permissões, console e build
+- [ ] Notificação push: registro de dispositivos, envio administrativo e histórico

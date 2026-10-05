@@ -422,6 +422,7 @@ export type Database = {
       }
       notification_logs: {
         Row: {
+          body: string | null
           created_at: string
           error_message: string | null
           id: string
@@ -432,11 +433,16 @@ export type Database = {
           provider_message_id: string | null
           recipient: string | null
           sent_at: string | null
+          sent_by: string | null
           status: string
+          title: string | null
+          total_failed: number
+          total_sent: number
           updated_at: string
           user_id: string | null
         }
         Insert: {
+          body?: string | null
           created_at?: string
           error_message?: string | null
           id?: string
@@ -447,11 +453,16 @@ export type Database = {
           provider_message_id?: string | null
           recipient?: string | null
           sent_at?: string | null
+          sent_by?: string | null
           status?: string
+          title?: string | null
+          total_failed?: number
+          total_sent?: number
           updated_at?: string
           user_id?: string | null
         }
         Update: {
+          body?: string | null
           created_at?: string
           error_message?: string | null
           id?: string
@@ -462,7 +473,11 @@ export type Database = {
           provider_message_id?: string | null
           recipient?: string | null
           sent_at?: string | null
+          sent_by?: string | null
           status?: string
+          title?: string | null
+          total_failed?: number
+          total_sent?: number
           updated_at?: string
           user_id?: string | null
         }
@@ -748,6 +763,36 @@ export type Database = {
           updated_at?: string
           user_id?: string
           whatsapp_phone?: string | null
+        }
+        Relationships: []
+      }
+      push_tokens: {
+        Row: {
+          created_at: string
+          id: string
+          last_seen_at: string
+          platform: string
+          token: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_seen_at?: string
+          platform?: string
+          token: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_seen_at?: string
+          platform?: string
+          token?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
