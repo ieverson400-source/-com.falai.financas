@@ -8,6 +8,9 @@ import type { Database } from "@/integrations/supabase/types";
 const SELECT =
   "id, kind, brand, title, subtitle, price, installments, cashback, badges, cta_label, link_url, image_url, accent, sort_order, is_active, card_size, starts_at, ends_at, created_at";
 
+const ADSENSE_SELECT =
+  "publisher_id,ad_slot_id,ad_format,position,max_width,margin_top,margin_bottom,test_mode";
+
 const offerSchema = z.object({
   id: z.string().uuid().optional().nullable(),
   kind: z.enum(["highlight", "offer", "coupon"]),
@@ -45,13 +48,18 @@ export const listShopOffers = createServerFn({ method: "GET" }).handler(async ()
     },
   });
 
-  const { data } = await supabasePublic
-    .from("shop_offers")
-    .select(SELECT)
-    .order("sort_order", { ascending: true })
-    .limit(60);
+  const [{ data }, { data: adsense }] = await Promise.all([
+    supabasePublic.from("shop_offers").select(SELECT).order("sort_order", { ascending: true }).limit(60),
+    supabasePublic
+      .from("adsense_settings")
+      .select(ADSENSE_SELECT)
+      .eq("setting_key", "shop")
+      .eq("enabled", true)
+      .eq("show_in_shop", true)
+      .maybeSingle(),
+  ]);
 
-  return { offers: data ?? [] };
+  return { offers: data ?? [], adsense };
 });
 
 export const adminListOffers = createServerFn({ method: "POST" })

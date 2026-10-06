@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { BarChart3, Bell, ExternalLink, LayoutDashboard, Settings, ShieldCheck, ShoppingBag, Users } from "lucide-react";
+import { BadgeDollarSign, BarChart3, Bell, ExternalLink, LayoutDashboard, Settings, ShieldCheck, ShoppingBag, Users } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
@@ -7,6 +7,7 @@ const items = [
   { hash: "overview", label: "Visão geral", icon: LayoutDashboard },
   { hash: "users", label: "Usuários", icon: Users },
   { hash: "offers", label: "Anúncios", icon: ShoppingBag },
+  { hash: "monetization", label: "AdSense", icon: BadgeDollarSign },
   { hash: "notifications", label: "Notificações", icon: Bell },
   { hash: "settings", label: "Configurações", icon: Settings },
 ];
@@ -20,7 +21,7 @@ export function AdminShell({ active, onNavigate, children }: { active: string; o
       <Link to="/app" className="m-3 flex min-h-11 items-center gap-3 rounded-lg border px-3 text-sm text-muted-foreground hover:text-foreground"><ExternalLink className="size-4" />Voltar ao aplicativo</Link>
     </aside>
     <div className="min-w-0"><header className="sticky top-0 z-30 border-b bg-background/90 px-4 py-3 backdrop-blur lg:px-8"><div className="mx-auto flex max-w-7xl items-center gap-3"><ShieldCheck className="size-5 text-primary" /><div><h1 className="font-display text-lg font-semibold">Painel administrativo</h1><p className="hidden text-xs text-muted-foreground sm:block">Gestão segura do Falaí Finanças</p></div><Link to="/app" className="ml-auto text-sm text-muted-foreground hover:text-primary lg:hidden">Sair</Link></div></header><main className="mx-auto max-w-7xl px-4 py-6 pb-24 lg:px-8 lg:pb-10">{children}</main></div>
-    <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t bg-card/95 px-1 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden" aria-label="Navegação administrativa móvel">{items.map(({ hash, label, icon: Icon }) => <button key={hash} type="button" onClick={() => onNavigate(hash)} aria-current={active === hash ? "page" : undefined} className={cn("flex min-h-[62px] flex-col items-center justify-center gap-1 text-[10px]", active === hash ? "text-primary" : "text-muted-foreground")}><Icon className={cn("size-5", active === hash && "scale-110")} />{label}</button>)}</nav>
+    <nav className="fixed inset-x-0 bottom-0 z-40 flex overflow-x-auto border-t bg-card/95 px-1 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden" aria-label="Navegação administrativa móvel">{items.map(({ hash, label, icon: Icon }) => <button key={hash} type="button" onClick={() => onNavigate(hash)} aria-current={active === hash ? "page" : undefined} className={cn("flex min-h-[62px] min-w-[76px] flex-1 flex-col items-center justify-center gap-1 text-[10px]", active === hash ? "text-primary" : "text-muted-foreground")}><Icon className={cn("size-5", active === hash && "scale-110")} />{label}</button>)}</nav>
   </div>;
 }
 

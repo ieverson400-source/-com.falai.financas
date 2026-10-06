@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, ShoppingBag, Tag, Clock, Percent } from "lucide-react";
 import { listShopOffers } from "@/lib/shop.functions";
+import { AdSenseBanner } from "@/components/adsense-banner";
 
 export const Route = createFileRoute("/app/shop")({
   component: ShopPage,
@@ -57,7 +58,7 @@ function expiresLabel(endsAt: string | null) {
 function ShopPage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const { offers } = Route.useLoaderData();
+  const { offers, adsense } = Route.useLoaderData();
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth" });
@@ -84,6 +85,9 @@ function ShopPage() {
       </header>
 
       <main className="mx-auto max-w-6xl space-y-8 px-4 py-6 pb-28">
+        {adsense?.position === "SHOP_TOP" && adsense.publisher_id && adsense.ad_slot_id && (
+          <AdSenseBanner settings={{ ...adsense, publisher_id: adsense.publisher_id, ad_slot_id: adsense.ad_slot_id }} />
+        )}
         {offers.length === 0 && (
           <Card className="p-6 text-sm text-muted-foreground">
             Nenhuma oferta publicada no momento. Volte em breve.
@@ -139,6 +143,10 @@ function ShopPage() {
               ))}
             </div>
           </section>
+        )}
+
+        {adsense?.position === "SHOP_MIDDLE" && adsense.publisher_id && adsense.ad_slot_id && (
+          <AdSenseBanner settings={{ ...adsense, publisher_id: adsense.publisher_id, ad_slot_id: adsense.ad_slot_id }} />
         )}
 
         {partnerOffers.length > 0 && (
@@ -201,6 +209,10 @@ function ShopPage() {
           </section>
         )}
 
+        {adsense?.position === "SHOP_OFFERS" && adsense.publisher_id && adsense.ad_slot_id && (
+          <AdSenseBanner settings={{ ...adsense, publisher_id: adsense.publisher_id, ad_slot_id: adsense.ad_slot_id }} />
+        )}
+
         {coupons.length > 0 && (
           <section aria-labelledby="cupons">
             <h2 id="cupons" className="mb-3 font-display text-base font-semibold">
@@ -228,6 +240,10 @@ function ShopPage() {
               ))}
             </div>
           </section>
+        )}
+
+        {adsense?.position === "SHOP_BOTTOM" && adsense.publisher_id && adsense.ad_slot_id && (
+          <AdSenseBanner settings={{ ...adsense, publisher_id: adsense.publisher_id, ad_slot_id: adsense.ad_slot_id }} />
         )}
       </main>
 

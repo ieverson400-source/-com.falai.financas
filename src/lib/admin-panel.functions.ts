@@ -20,6 +20,23 @@ const settingsSchema = z.object({
   maintenanceMode: z.boolean(), registrationsEnabled: z.boolean(),
   automaticWhatsAppEnabled: z.boolean(), homeBannerText: z.string().trim().max(500).nullable(),
 });
+const adsenseSchema = z.object({
+  enabled: z.boolean(),
+  publisherId: z.string().trim().max(40).nullable(),
+  adSlotId: z.string().trim().max(40).nullable(),
+  adFormat: z.enum(["auto", "rectangle", "horizontal", "vertical", "fluid"]),
+  position: z.enum(["SHOP_TOP", "SHOP_MIDDLE", "SHOP_OFFERS", "SHOP_BOTTOM"]),
+  maxWidth: z.number().int().min(280).max(1600),
+  marginTop: z.number().int().min(0).max(120),
+  marginBottom: z.number().int().min(0).max(120),
+  showInShop: z.boolean(),
+  showInOtherScreens: z.boolean(),
+  testMode: z.boolean(),
+}).superRefine((value, context) => {
+  if (!value.enabled) return;
+  if (!value.publisherId || !/^ca-pub-\d+$/.test(value.publisherId)) context.addIssue({ code: "custom", path: ["publisherId"], message: "Publisher ID inválido." });
+  if (!value.adSlotId || !/^\d+$/.test(value.adSlotId)) context.addIssue({ code: "custom", path: ["adSlotId"], message: "ID do bloco inválido." });
+});
 const logSchema = z.object({ id: z.string().uuid() });
 
 async function authorizedAdmin(context: { supabase: Parameters<typeof assertAdmin>[0]; userId: string }) {
@@ -208,4 +225,35 @@ export const adminSaveSettings = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await authorizedAdmin(context);
     const { error } = await supabaseAdmin.from("app_settings").upsert({ setting_key: "global", maintenance_mode: data.maintenanceMode, registrations_enabled: data.registrationsEnabled, automatic_whatsapp_enabled: data.automaticWhatsAppEnabled, home_banner_text: data.homeBannerText, updated_by: context.userId }, { onConflict: "setting_key" });
     if (error) throw error; return { ok: true };
+  });
+
+export const adminGetAdSenseSettings = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth]).handler(async ({ context }) => {
+    const { supabaseAdmin } = await authorizedAdmin(context);
+    const { data, error } = await supabaseAdmin.from("adsense_settings").select("*").eq("setting_key", "shop").single();
+    if (error) throw error;
+    return { settings: data };
+  });
+
+export const adminSaveAdSenseSettings = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth]).inputValidator((input) => adsenseSchema.parse(input))
+  .handler(async ({ data, context }) => {
+    const { supabaseAdmin } = await authorizedAdmin(context);
+    const { error } = await supabaseAdmin.from("adsense_settings").upsert({
+      setting_key: "shop",
+      enabled: data.enabled,
+      publisher_id: data.publisherId || null,
+      ad_slot_id: data.adSlotId || null,
+      ad_format: data.adFormat,
+      position: data.position,
+      max_width: data.maxWidth,
+      margin_top: data.marginTop,
+      margin_bottom: data.marginBottom,
+      show_in_shop: data.showInShop,
+      show_in_other_screens: data.showInOtherScreens,
+      test_mode: data.testMode,
+      updated_by: context.userId,
+    }, { onConflict: "setting_key" });
+    if (error) throw error;
+    return { ok: true };
   });
