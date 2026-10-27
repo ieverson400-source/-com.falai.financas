@@ -1236,6 +1236,9 @@ function ProfileTab({
             onAvatarChange={onAvatarChange}
           />
           <ConfigThemeRow />
+          <Button variant="ghost" className="h-auto w-full justify-start gap-3 rounded-none px-4 py-3.5" onClick={() => window.dispatchEvent(new Event("falai-enable-push"))}>
+            <ExternalLink className="size-4 text-muted-foreground" />Ativar notificações push
+          </Button>
           <a
             href="https://id-preview--724889f1-e026-4a50-8f4a-842975d93e05.lovable.app/privacy"
             target="_blank"

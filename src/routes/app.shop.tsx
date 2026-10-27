@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, ShoppingBag, Tag, Clock, Percent } from "lucide-react";
 import { listShopOffers } from "@/lib/shop.functions";
 import { AdSenseBanner } from "@/components/adsense-banner";
+import { ShopAdvertisements } from "@/components/shop-advertisements";
 
 export const Route = createFileRoute("/app/shop")({
   component: ShopPage,
@@ -85,6 +86,7 @@ function ShopPage() {
       </header>
 
       <main className="mx-auto max-w-6xl space-y-8 px-4 py-6 pb-28">
+        {user && <ShopAdvertisements placement="SHOP_TOP" />}
         {adsense?.position === "SHOP_TOP" && adsense.publisher_id && adsense.ad_slot_id && (
           <AdSenseBanner settings={{ ...adsense, publisher_id: adsense.publisher_id, ad_slot_id: adsense.ad_slot_id }} />
         )}
@@ -149,6 +151,8 @@ function ShopPage() {
           <AdSenseBanner settings={{ ...adsense, publisher_id: adsense.publisher_id, ad_slot_id: adsense.ad_slot_id }} />
         )}
 
+        {user && <ShopAdvertisements placement="SHOP_MIDDLE" />}
+
         {partnerOffers.length > 0 && (
           <section aria-labelledby="ofertas">
             <h2 id="ofertas" className="mb-3 font-display text-base font-semibold">
@@ -212,6 +216,7 @@ function ShopPage() {
         {adsense?.position === "SHOP_OFFERS" && adsense.publisher_id && adsense.ad_slot_id && (
           <AdSenseBanner settings={{ ...adsense, publisher_id: adsense.publisher_id, ad_slot_id: adsense.ad_slot_id }} />
         )}
+        {user && <ShopAdvertisements placement="SHOP_OFFERS" />}
 
         {coupons.length > 0 && (
           <section aria-labelledby="cupons">
@@ -245,6 +250,7 @@ function ShopPage() {
         {adsense?.position === "SHOP_BOTTOM" && adsense.publisher_id && adsense.ad_slot_id && (
           <AdSenseBanner settings={{ ...adsense, publisher_id: adsense.publisher_id, ad_slot_id: adsense.ad_slot_id }} />
         )}
+        {user && <ShopAdvertisements placement="SHOP_BOTTOM" />}
       </main>
 
       <footer className="border-t bg-background px-4 py-6 pb-24 text-center text-xs text-muted-foreground">

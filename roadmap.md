@@ -1,4 +1,6 @@
 # Roadmap
+- [x] Concluir Publicidade no Admin e validar cadastro, publicação no Shop e métricas
+- [ ] Publicar versão com push e orientar autorização no aparelho
 
 - [x] Ampliar cadastro de ofertas com categoria, aprovação e validade; verificar preservação das ofertas atuais
 
@@ -16,9 +18,9 @@
 - [x] Pré-visualização de anúncios antes de salvar
 - [x] Integração segura de teste com webhook n8n e registro das tentativas
 - [x] Página inicial pública minimalista com acesso opcional à autenticação
-- [ ] Shop: AdSense real configurável, sem anúncios simulados
-- [ ] Shop: publicidade de parceiros com posições, destaque e categorias
-- [ ] Admin: monetização, empresas, anúncios e métricas
-- [ ] Backend: anunciantes, anúncios, eventos, RLS e limitação por sessão
-- [ ] Validar Shop/Admin em mobile, permissões, console e build
-- [ ] Notificação push: registro de dispositivos, envio administrativo e histórico
+- [x] Shop: AdSense real configurável, sem anúncios simulados
+- [x] Shop: publicidade de parceiros com posições, destaque e categorias
+- [x] Admin: monetização, empresas, anúncios e métricas
+- [x] Backend: anunciantes, anúncios, eventos, RLS e limitação por sessão
+- [x] Validar Shop/Admin em mobile, console e build; permissões admin verificadas no fluxo autenticado
+- [ ] Notificação push: confirmar entrega real e histórico após autorização de um aparelho (nenhum token registrado)

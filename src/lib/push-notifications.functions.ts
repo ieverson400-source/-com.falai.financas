@@ -2,24 +2,11 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { assertAdmin } from "@/lib/assert-admin";
+import { pushSchema, isStalePushToken } from "@/lib/push-rules";
 
 const tokenSchema = z.object({
   token: z.string().trim().min(20).max(4096),
   platform: z.enum(["web", "android", "ios"]).default("web"),
-});
-
-const pushSchema = z.object({
-  title: z.string().trim().min(1).max(60),
-  body: z.string().trim().min(1).max(180),
-  link: z
-    .string()
-    .trim()
-    .max(500)
-    .optional()
-    .nullable()
-    .refine((value) => !value || value.startsWith("/") || value.startsWith("https://"), {
-      message: "Use uma rota interna ou um endereço HTTPS.",
-    }),
 });
 
 export const registerPushToken = createServerFn({ method: "POST" })
@@ -82,6 +69,7 @@ export const sendPushToAll = createServerFn({ method: "POST" })
               "https://connector-gateway.lovable.dev/firebase_messaging/v1/projects/_/messages:send",
               {
                 method: "POST",
+                signal: AbortSignal.timeout(15000),
                 headers: {
                   Authorization: `Bearer ${lovableKey}`,
                   "X-Connection-Api-Key": connectionKey,
@@ -92,7 +80,6 @@ export const sendPushToAll = createServerFn({ method: "POST" })
                     token: row.token,
                     notification: { title: data.title, body: data.body },
                     data: { link: data.link || "/app" },
-                    webpush: { fcm_options: { link: data.link || "/app" } },
                   },
                 }),
               },
@@ -100,7 +87,8 @@ export const sendPushToAll = createServerFn({ method: "POST" })
             if (response.ok) return { ok: true, id: row.id };
             const payload = (await response.json().catch(() => ({}))) as FcmFailure;
             const code = payload.error?.details?.[0]?.errorCode ?? payload.error?.status;
-            return { ok: false, id: row.id, invalid: code === "UNREGISTERED" || code === "INVALID_ARGUMENT" };
+            console.error("FCM send failed", response.status, code ?? "unknown");
+            return { ok: false, id: row.id, invalid: isStalePushToken(code) };
           } catch {
             return { ok: false, id: row.id, invalid: false };
           }
