@@ -9,68 +9,43 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as PrivacyRouteImport } from './routes/privacy'
-import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as AccountDeleteRouteImport } from './routes/account-delete'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AccountDeleteRouteImport } from './routes/account-delete'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AppIndexRouteImport } from './routes/app.index'
-import { Route as BlogGuiaGestaoDeGastosRouteImport } from './routes/blog.guia-gestao-de-gastos'
-import { Route as AppWhatsappTestRouteImport } from './routes/app.whatsapp-test'
-import { Route as AppShopRouteImport } from './routes/app.shop'
-import { Route as AppPlanosRouteImport } from './routes/app.planos'
-import { Route as AppOrcamentosRouteImport } from './routes/app.orcamentos'
-import { Route as AppConectarWhatsappRouteImport } from './routes/app.conectar-whatsapp'
-import { Route as AppBancosRouteImport } from './routes/app.bancos'
-import { Route as AppAgendasRouteImport } from './routes/app.agendas'
-import { Route as AppAgendaMensagensRouteImport } from './routes/app.agenda-mensagens'
 import { Route as AppAdminRouteImport } from './routes/app.admin'
+import { Route as AppAgendaMensagensRouteImport } from './routes/app.agenda-mensagens'
+import { Route as AppAgendasRouteImport } from './routes/app.agendas'
+import { Route as AppBancosRouteImport } from './routes/app.bancos'
+import { Route as AppConectarWhatsappRouteImport } from './routes/app.conectar-whatsapp'
+import { Route as AppOrcamentosRouteImport } from './routes/app.orcamentos'
+import { Route as AppPlanosRouteImport } from './routes/app.planos'
+import { Route as AppShopRouteImport } from './routes/app.shop'
+import { Route as AppWhatsappTestRouteImport } from './routes/app.whatsapp-test'
+import { Route as BlogGuiaGestaoDeGastosRouteImport } from './routes/blog.guia-gestao-de-gastos'
+import { Route as ApiPublicPlayRtdnRouteImport } from './routes/api/public/play-rtdn'
+import { Route as ApiPublicPluggyWebhookRouteImport } from './routes/api/public/pluggy-webhook'
+import { Route as ApiPublicWhatsappRouteImport } from './routes/api/public/whatsapp'
+import { Route as ApiPublicZapiRouteImport } from './routes/api/public/zapi'
+import { Route as AppAdminOfertasRouteImport } from './routes/app.admin.ofertas'
+import { Route as AppPlanosRetornoRouteImport } from './routes/app.planos.retorno'
 import { Route as AppRecargaIndexRouteImport } from './routes/app.recarga.index'
 import { Route as AppRecargaConfiguracoesRouteImport } from './routes/app.recarga.configuracoes'
-import { Route as AppPlanosRetornoRouteImport } from './routes/app.planos.retorno'
-import { Route as AppAdminOfertasRouteImport } from './routes/app.admin.ofertas'
-import { Route as ApiPublicZapiRouteImport } from './routes/api/public/zapi'
-import { Route as ApiPublicWhatsappRouteImport } from './routes/api/public/whatsapp'
-import { Route as ApiPublicPluggyWebhookRouteImport } from './routes/api/public/pluggy-webhook'
-import { Route as ApiPublicPlayRtdnRouteImport } from './routes/api/public/play-rtdn'
-import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
-import { Route as ApiPublicHooksWhatsappWeeklyTipRouteImport } from './routes/api/public/hooks/whatsapp-weekly-tip'
-import { Route as ApiPublicHooksWhatsappWeeklySummaryRouteImport } from './routes/api/public/hooks/whatsapp-weekly-summary'
-import { Route as ApiPublicHooksWhatsappMonthlySummaryRouteImport } from './routes/api/public/hooks/whatsapp-monthly-summary'
-import { Route as ApiPublicHooksWhatsappInactivityRouteImport } from './routes/api/public/hooks/whatsapp-inactivity'
 import { Route as ApiPublicHooksWhatsappDailySummaryRouteImport } from './routes/api/public/hooks/whatsapp-daily-summary'
+import { Route as ApiPublicHooksWhatsappInactivityRouteImport } from './routes/api/public/hooks/whatsapp-inactivity'
+import { Route as ApiPublicHooksWhatsappMonthlySummaryRouteImport } from './routes/api/public/hooks/whatsapp-monthly-summary'
+import { Route as ApiPublicHooksWhatsappWeeklySummaryRouteImport } from './routes/api/public/hooks/whatsapp-weekly-summary'
+import { Route as ApiPublicHooksWhatsappWeeklyTipRouteImport } from './routes/api/public/hooks/whatsapp-weekly-tip'
+import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivacyRoute = PrivacyRouteImport.update({
-  id: '/privacy',
-  path: '/privacy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
-  id: '/forgot-password',
-  path: '/forgot-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AccountDeleteRoute = AccountDeleteRouteImport.update({
@@ -78,9 +53,34 @@ const AccountDeleteRoute = AccountDeleteRouteImport.update({
   path: '/account-delete',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppIndexRoute = AppIndexRouteImport.update({
@@ -88,44 +88,9 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/app/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BlogGuiaGestaoDeGastosRoute = BlogGuiaGestaoDeGastosRouteImport.update({
-  id: '/blog/guia-gestao-de-gastos',
-  path: '/blog/guia-gestao-de-gastos',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AppWhatsappTestRoute = AppWhatsappTestRouteImport.update({
-  id: '/app/whatsapp-test',
-  path: '/app/whatsapp-test',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AppShopRoute = AppShopRouteImport.update({
-  id: '/app/shop',
-  path: '/app/shop',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AppPlanosRoute = AppPlanosRouteImport.update({
-  id: '/app/planos',
-  path: '/app/planos',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AppOrcamentosRoute = AppOrcamentosRouteImport.update({
-  id: '/app/orcamentos',
-  path: '/app/orcamentos',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AppConectarWhatsappRoute = AppConectarWhatsappRouteImport.update({
-  id: '/app/conectar-whatsapp',
-  path: '/app/conectar-whatsapp',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AppBancosRoute = AppBancosRouteImport.update({
-  id: '/app/bancos',
-  path: '/app/bancos',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AppAgendasRoute = AppAgendasRouteImport.update({
-  id: '/app/agendas',
-  path: '/app/agendas',
+const AppAdminRoute = AppAdminRouteImport.update({
+  id: '/app/admin',
+  path: '/app/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppAgendaMensagensRoute = AppAgendaMensagensRouteImport.update({
@@ -133,10 +98,75 @@ const AppAgendaMensagensRoute = AppAgendaMensagensRouteImport.update({
   path: '/app/agenda-mensagens',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppAdminRoute = AppAdminRouteImport.update({
-  id: '/app/admin',
-  path: '/app/admin',
+const AppAgendasRoute = AppAgendasRouteImport.update({
+  id: '/app/agendas',
+  path: '/app/agendas',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AppBancosRoute = AppBancosRouteImport.update({
+  id: '/app/bancos',
+  path: '/app/bancos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppConectarWhatsappRoute = AppConectarWhatsappRouteImport.update({
+  id: '/app/conectar-whatsapp',
+  path: '/app/conectar-whatsapp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppOrcamentosRoute = AppOrcamentosRouteImport.update({
+  id: '/app/orcamentos',
+  path: '/app/orcamentos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppPlanosRoute = AppPlanosRouteImport.update({
+  id: '/app/planos',
+  path: '/app/planos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppShopRoute = AppShopRouteImport.update({
+  id: '/app/shop',
+  path: '/app/shop',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppWhatsappTestRoute = AppWhatsappTestRouteImport.update({
+  id: '/app/whatsapp-test',
+  path: '/app/whatsapp-test',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogGuiaGestaoDeGastosRoute = BlogGuiaGestaoDeGastosRouteImport.update({
+  id: '/blog/guia-gestao-de-gastos',
+  path: '/blog/guia-gestao-de-gastos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicPlayRtdnRoute = ApiPublicPlayRtdnRouteImport.update({
+  id: '/api/public/play-rtdn',
+  path: '/api/public/play-rtdn',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicPluggyWebhookRoute = ApiPublicPluggyWebhookRouteImport.update({
+  id: '/api/public/pluggy-webhook',
+  path: '/api/public/pluggy-webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicWhatsappRoute = ApiPublicWhatsappRouteImport.update({
+  id: '/api/public/whatsapp',
+  path: '/api/public/whatsapp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicZapiRoute = ApiPublicZapiRouteImport.update({
+  id: '/api/public/zapi',
+  path: '/api/public/zapi',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppAdminOfertasRoute = AppAdminOfertasRouteImport.update({
+  id: '/ofertas',
+  path: '/ofertas',
+  getParentRoute: () => AppAdminRoute,
+} as any)
+const AppPlanosRetornoRoute = AppPlanosRetornoRouteImport.update({
+  id: '/retorno',
+  path: '/retorno',
+  getParentRoute: () => AppPlanosRoute,
 } as any)
 const AppRecargaIndexRoute = AppRecargaIndexRouteImport.update({
   id: '/app/recarga/',
@@ -148,58 +178,10 @@ const AppRecargaConfiguracoesRoute = AppRecargaConfiguracoesRouteImport.update({
   path: '/app/recarga/configuracoes',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppPlanosRetornoRoute = AppPlanosRetornoRouteImport.update({
-  id: '/retorno',
-  path: '/retorno',
-  getParentRoute: () => AppPlanosRoute,
-} as any)
-const AppAdminOfertasRoute = AppAdminOfertasRouteImport.update({
-  id: '/ofertas',
-  path: '/ofertas',
-  getParentRoute: () => AppAdminRoute,
-} as any)
-const ApiPublicZapiRoute = ApiPublicZapiRouteImport.update({
-  id: '/api/public/zapi',
-  path: '/api/public/zapi',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicWhatsappRoute = ApiPublicWhatsappRouteImport.update({
-  id: '/api/public/whatsapp',
-  path: '/api/public/whatsapp',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicPluggyWebhookRoute = ApiPublicPluggyWebhookRouteImport.update({
-  id: '/api/public/pluggy-webhook',
-  path: '/api/public/pluggy-webhook',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicPlayRtdnRoute = ApiPublicPlayRtdnRouteImport.update({
-  id: '/api/public/play-rtdn',
-  path: '/api/public/play-rtdn',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicPaymentsWebhookRoute =
-  ApiPublicPaymentsWebhookRouteImport.update({
-    id: '/api/public/payments/webhook',
-    path: '/api/public/payments/webhook',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicHooksWhatsappWeeklyTipRoute =
-  ApiPublicHooksWhatsappWeeklyTipRouteImport.update({
-    id: '/api/public/hooks/whatsapp-weekly-tip',
-    path: '/api/public/hooks/whatsapp-weekly-tip',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicHooksWhatsappWeeklySummaryRoute =
-  ApiPublicHooksWhatsappWeeklySummaryRouteImport.update({
-    id: '/api/public/hooks/whatsapp-weekly-summary',
-    path: '/api/public/hooks/whatsapp-weekly-summary',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicHooksWhatsappMonthlySummaryRoute =
-  ApiPublicHooksWhatsappMonthlySummaryRouteImport.update({
-    id: '/api/public/hooks/whatsapp-monthly-summary',
-    path: '/api/public/hooks/whatsapp-monthly-summary',
+const ApiPublicHooksWhatsappDailySummaryRoute =
+  ApiPublicHooksWhatsappDailySummaryRouteImport.update({
+    id: '/api/public/hooks/whatsapp-daily-summary',
+    path: '/api/public/hooks/whatsapp-daily-summary',
     getParentRoute: () => rootRouteImport,
   } as any)
 const ApiPublicHooksWhatsappInactivityRoute =
@@ -208,10 +190,28 @@ const ApiPublicHooksWhatsappInactivityRoute =
     path: '/api/public/hooks/whatsapp-inactivity',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiPublicHooksWhatsappDailySummaryRoute =
-  ApiPublicHooksWhatsappDailySummaryRouteImport.update({
-    id: '/api/public/hooks/whatsapp-daily-summary',
-    path: '/api/public/hooks/whatsapp-daily-summary',
+const ApiPublicHooksWhatsappMonthlySummaryRoute =
+  ApiPublicHooksWhatsappMonthlySummaryRouteImport.update({
+    id: '/api/public/hooks/whatsapp-monthly-summary',
+    path: '/api/public/hooks/whatsapp-monthly-summary',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksWhatsappWeeklySummaryRoute =
+  ApiPublicHooksWhatsappWeeklySummaryRouteImport.update({
+    id: '/api/public/hooks/whatsapp-weekly-summary',
+    path: '/api/public/hooks/whatsapp-weekly-summary',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksWhatsappWeeklyTipRoute =
+  ApiPublicHooksWhatsappWeeklyTipRouteImport.update({
+    id: '/api/public/hooks/whatsapp-weekly-tip',
+    path: '/api/public/hooks/whatsapp-weekly-tip',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicPaymentsWebhookRoute =
+  ApiPublicPaymentsWebhookRouteImport.update({
+    id: '/api/public/payments/webhook',
+    path: '/api/public/payments/webhook',
     getParentRoute: () => rootRouteImport,
   } as any)
 
@@ -465,46 +465,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/privacy': {
-      id: '/privacy'
-      path: '/privacy'
-      fullPath: '/privacy'
-      preLoaderRoute: typeof PrivacyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/forgot-password': {
-      id: '/forgot-password'
-      path: '/forgot-password'
-      fullPath: '/forgot-password'
-      preLoaderRoute: typeof ForgotPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/account-delete': {
@@ -514,11 +479,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AccountDeleteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app/': {
@@ -528,60 +528,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/blog/guia-gestao-de-gastos': {
-      id: '/blog/guia-gestao-de-gastos'
-      path: '/blog/guia-gestao-de-gastos'
-      fullPath: '/blog/guia-gestao-de-gastos'
-      preLoaderRoute: typeof BlogGuiaGestaoDeGastosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app/whatsapp-test': {
-      id: '/app/whatsapp-test'
-      path: '/app/whatsapp-test'
-      fullPath: '/app/whatsapp-test'
-      preLoaderRoute: typeof AppWhatsappTestRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app/shop': {
-      id: '/app/shop'
-      path: '/app/shop'
-      fullPath: '/app/shop'
-      preLoaderRoute: typeof AppShopRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app/planos': {
-      id: '/app/planos'
-      path: '/app/planos'
-      fullPath: '/app/planos'
-      preLoaderRoute: typeof AppPlanosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app/orcamentos': {
-      id: '/app/orcamentos'
-      path: '/app/orcamentos'
-      fullPath: '/app/orcamentos'
-      preLoaderRoute: typeof AppOrcamentosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app/conectar-whatsapp': {
-      id: '/app/conectar-whatsapp'
-      path: '/app/conectar-whatsapp'
-      fullPath: '/app/conectar-whatsapp'
-      preLoaderRoute: typeof AppConectarWhatsappRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app/bancos': {
-      id: '/app/bancos'
-      path: '/app/bancos'
-      fullPath: '/app/bancos'
-      preLoaderRoute: typeof AppBancosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app/agendas': {
-      id: '/app/agendas'
-      path: '/app/agendas'
-      fullPath: '/app/agendas'
-      preLoaderRoute: typeof AppAgendasRouteImport
+    '/app/admin': {
+      id: '/app/admin'
+      path: '/app/admin'
+      fullPath: '/app/admin'
+      preLoaderRoute: typeof AppAdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app/agenda-mensagens': {
@@ -591,12 +542,103 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAgendaMensagensRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/app/admin': {
-      id: '/app/admin'
-      path: '/app/admin'
-      fullPath: '/app/admin'
-      preLoaderRoute: typeof AppAdminRouteImport
+    '/app/agendas': {
+      id: '/app/agendas'
+      path: '/app/agendas'
+      fullPath: '/app/agendas'
+      preLoaderRoute: typeof AppAgendasRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/app/bancos': {
+      id: '/app/bancos'
+      path: '/app/bancos'
+      fullPath: '/app/bancos'
+      preLoaderRoute: typeof AppBancosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/conectar-whatsapp': {
+      id: '/app/conectar-whatsapp'
+      path: '/app/conectar-whatsapp'
+      fullPath: '/app/conectar-whatsapp'
+      preLoaderRoute: typeof AppConectarWhatsappRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/orcamentos': {
+      id: '/app/orcamentos'
+      path: '/app/orcamentos'
+      fullPath: '/app/orcamentos'
+      preLoaderRoute: typeof AppOrcamentosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/planos': {
+      id: '/app/planos'
+      path: '/app/planos'
+      fullPath: '/app/planos'
+      preLoaderRoute: typeof AppPlanosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/shop': {
+      id: '/app/shop'
+      path: '/app/shop'
+      fullPath: '/app/shop'
+      preLoaderRoute: typeof AppShopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/whatsapp-test': {
+      id: '/app/whatsapp-test'
+      path: '/app/whatsapp-test'
+      fullPath: '/app/whatsapp-test'
+      preLoaderRoute: typeof AppWhatsappTestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/guia-gestao-de-gastos': {
+      id: '/blog/guia-gestao-de-gastos'
+      path: '/blog/guia-gestao-de-gastos'
+      fullPath: '/blog/guia-gestao-de-gastos'
+      preLoaderRoute: typeof BlogGuiaGestaoDeGastosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/play-rtdn': {
+      id: '/api/public/play-rtdn'
+      path: '/api/public/play-rtdn'
+      fullPath: '/api/public/play-rtdn'
+      preLoaderRoute: typeof ApiPublicPlayRtdnRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/pluggy-webhook': {
+      id: '/api/public/pluggy-webhook'
+      path: '/api/public/pluggy-webhook'
+      fullPath: '/api/public/pluggy-webhook'
+      preLoaderRoute: typeof ApiPublicPluggyWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/whatsapp': {
+      id: '/api/public/whatsapp'
+      path: '/api/public/whatsapp'
+      fullPath: '/api/public/whatsapp'
+      preLoaderRoute: typeof ApiPublicWhatsappRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/zapi': {
+      id: '/api/public/zapi'
+      path: '/api/public/zapi'
+      fullPath: '/api/public/zapi'
+      preLoaderRoute: typeof ApiPublicZapiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/admin/ofertas': {
+      id: '/app/admin/ofertas'
+      path: '/ofertas'
+      fullPath: '/app/admin/ofertas'
+      preLoaderRoute: typeof AppAdminOfertasRouteImport
+      parentRoute: typeof AppAdminRoute
+    }
+    '/app/planos/retorno': {
+      id: '/app/planos/retorno'
+      path: '/retorno'
+      fullPath: '/app/planos/retorno'
+      preLoaderRoute: typeof AppPlanosRetornoRouteImport
+      parentRoute: typeof AppPlanosRoute
     }
     '/app/recarga/': {
       id: '/app/recarga/'
@@ -612,74 +654,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRecargaConfiguracoesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/app/planos/retorno': {
-      id: '/app/planos/retorno'
-      path: '/retorno'
-      fullPath: '/app/planos/retorno'
-      preLoaderRoute: typeof AppPlanosRetornoRouteImport
-      parentRoute: typeof AppPlanosRoute
-    }
-    '/app/admin/ofertas': {
-      id: '/app/admin/ofertas'
-      path: '/ofertas'
-      fullPath: '/app/admin/ofertas'
-      preLoaderRoute: typeof AppAdminOfertasRouteImport
-      parentRoute: typeof AppAdminRoute
-    }
-    '/api/public/zapi': {
-      id: '/api/public/zapi'
-      path: '/api/public/zapi'
-      fullPath: '/api/public/zapi'
-      preLoaderRoute: typeof ApiPublicZapiRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/whatsapp': {
-      id: '/api/public/whatsapp'
-      path: '/api/public/whatsapp'
-      fullPath: '/api/public/whatsapp'
-      preLoaderRoute: typeof ApiPublicWhatsappRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/pluggy-webhook': {
-      id: '/api/public/pluggy-webhook'
-      path: '/api/public/pluggy-webhook'
-      fullPath: '/api/public/pluggy-webhook'
-      preLoaderRoute: typeof ApiPublicPluggyWebhookRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/play-rtdn': {
-      id: '/api/public/play-rtdn'
-      path: '/api/public/play-rtdn'
-      fullPath: '/api/public/play-rtdn'
-      preLoaderRoute: typeof ApiPublicPlayRtdnRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/payments/webhook': {
-      id: '/api/public/payments/webhook'
-      path: '/api/public/payments/webhook'
-      fullPath: '/api/public/payments/webhook'
-      preLoaderRoute: typeof ApiPublicPaymentsWebhookRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/hooks/whatsapp-weekly-tip': {
-      id: '/api/public/hooks/whatsapp-weekly-tip'
-      path: '/api/public/hooks/whatsapp-weekly-tip'
-      fullPath: '/api/public/hooks/whatsapp-weekly-tip'
-      preLoaderRoute: typeof ApiPublicHooksWhatsappWeeklyTipRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/hooks/whatsapp-weekly-summary': {
-      id: '/api/public/hooks/whatsapp-weekly-summary'
-      path: '/api/public/hooks/whatsapp-weekly-summary'
-      fullPath: '/api/public/hooks/whatsapp-weekly-summary'
-      preLoaderRoute: typeof ApiPublicHooksWhatsappWeeklySummaryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/hooks/whatsapp-monthly-summary': {
-      id: '/api/public/hooks/whatsapp-monthly-summary'
-      path: '/api/public/hooks/whatsapp-monthly-summary'
-      fullPath: '/api/public/hooks/whatsapp-monthly-summary'
-      preLoaderRoute: typeof ApiPublicHooksWhatsappMonthlySummaryRouteImport
+    '/api/public/hooks/whatsapp-daily-summary': {
+      id: '/api/public/hooks/whatsapp-daily-summary'
+      path: '/api/public/hooks/whatsapp-daily-summary'
+      fullPath: '/api/public/hooks/whatsapp-daily-summary'
+      preLoaderRoute: typeof ApiPublicHooksWhatsappDailySummaryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/hooks/whatsapp-inactivity': {
@@ -689,11 +668,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksWhatsappInactivityRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/hooks/whatsapp-daily-summary': {
-      id: '/api/public/hooks/whatsapp-daily-summary'
-      path: '/api/public/hooks/whatsapp-daily-summary'
-      fullPath: '/api/public/hooks/whatsapp-daily-summary'
-      preLoaderRoute: typeof ApiPublicHooksWhatsappDailySummaryRouteImport
+    '/api/public/hooks/whatsapp-monthly-summary': {
+      id: '/api/public/hooks/whatsapp-monthly-summary'
+      path: '/api/public/hooks/whatsapp-monthly-summary'
+      fullPath: '/api/public/hooks/whatsapp-monthly-summary'
+      preLoaderRoute: typeof ApiPublicHooksWhatsappMonthlySummaryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/whatsapp-weekly-summary': {
+      id: '/api/public/hooks/whatsapp-weekly-summary'
+      path: '/api/public/hooks/whatsapp-weekly-summary'
+      fullPath: '/api/public/hooks/whatsapp-weekly-summary'
+      preLoaderRoute: typeof ApiPublicHooksWhatsappWeeklySummaryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/whatsapp-weekly-tip': {
+      id: '/api/public/hooks/whatsapp-weekly-tip'
+      path: '/api/public/hooks/whatsapp-weekly-tip'
+      fullPath: '/api/public/hooks/whatsapp-weekly-tip'
+      preLoaderRoute: typeof ApiPublicHooksWhatsappWeeklyTipRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/payments/webhook': {
+      id: '/api/public/payments/webhook'
+      path: '/api/public/payments/webhook'
+      fullPath: '/api/public/payments/webhook'
+      preLoaderRoute: typeof ApiPublicPaymentsWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
