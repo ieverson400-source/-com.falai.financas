@@ -51,7 +51,8 @@ function AdminPanel() {
   const saveSettings = useServerFn(adminSaveSettings); const testN8nWebhook = useServerFn(adminTestN8nWebhook);
   const fetchPushAudience = useServerFn(getPushAudience); const sendPush = useServerFn(sendPushToAll);
   const [access, setAccess] = useState<"checking" | "allowed" | "denied">("checking");
-  const [section, setSection] = useState(() => window.location.hash.slice(1) || "overview");
+  const [section, setSection] = useState("overview");
+  useEffect(() => { setSection(window.location.hash.slice(1) || "overview"); }, []);
   const [dashboard, setDashboard] = useState<Dashboard | null>(null); const [notifications, setNotifications] = useState<Notifications | null>(null);
   const [settings, setSettings] = useState<SettingsData | null>(null); const [busy, setBusy] = useState(false); const [search, setSearch] = useState("");
   const [editingUser, setEditingUser] = useState<AdminUser | null>(null); const [editRole, setEditRole] = useState<"user" | "admin">("user");
