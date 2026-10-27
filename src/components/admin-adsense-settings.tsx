@@ -12,7 +12,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 
 type Settings = Awaited<ReturnType<typeof adminGetAdSenseSettings>>["settings"];
-type SaveInput = Parameters<typeof adminSaveAdSenseSettings>[0]["data"];
+type SaveInput = {
+  adFormat: "auto" | "rectangle" | "horizontal" | "vertical" | "fluid";
+  position: "SHOP_TOP" | "SHOP_MIDDLE" | "SHOP_OFFERS" | "SHOP_BOTTOM";
+};
 
 export function AdminAdSenseSettings() {
   const getSettings = useServerFn(adminGetAdSenseSettings);
