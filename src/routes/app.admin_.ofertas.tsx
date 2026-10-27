@@ -6,14 +6,16 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Eye, Loader2, Tags, Pencil, Trash2, Plus } from "lucide-react";
+import { ArrowLeft, Check, Pause, Eye, Loader2, Tags, Pencil, Trash2, Plus } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { offerStatus } from "@/lib/shop-offer-status";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { isCurrentUserAdmin } from "@/lib/admin.functions";
-import { adminDeleteOffer, adminListOffers, adminSaveOffer } from "@/lib/shop.functions";
+import { adminApproveOffer, adminDeleteOffer, adminListOffers, adminSaveOffer } from "@/lib/shop.functions";
 
-export const Route = createFileRoute("/app/admin/ofertas")({
+export const Route = createFileRoute("/app/admin_/ofertas")({
   component: AdminOffersPage,
   head: () => ({
     meta: [
@@ -38,6 +40,7 @@ type Kind = "highlight" | "offer" | "coupon";
 type Form = {
   id: string | null;
   kind: Kind;
+  category: string;
   brand: string;
   title: string;
   subtitle: string;
@@ -59,6 +62,7 @@ type Form = {
 const empty: Form = {
   id: null,
   kind: "offer",
+  category: "",
   brand: "",
   title: "",
   subtitle: "",
@@ -72,7 +76,7 @@ const empty: Form = {
   accent: "",
   sort_order: "0",
   card_size: "md",
-  is_active: true,
+  is_active: false,
   starts_at: "",
   ends_at: "",
 };
@@ -94,6 +98,7 @@ function AdminOffersPage() {
   const listOffers = useServerFn(adminListOffers);
   const saveOffer = useServerFn(adminSaveOffer);
   const deleteOffer = useServerFn(adminDeleteOffer);
+  const approveOffer = useServerFn(adminApproveOffer);
 
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [offers, setOffers] = useState<Offer[]>([]);
@@ -139,6 +144,7 @@ function AdminOffersPage() {
     setForm({
       id: o.id,
       kind: o.kind as Kind,
+      category: o.category ?? "",
       brand: o.brand ?? "",
       title: o.title,
       subtitle: o.subtitle ?? "",
@@ -169,6 +175,7 @@ function AdminOffersPage() {
         data: {
           id: form.id,
           kind: form.kind,
+          category: form.category.trim() || null,
           brand: form.brand.trim() || null,
           title: form.title.trim(),
           subtitle: form.subtitle.trim() || null,
@@ -215,13 +222,23 @@ function AdminOffersPage() {
     }
   };
 
+  const approve = async (offer: Offer) => {
+    setBusy(true);
+    try {
+      await approveOffer({ data: { id: offer.id, approved: !offer.is_active } });
+      toast.success(offer.is_active ? "Oferta pausada." : "Oferta aprovada.");
+      await load();
+    } catch { toast.error("Não foi possível alterar a aprovação."); }
+    finally { setBusy(false); }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Toaster richColors />
       <header className="sticky top-0 z-30 border-b bg-card/95 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3">
           <Button variant="ghost" size="icon" asChild aria-label="Voltar para a administração">
-            <Link to="/app/admin">
+            <Link to="/admin">
               <ArrowLeft className="size-5" />
             </Link>
           </Button>
@@ -312,6 +329,10 @@ function AdminOffersPage() {
                   <Input id="o-title" value={form.title} onChange={(e) => set("title", e.target.value)} />
                 </div>
                 <div className="sm:col-span-3">
+                  <label className="text-xs text-muted-foreground" htmlFor="o-category">Categoria</label>
+                  <Input id="o-category" maxLength={80} placeholder="Moda, Tecnologia, Casa…" value={form.category} onChange={(e) => set("category", e.target.value)} />
+                </div>
+                <div className="sm:col-span-3">
                   <label className="text-xs text-muted-foreground" htmlFor="o-sub">
                     Subtítulo
                   </label>
@@ -398,7 +419,7 @@ function AdminOffersPage() {
                 </div>
                 <div>
                   <label className="text-xs text-muted-foreground" htmlFor="o-end">
-                    Fim
+                    Data de validade
                   </label>
                   <Input
                     id="o-end"
@@ -425,13 +446,12 @@ function AdminOffersPage() {
                 </div>
                 <div className="flex items-end gap-2">
                   <label className="flex items-center gap-2 text-sm" htmlFor="o-active">
-                    <input
+                    <Switch
                       id="o-active"
-                      type="checkbox"
                       checked={form.is_active}
-                      onChange={(e) => set("is_active", e.target.checked)}
+                      onCheckedChange={(checked) => set("is_active", checked)}
                     />
-                    Ativa
+                    Aprovada para publicação
                   </label>
                 </div>
               </div>
@@ -466,6 +486,7 @@ function AdminOffersPage() {
                       <th className="p-3">Tipo</th>
                       <th className="p-3">Parceiro</th>
                       <th className="p-3">Título</th>
+                      <th className="p-3">Categoria</th>
                       <th className="p-3">Preço</th>
                       <th className="p-3">Parcelamento</th>
                       <th className="p-3">Cashback</th>
@@ -480,6 +501,7 @@ function AdminOffersPage() {
                         <td className="p-3">{kindLabel[o.kind as Kind] ?? o.kind}</td>
                         <td className="p-3">{o.brand ?? "—"}</td>
                         <td className="p-3">{o.title}</td>
+                        <td className="p-3">{o.category ?? "Sem categoria"}</td>
                         <td className="p-3">{o.price ?? "—"}</td>
                         <td className="p-3">{o.installments ?? "—"}</td>
                         <td className="p-3">{o.cashback ?? "—"}</td>
@@ -488,11 +510,14 @@ function AdminOffersPage() {
                         </td>
                         <td className="p-3">
                           <Badge variant={o.is_active ? "secondary" : "destructive"}>
-                            {o.is_active ? "Ativa" : "Inativa"}
+                            {offerStatus(o)}
                           </Badge>
                         </td>
                         <td className="p-3">
                           <div className="flex gap-1">
+                            <Button size="sm" variant="outline" disabled={busy} onClick={() => void approve(o)} aria-label={`${o.is_active ? "Pausar" : "Aprovar"} ${o.title}`}>
+                              {o.is_active ? <Pause className="size-4" /> : <Check className="size-4" />}{o.is_active ? "Pausar" : "Aprovar"}
+                            </Button>
                             <Button
                               size="icon"
                               variant="ghost"
