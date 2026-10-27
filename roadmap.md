@@ -1,4 +1,6 @@
 # Roadmap
+- [ ] IA Guardião Financeiro: apresentar auditoria e plano priorizado antes de alterar o app
+- [ ] IA Guardião Financeiro: aplicar correções aprovadas, validar isolamento entre usuários e adicionar auditoria/admin/IA em etapas
 - [x] Concluir Publicidade no Admin e validar cadastro, publicação no Shop e métricas
 - [ ] Publicar versão com push e orientar autorização no aparelho
 
