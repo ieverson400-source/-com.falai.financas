@@ -1,4 +1,6 @@
 # Roadmap
+- [ ] Concluir Publicidade no Admin e validar cadastro, publicação no Shop e métricas
+- [ ] Publicar versão com push e orientar autorização no aparelho
 
 - [x] Ampliar cadastro de ofertas com categoria, aprovação e validade; verificar preservação das ofertas atuais
 

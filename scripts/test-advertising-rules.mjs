@@ -1,0 +1,12 @@
+import assert from "node:assert/strict";
+import { advertisementSchema, isLiveAd, ctr } from "../src/lib/advertising-rules.ts";
+const now = Date.parse("2026-10-27T23:05:00Z");
+assert.equal(isLiveAd({ status: "pending", start_date: null, end_date: null }, now), false);
+assert.equal(isLiveAd({ status: "active", start_date: null, end_date: "2026-10-26T00:00:00Z" }, now), false);
+assert.equal(isLiveAd({ status: "active", start_date: "2026-10-28T00:00:00Z", end_date: null }, now), false);
+assert.equal(isLiveAd({ status: "active", start_date: null, end_date: null }, now), true);
+assert.equal(ctr(2, 10), 20); assert.equal(ctr(0, 0), 0);
+const base = { advertiser_id: "12345678-1234-4234-8234-123456789012", title: "Oferta", destination_url: "https://example.com", placement: "SHOP_OFFERS", start_date: null, end_date: null, status: "draft", is_sponsored: true, is_featured: false, priority: 0, sort_order: 0 };
+assert.equal(advertisementSchema.safeParse({ ...base, destination_url: "javascript:alert(1)" }).success, false);
+assert.equal(advertisementSchema.safeParse({ ...base, start_date: "2026-10-28T00:00:00Z", end_date: "2026-10-27T00:00:00Z" }).success, false);
+console.log("Advertising publication, validity, URL and CTR tests passed.");
