@@ -7,6 +7,7 @@ const items = [
   { hash: "overview", label: "Visão geral", icon: LayoutDashboard },
   { hash: "users", label: "Usuários", icon: Users },
   { hash: "offers", label: "Anúncios", icon: ShoppingBag },
+  { hash: "advertising", label: "Publicidade", icon: BarChart3 },
   { hash: "monetization", label: "AdSense", icon: BadgeDollarSign },
   { hash: "notifications", label: "Notificações", icon: Bell },
   { hash: "settings", label: "Configurações", icon: Settings },
