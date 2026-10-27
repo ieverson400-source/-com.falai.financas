@@ -1,5 +1,7 @@
 # Roadmap
 
+- [ ] Corrigir e verificar editor AdSense da opção Monetização no Admin
+
 - [x] Shop com ofertas reais (tabela shop_offers) em vez de exemplos fictícios
 - [x] Tela de administração de ofertas (/app/admin/ofertas) com filtro por período
 - [x] Requisições do webhook /api/public/pluggy-webhook listadas na administração
