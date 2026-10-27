@@ -1,0 +1,12 @@
+import assert from "node:assert/strict";
+import { pushSchema, isStalePushToken } from "../src/lib/push-rules.ts";
+const good = { title: "A".repeat(60), body: "B".repeat(180), link: "/app" };
+assert.equal(pushSchema.safeParse(good).success, true);
+assert.equal(pushSchema.safeParse({ ...good, title: "A".repeat(61) }).success, false);
+assert.equal(pushSchema.safeParse({ ...good, body: "B".repeat(181) }).success, false);
+assert.equal(pushSchema.safeParse({ ...good, title: " " }).success, false);
+assert.equal(pushSchema.safeParse({ ...good, body: " " }).success, false);
+assert.equal(pushSchema.safeParse({ ...good, link: "//evil.test" }).success, false);
+assert.equal(isStalePushToken("INVALID_ARGUMENT"), false);
+assert.equal(isStalePushToken("UNREGISTERED"), true);
+console.log("Push limits, links and stale-token tests passed.");

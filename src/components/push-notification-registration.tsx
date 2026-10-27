@@ -17,7 +17,14 @@ export function PushNotificationRegistration() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (!user || !("Notification" in window) || Notification.permission !== "default" || localStorage.getItem(PROMPT_KEY)) return;
+    if (!user) return;
+    const show = () => setOpen(true);
+    window.addEventListener("falai-enable-push", show);
+    return () => window.removeEventListener("falai-enable-push", show);
+  }, [user]);
+
+  useEffect(() => {
+    if (!user || !("Notification" in window) || Notification.permission !== "default" || localStorage.getItem(`${PROMPT_KEY}-${user.id}`)) return;
     const timer = window.setTimeout(() => setOpen(true), 5600);
     return () => window.clearTimeout(timer);
   }, [user]);
@@ -28,19 +35,19 @@ export function PushNotificationRegistration() {
       const result = await enablePush();
       if (result.status === "registered") {
         await saveToken({ data: { token: result.token, platform: "web" } });
-        localStorage.setItem(PROMPT_KEY, "registered");
+        localStorage.setItem(`${PROMPT_KEY}-${user?.id}`, "registered");
         setOpen(false);
         toast.success("Notificações ativadas neste dispositivo.");
       } else if (result.status === "open-in-new-tab") {
         toast.info("Abra o aplicativo em uma nova aba para permitir notificações.");
       } else if (result.status === "denied") {
-        localStorage.setItem(PROMPT_KEY, "denied");
+        localStorage.setItem(`${PROMPT_KEY}-${user?.id}`, "denied");
         setOpen(false);
         toast.error("Permissão recusada. Você pode liberá-la nas configurações do navegador.");
       } else if (result.status === "not-configured") {
         toast.error("O recebimento de notificações ainda não está configurado.");
       } else {
-        localStorage.setItem(PROMPT_KEY, "unsupported");
+        localStorage.setItem(`${PROMPT_KEY}-${user?.id}`, "unsupported");
         setOpen(false);
         toast.error("Este dispositivo não oferece suporte a notificações push.");
       }
@@ -52,7 +59,7 @@ export function PushNotificationRegistration() {
   };
 
   const dismiss = () => {
-    localStorage.setItem(PROMPT_KEY, "later");
+    localStorage.setItem(`${PROMPT_KEY}-${user?.id}`, "later");
     setOpen(false);
   };
 
