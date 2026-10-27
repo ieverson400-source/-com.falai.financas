@@ -884,6 +884,7 @@ export type Database = {
           brand: string | null
           card_size: string
           cashback: string | null
+          category: string | null
           created_at: string
           created_by: string | null
           cta_label: string | null
@@ -907,6 +908,7 @@ export type Database = {
           brand?: string | null
           card_size?: string
           cashback?: string | null
+          category?: string | null
           created_at?: string
           created_by?: string | null
           cta_label?: string | null
@@ -930,6 +932,7 @@ export type Database = {
           brand?: string | null
           card_size?: string
           cashback?: string | null
+          category?: string | null
           created_at?: string
           created_by?: string | null
           cta_label?: string | null
