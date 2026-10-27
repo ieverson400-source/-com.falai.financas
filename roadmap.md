@@ -1,5 +1,7 @@
 # Roadmap
 
+- [ ] Ampliar cadastro de ofertas com categoria, aprovação e validade; verificar preservação das ofertas atuais
+
 - [x] Corrigir e verificar editor AdSense da opção Monetização no Admin
 
 - [x] Shop com ofertas reais (tabela shop_offers) em vez de exemplos fictícios

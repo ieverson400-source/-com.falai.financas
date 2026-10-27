@@ -6,7 +6,7 @@ import { assertAdmin } from "@/lib/assert-admin";
 import type { Database } from "@/integrations/supabase/types";
 
 const SELECT =
-  "id, kind, brand, title, subtitle, price, installments, cashback, badges, cta_label, link_url, image_url, accent, sort_order, is_active, card_size, starts_at, ends_at, created_at";
+  "id, kind, category, brand, title, subtitle, price, installments, cashback, badges, cta_label, link_url, image_url, accent, sort_order, is_active, card_size, starts_at, ends_at, created_at";
 
 const ADSENSE_SELECT =
   "publisher_id,ad_slot_id,ad_format,position,max_width,margin_top,margin_bottom,test_mode";
@@ -14,6 +14,7 @@ const ADSENSE_SELECT =
 const offerSchema = z.object({
   id: z.string().uuid().optional().nullable(),
   kind: z.enum(["highlight", "offer", "coupon"]),
+  category: z.string().trim().max(80).optional().nullable(),
   brand: z.string().max(80).optional().nullable(),
   title: z.string().min(1).max(160),
   subtitle: z.string().max(240).optional().nullable(),
@@ -98,6 +99,7 @@ export const adminSaveOffer = createServerFn({ method: "POST" })
     await assertAdmin(context.supabase, context.userId);
     const row = {
       kind: data.kind,
+      ...(data.category !== undefined ? { category: data.category || null } : {}),
       brand: data.brand || null,
       title: data.title,
       subtitle: data.subtitle || null,
@@ -139,6 +141,16 @@ export const adminDeleteOffer = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     await assertAdmin(context.supabase, context.userId);
     const { error } = await context.supabase.from("shop_offers").delete().eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const adminApproveOffer = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) => z.object({ id: z.string().uuid(), approved: z.boolean() }).parse(input))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context.supabase, context.userId);
+    const { error } = await context.supabase.from("shop_offers").update({ is_active: data.approved }).eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
