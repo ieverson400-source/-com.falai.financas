@@ -15,7 +15,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { isCurrentUserAdmin } from "@/lib/admin.functions";
 import { adminApproveOffer, adminDeleteOffer, adminListOffers, adminSaveOffer } from "@/lib/shop.functions";
 
-export const Route = createFileRoute("/app/admin/ofertas")({
+export const Route = createFileRoute("/app/admin_/ofertas")({
   component: AdminOffersPage,
   head: () => ({
     meta: [
