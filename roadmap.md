@@ -1,4 +1,5 @@
 # Roadmap
+- [x] Remover toda a área visual de assinatura e redirecionar páginas antigas, preservando cobranças e benefícios existentes; perfil autenticado e celular verificados
 - [x] Limpeza pré-exportação: plano aprovado; chat/WhatsApp removidos, push/n8n preservados sem histórico
 - [x] Remover Pluggy/Open Finance e recargas do código, limpar menus e rotas antigas; testes e compilação OK
 - [x] Remover os cinco agendamentos de WhatsApp e preparar script scripts/cleanup-retired-tables.sql
