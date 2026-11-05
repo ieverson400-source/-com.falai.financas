@@ -204,6 +204,15 @@ export async function persistVerifiedSubscription(
   v: VerifiedSubscription,
 ): Promise<void> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  // Uma compra só pode pertencer a um usuário: impede reaproveitar o token de outra conta.
+  const { data: owner } = await supabaseAdmin
+    .from("subscriptions")
+    .select("user_id")
+    .eq("purchase_token", v.purchaseToken)
+    .neq("user_id", userId)
+    .limit(1)
+    .maybeSingle();
+  if (owner) throw new Error("Esta compra já está vinculada a outra conta.");
   const { error } = await supabaseAdmin.from("subscriptions").upsert(
     [
       {
