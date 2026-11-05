@@ -28,11 +28,8 @@ export const Route = createFileRoute("/api/public/hooks/whatsapp-weekly-summary"
     handlers: {
       OPTIONS: async () => new Response(null, { status: 204, headers: corsHeaders }),
       POST: async ({ request }) => {
-        const expected = process.env.SUPABASE_PUBLISHABLE_KEY ?? process.env.SUPABASE_ANON_KEY;
-        const provided =
-          request.headers.get("apikey") ??
-          request.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
-        if (!expected || provided !== expected) return json({ error: "Unauthorized" }, 401);
+        const { isAuthorizedCron } = await import("@/lib/cron-auth.server");
+        if (!(await isAuthorizedCron(request))) return json({ error: "Unauthorized" }, 401);
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const { sendWhatsAppText } = await import("@/lib/whatsapp-notify.server");
