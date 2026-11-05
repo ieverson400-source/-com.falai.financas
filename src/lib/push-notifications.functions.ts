@@ -104,22 +104,5 @@ export const sendPushToAll = createServerFn({ method: "POST" })
     }
 
     if (invalidIds.length) await supabaseAdmin.from("push_tokens").delete().in("id", invalidIds);
-    const now = new Date().toISOString();
-    const { error: logError } = await supabaseAdmin.from("notification_logs").insert({
-      notification_type: "push_broadcast",
-      provider: "firebase",
-      recipient: "all",
-      status: failed === 0 ? "success" : sent > 0 ? "partial" : "error",
-      title: data.title,
-      body: data.body,
-      message_content: data.body,
-      sent_by: context.userId,
-      total_sent: sent,
-      total_failed: failed,
-      sent_at: sent > 0 ? now : null,
-      error_message: failed > 0 ? `${failed} dispositivo(s) não receberam.` : null,
-      metadata: { link: data.link || "/app", target_users: new Set(rows.map((row) => row.user_id)).size },
-    });
-    if (logError) console.error("Failed to save push notification log", logError.message);
     return { sent, failed, users: new Set(rows.map((row) => row.user_id)).size };
   });
