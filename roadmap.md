@@ -1,5 +1,7 @@
 # Roadmap
 - [x] IA Guardião Financeiro: apresentar auditoria e plano priorizado antes de alterar o app
+- [x] Segurança P0: resumos automáticos exigem segredo privado; webhook WhatsApp/Z-API exige token
+- [ ] Segurança P0 restante: Pluggy (token obrigatório + vínculo de conexão), Google Play e Stripe
 - [ ] IA Guardião Financeiro: aplicar correções aprovadas, validar isolamento entre usuários e adicionar auditoria/admin/IA em etapas
 - [x] Concluir Publicidade no Admin e validar cadastro, publicação no Shop e métricas
 - [ ] Publicar versão com push e orientar autorização no aparelho
