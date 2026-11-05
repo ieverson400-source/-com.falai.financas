@@ -1,8 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { Button } from "@/components/ui/button";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
-  component: LandingPage,
+  beforeLoad: () => {
+    throw redirect({ to: "/auth", replace: true });
+  },
   head: () => ({
     meta: [
       { title: "Falaí Finanças — Finanças simples" },
@@ -49,25 +50,3 @@ export const Route = createFileRoute("/")({
   }),
 });
 
-function LandingPage() {
-  return (
-    <main className="flex min-h-screen items-center justify-center bg-background px-6 py-12">
-      <div className="flex w-full max-w-lg flex-col items-center text-center animate-rise">
-        <img
-          src="/icon-192.png"
-          alt=""
-          width={96}
-          height={96}
-          className="mb-6 h-24 w-24 rounded-3xl shadow-elevated"
-        />
-        <p className="font-display text-xl font-bold text-primary">Falaifinancas</p>
-        <h1 className="mt-5 max-w-md font-display text-4xl font-bold leading-tight text-foreground sm:text-5xl">
-          Gerencie suas finanças de forma simples
-        </h1>
-        <Button asChild size="lg" className="mt-9 h-12 px-7 text-base shadow-soft press">
-          <Link to="/auth">Acessar Minha Conta</Link>
-        </Button>
-      </div>
-    </main>
-  );
-}

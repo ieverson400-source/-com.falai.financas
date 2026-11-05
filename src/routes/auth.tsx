@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
+import { ACCOUNT_SEEN_KEY, authEntryMode } from "@/lib/auth-entry";
 
 export const Route = createFileRoute("/auth")({
   component: AuthPage,
@@ -28,6 +29,7 @@ export const Route = createFileRoute("/auth")({
 });
 
 function AuthPage() {
+  const navigate = Route.useNavigate();
   const [mode, setMode] = useState<"signin" | "signup">("signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -35,6 +37,10 @@ function AuthPage() {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [registrationsEnabled, setRegistrationsEnabled] = useState(true);
+
+  const rememberAccount = () => {
+    try { localStorage.setItem(ACCOUNT_SEEN_KEY, "true"); } catch { /* Storage may be disabled. */ }
+  };
 
   const handleGoogle = async () => {
     setGoogleLoading(true);
@@ -44,7 +50,8 @@ function AuthPage() {
       });
       if (result.error) throw result.error;
       if (result.redirected) return;
-      window.location.href = "/app";
+      rememberAccount();
+      await navigate({ to: "/app", replace: true });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Erro ao entrar com Google");
       setGoogleLoading(false);
@@ -53,6 +60,7 @@ function AuthPage() {
 
 
   useEffect(() => {
+    try { setMode(authEntryMode(localStorage.getItem(ACCOUNT_SEEN_KEY))); } catch { /* Default to registration. */ }
     // Mensagem amigável quando o provedor retorna erro (ex.: state inválido)
     const params = new URLSearchParams(window.location.search);
     const oauthError = params.get("error_description") ?? params.get("error");
@@ -62,7 +70,10 @@ function AuthPage() {
     }
 
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_IN" && session) window.location.replace("/app");
+      if (event === "SIGNED_IN" && session) {
+        rememberAccount();
+        void navigate({ to: "/app", replace: true });
+      }
     });
 
     void supabase
@@ -73,11 +84,14 @@ function AuthPage() {
       .then(({ data }) => setRegistrationsEnabled(data?.registrations_enabled ?? true));
 
     supabase.auth.getUser().then(({ data }) => {
-      if (data.user) window.location.replace("/app");
+      if (data.user) {
+        rememberAccount();
+        void navigate({ to: "/app", replace: true });
+      }
     });
 
     return () => authListener.subscription.unsubscribe();
-  }, []);
+  }, [navigate]);
 
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -97,10 +111,11 @@ function AuthPage() {
           },
         });
         if (error) throw error;
+        rememberAccount();
 
         if (signUpData.session) {
           toast.success("Conta criada! Entrando...");
-          window.location.href = "/app";
+          await navigate({ to: "/app", replace: true });
           return;
         }
 
@@ -111,7 +126,8 @@ function AuthPage() {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
 
-        window.location.href = "/app";
+        rememberAccount();
+        await navigate({ to: "/app", replace: true });
       }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Erro");
@@ -215,13 +231,15 @@ function AuthPage() {
           </div>
         )}
 
-        <button
+        <Button
+          type="button"
+          variant="link"
           onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
           disabled={mode === "signin" && !registrationsEnabled}
           className="mt-4 text-sm text-primary hover:underline w-full text-center min-h-11"
         >
           {mode === "signin" ? "Não tem conta? Criar uma" : "Já tem conta? Entrar"}
-        </button>
+        </Button>
       </Card>
     </main>
   );
