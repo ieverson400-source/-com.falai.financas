@@ -166,7 +166,6 @@ export const Route = createFileRoute("/api/public/play-rtdn")({
         }
 
         // Mesmo no caminho manual, se houver purchase_token, revalida no Google.
-        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
         // Caminho manual só aceita compras confirmadas pelo Google; nunca grava plano/status informados.
         if (!parsed.data.purchase_token) {
