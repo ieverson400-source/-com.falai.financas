@@ -9,7 +9,14 @@ export const Route = createFileRoute("/app/planos/retorno")({
   }),
   component: CheckoutReturn,
   head: () => ({
-    meta: [{ title: "Assinatura confirmada — Falaí Finanças" }],
+    meta: [
+      { title: "Assinatura confirmada — Falaí Finanças" },
+      { name: "description", content: "Retorno do pagamento da sua assinatura Falaí Finanças." },
+      { property: "og:title", content: "Assinatura confirmada — Falaí Finanças" },
+      { property: "og:description", content: "Acompanhe o retorno do pagamento da sua assinatura." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
   }),
 });
 

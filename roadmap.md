@@ -1,10 +1,13 @@
 # Roadmap
-- [ ] Limpeza pré-exportação: apresentar plano para aprovação (chat e WhatsApp removidos; push/n8n preservados sem histórico)
-- [ ] Após aprovação: remover Pluggy/Open Finance e recargas, limpar rotas/dependências, preparar exclusões e validar erros
+- [x] Limpeza pré-exportação: plano aprovado; chat/WhatsApp removidos, push/n8n preservados sem histórico
+- [x] Remover Pluggy/Open Finance e recargas do código, limpar menus e rotas antigas; testes e compilação OK
+- [x] Remover os cinco agendamentos de WhatsApp e preparar script scripts/cleanup-retired-tables.sql
+- [ ] Confirmar publicação compatível antes da exclusão permanente das tabelas e da função chat-assistant
+- [ ] Aplicar exclusão definitiva: aguarda permissão de migrações incompatíveis e publicação confirmada
 - [x] IA Guardião Financeiro: apresentar auditoria e plano priorizado antes de alterar o app
 - [x] Segurança P0: resumos automáticos exigem segredo privado; webhook WhatsApp/Z-API exige token
 - [x] Segurança P0: Google Play e Stripe vinculados só à conta comprovada
-- [ ] Segurança P0: Pluggy (aguarda token configurado no painel da Pluggy)
+- [x] Segurança P0 Pluggy substituída por retirada integral da integração no código
 - [ ] IA Guardião Financeiro: aplicar correções aprovadas, validar isolamento entre usuários e adicionar auditoria/admin/IA em etapas
 - [x] Concluir Publicidade no Admin e validar cadastro, publicação no Shop e métricas
 - [ ] Publicar versão com push e orientar autorização no aparelho
@@ -30,4 +33,4 @@
 - [x] Admin: monetização, empresas, anúncios e métricas
 - [x] Backend: anunciantes, anúncios, eventos, RLS e limitação por sessão
 - [x] Validar Shop/Admin em mobile, console e build; permissões admin verificadas no fluxo autenticado
-- [ ] Notificação push: confirmar entrega real e histórico após autorização de um aparelho (nenhum token registrado)
+- [ ] Notificação push: confirmar entrega real após autorização de um aparelho; histórico removido por escolha do usuário

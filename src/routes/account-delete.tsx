@@ -15,6 +15,9 @@ export const Route = createFileRoute("/account-delete")({
       },
       { property: "og:title", content: "Eliminar conta — Falaí Finanças" },
       { property: "og:url", content: "https://falai-finan-as.lovable.app/account-delete" },
+      { property: "og:description", content: "Solicite a eliminação da sua conta e dados." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
     links: [
       { rel: "canonical", href: "https://falai-finan-as.lovable.app/account-delete" },

@@ -15,6 +15,13 @@
       "when": 1793837631207,
       "tag": "0001_internal_cron_secret",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793839875740,
+      "tag": "0002_disable_retired_whatsapp_schedules",
+      "breakpoints": true
     }
   ]
 }
