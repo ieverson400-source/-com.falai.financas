@@ -16,7 +16,7 @@ export const advertisementSchema = z.object({
   description: z.string().max(2000).nullable().optional(), image_url: optionalUrl, logo_url: optionalUrl,
   destination_url: webUrl, category: z.string().max(80).nullable().optional(), offer_text: z.string().max(120).nullable().optional(),
   badge_text: z.string().max(160).nullable().optional(), placement: z.enum(placements),
-  start_date: z.string().datetime().nullable(), end_date: z.string().datetime().nullable(), status: z.enum(adStatuses),
+  start_date: z.string().datetime({ offset: true }).nullable(), end_date: z.string().datetime({ offset: true }).nullable(), status: z.enum(adStatuses),
   is_sponsored: z.boolean(), is_featured: z.boolean(), priority: z.number().int().min(0).max(999), sort_order: z.number().int().min(0).max(999),
 }).refine((a) => !a.start_date || !a.end_date || a.end_date >= a.start_date, { message: "A validade deve ser posterior ao início.", path: ["end_date"] });
 export function isLiveAd(ad: { status: string; start_date: string | null; end_date: string | null }, now = Date.now()) {
