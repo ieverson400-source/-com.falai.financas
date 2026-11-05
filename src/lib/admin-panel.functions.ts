@@ -42,14 +42,15 @@ export const adminDashboardData = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { supabaseAdmin } = await authorizedAdmin(context);
-    const [{ data: authUsers }, profilesRes, rolesRes, expensesRes, offersRes] = await Promise.all([
+    const [authRes, profilesRes, rolesRes, expensesRes, offersRes] = await Promise.all([
       supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 1000 }),
-      supabaseAdmin.from("profiles").select("user_id,display_name,whatsapp_phone,created_at,is_active,blocked_reason"),
+      supabaseAdmin.from("profiles").select("user_id,display_name,created_at,is_active,blocked_reason"),
       supabaseAdmin.from("user_roles").select("user_id,role"),
       supabaseAdmin.from("expenses").select("user_id,amount"),
       supabaseAdmin.from("shop_offers").select("id,is_active"),
     ]);
-    const usersRaw = authUsers?.users ?? [];
+    for (const result of [authRes, profilesRes, rolesRes, expensesRes, offersRes]) { if (result.error) throw result.error; }
+    const usersRaw = authRes.data?.users ?? [];
     const profiles = profilesRes.data ?? [];
     const roles = rolesRes.data ?? [];
     const balances = new Map<string, number>();
@@ -60,7 +61,6 @@ export const adminDashboardData = createServerFn({ method: "GET" })
     const users = usersRaw.map((user) => ({
       id: user.id, email: user.email ?? null, createdAt: user.created_at,
       lastSignInAt: user.last_sign_in_at ?? null, name: profileMap.get(user.id)?.display_name ?? null,
-      phone: profileMap.get(user.id)?.whatsapp_phone ?? null,
       isActive: profileMap.get(user.id)?.is_active ?? true,
       blockedReason: profileMap.get(user.id)?.blocked_reason ?? null,
       role: roleMap.get(user.id) ?? "user", expenseTotal: balances.get(user.id) ?? 0,
@@ -113,7 +113,7 @@ export const adminUserHistory = createServerFn({ method: "POST" })
 export const adminTestN8nWebhook = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { supabaseAdmin } = await authorizedAdmin(context);
+    await assertAdmin(context.supabase, context.userId);
     const { data: identity, error: identityError } = await context.supabase.auth.getUser();
     const email = identity.user?.email;
     if (identityError || !email) throw new Error("Não foi possível confirmar o e-mail do usuário.");

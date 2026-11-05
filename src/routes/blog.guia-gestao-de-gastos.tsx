@@ -15,6 +15,7 @@ export const Route = createFileRoute("/blog/guia-gestao-de-gastos")({
         content:
           "Pare de digitar despesas em planilhas. Aprenda a fazer gestão de gastos automatizada usando voz, fotos de recibos e IA.",
       },
+      { name: "twitter:card", content: "summary" },
       { property: "og:type", content: "article" },
       { name: "twitter:title", content: "Guia de gestão de gastos eficiente" },
       {
@@ -94,7 +95,7 @@ function GuiaGestaoGastos() {
             Se anotar uma despesa demora mais de 5 segundos, você vai parar de fazer.
             Por isso a tendência moderna é registrar por <strong>voz</strong> ("anota
             25 reais de almoço hoje"), por <strong>foto do recibo</strong> ou por uma
-            mensagem rápida no WhatsApp. A IA cuida do resto: extrai valor, data e
+            registro manual no app. A IA nos registros por voz e foto extrai valor, data e
             categoria.
           </p>
 
@@ -105,13 +106,8 @@ function GuiaGestaoGastos() {
             Você passa a revisar categorias em vez de digitá-las.
           </p>
 
-          <h3 className="text-xl font-semibold mt-6">3. Conexão com o banco</h3>
-          <p>
-            Conectar suas contas via Open Finance importa transações automaticamente —
-            cartão de crédito, débito, Pix. Você deixa de "lembrar" e passa a
-            <em> revisar</em> o que já foi capturado. É a diferença entre contabilidade
-            reativa e proativa.
-          </p>
+          <h3 className="text-xl font-semibold mt-6">3. Registro consistente</h3>
+          <p>Importe suas planilhas e registre as despesas do dia para manter seus relatórios atualizados.</p>
 
           <h3 className="text-xl font-semibold mt-6">4. Revisão semanal de 5 minutos</h3>
           <p>
@@ -124,7 +120,7 @@ function GuiaGestaoGastos() {
           <h2 className="text-2xl font-semibold">Passo a passo para começar hoje</h2>
           <ol className="list-decimal pl-6 space-y-2">
             <li>Escolha uma ferramenta que aceite voz, foto ou mensagem.</li>
-            <li>Conecte seu banco principal (Open Finance) para puxar histórico.</li>
+            <li>Importe uma planilha ou registre suas despesas iniciais.</li>
             <li>
               Registre tudo por 7 dias — sem julgar, só capturando. Você precisa de
               dados antes de cortar nada.
@@ -161,9 +157,8 @@ function GuiaGestaoGastos() {
           <h2 className="text-2xl font-semibold">Como o Falaí Finanças automatiza tudo isso</h2>
           <p>
             O Falaí Finanças foi feito para gente que já tentou (e desistiu de)
-            planilhas. Você fala, manda foto do recibo ou escreve no WhatsApp — a IA
+            planilhas. Você fala ou manda foto do recibo — a IA
             categoriza, lança no relatório e mostra para onde seu dinheiro está indo.
-            Conectado ao seu banco via Open Finance, ele garante que nada escapa.
           </p>
 
           <div className="my-8 rounded-xl border border-border bg-muted/30 p-6">
@@ -199,11 +194,6 @@ function GuiaGestaoGastos() {
             segundos.
           </p>
 
-          <h3 className="text-lg font-semibold mt-4">É seguro conectar meu banco?</h3>
-          <p>
-            O Open Finance é regulamentado pelo Banco Central. O acesso é apenas de
-            leitura — o app vê transações, mas não pode movimentar dinheiro.
-          </p>
         </section>
 
         <footer className="mt-12 border-t border-border pt-6 text-sm text-muted-foreground">
