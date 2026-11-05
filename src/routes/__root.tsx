@@ -53,8 +53,6 @@ export const Route = createRootRoute({
       { name: "twitter:site", content: "@Lovable" },
       { name: "twitter:title", content: "Falaí Finanças" },
       { name: "twitter:description", content: "Registre gastos por voz, foto ou texto. A IA categoriza e gera relatórios das suas finanças em segundos." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/5b55cd14-b652-409a-b3fb-d257ac495cb1" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/5b55cd14-b652-409a-b3fb-d257ac495cb1" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
