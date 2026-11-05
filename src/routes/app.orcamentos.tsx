@@ -18,7 +18,11 @@ export const Route = createFileRoute("/app/orcamentos")({
   head: () => ({
     meta: [
       { title: "Orçamentos por categoria — Falaí Finanças" },
-      { name: "description", content: "Defina limites mensais por categoria e receba alertas no WhatsApp quando estiver próximo de estourar." },
+      { property: "og:title", content: "Orçamentos por categoria — Falaí Finanças" },
+      { property: "og:description", content: "Acompanhe limites e gastos por categoria." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+      { name: "description", content: "Defina limites mensais e acompanhe seus gastos por categoria." },
     ],
   }),
 });
@@ -160,7 +164,7 @@ function OrcamentosPage() {
           <div className="flex-1">
             <h1 className="font-semibold">Orçamentos por categoria</h1>
             <p className="text-xs text-muted-foreground">
-              Limites mensais — alerta no WhatsApp em 80% e 100%
+              Limites mensais por categoria
             </p>
           </div>
         </div>

@@ -10,7 +10,6 @@ import {
   cancelDevSubscription,
 } from "@/lib/subscription.functions";
 import { verifyMyPlayPurchase } from "@/lib/play-billing.functions";
-import { listBankData } from "@/lib/pluggy.functions";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { AudioRecorder } from "@/components/audio-recorder";
@@ -21,11 +20,7 @@ import { ImportSpreadsheetButton } from "@/components/import-spreadsheet-button"
 
 
 
-import { WhatsAppDiagnosticsCard } from "@/components/whatsapp-diagnostics-card";
-import { WhatsAppInboxCard, type WhatsAppInboxItem } from "@/components/whatsapp-inbox-card";
 import { Toaster } from "@/components/ui/sonner";
-import { ChatBot } from "@/components/chat-bot";
-import { NotificationsButton } from "@/components/notifications-button";
 import { ProfileEditDialog } from "@/components/profile-edit-dialog";
 import { GoalHighlight } from "@/components/goal-highlight";
 import { resolveAvatarUrl } from "@/lib/avatar-url";
@@ -41,7 +36,7 @@ import { ptBR } from "date-fns/locale";
 
 import { BottomNav, type NavTabKey } from "@/components/bottom-nav";
 
-const validTabs: NavTabKey[] = ["inicio", "contas", "consorcio", "shop", "relatorios", "perfil"];
+const validTabs: NavTabKey[] = ["inicio", "consorcio", "shop", "relatorios", "perfil"];
 
 export const Route = createFileRoute("/app/")({
   component: AppDashboard,
@@ -52,9 +47,11 @@ export const Route = createFileRoute("/app/")({
   head: () => ({
     meta: [
       { title: "Dashboard — Falaí Finanças" },
-      { name: "description", content: "Painel das suas finanças no Falaí: gastos do mês, contas conectadas, fluxo de caixa e relatórios organizados por IA." },
+      { name: "description", content: "Painel das suas finanças no Falaí: gastos do mês, fluxo de caixa e relatórios organizados por IA." },
       { property: "og:title", content: "Dashboard — Falaí Finanças" },
-      { property: "og:description", content: "Acompanhe seus gastos, contas e fluxo de caixa em um único painel organizado por IA." },
+      { property: "og:description", content: "Acompanhe seus gastos e fluxo de caixa em um único painel organizado por IA." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { property: "og:url", content: "https://falai-finan-as.lovable.app/app" },
     ],
     links: [
@@ -81,18 +78,14 @@ function AppDashboard() {
   
   const navigate = useNavigate();
   const [expenses, setExpenses] = useState<Expense[]>([]);
-  const [whatsAppPhone, setWhatsAppPhone] = useState<string | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [accessActive, setAccessActive] = useState(true);
   const [maintenanceMode, setMaintenanceMode] = useState(false);
   const [homeBanner, setHomeBanner] = useState<string | null>(null);
-  const [whatsAppInbox, setWhatsAppInbox] = useState<WhatsAppInboxItem[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const { tab: initialTab } = Route.useSearch();
   const [activeTab, setActiveTab] = useState<TabKey>(initialTab ?? "inicio");
   const [isAdmin, setIsAdmin] = useState(false);
-  const [bankAccounts, setBankAccounts] = useState<Array<{ id: string; name: string | null; type: string | null; number: string | null; balance: number | null; institution: string | null }>>([]);
-  const fetchBankData = useServerFn(listBankData);
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth" });
@@ -108,55 +101,31 @@ function AppDashboard() {
   const load = useCallback(async () => {
     if (!user) return;
     setRefreshing(true);
-    const [expensesRes, profileRes, inboxRes, settingsRes] = await Promise.all([
+    const [expensesRes, profileRes, settingsRes] = await Promise.all([
       supabase
         .from("expenses")
         .select("*")
         .order("expense_date", { ascending: false })
         .order("created_at", { ascending: false }),
-      supabase.from("profiles").select("whatsapp_phone, avatar_url, is_active").eq("user_id", user.id).maybeSingle(),
-      supabase
-        .from("whatsapp_inbox")
-        .select("id, from_phone, transcript, processing_status, error_message, created_at")
-        .order("created_at", { ascending: false })
-        .limit(8),
+      supabase.from("profiles").select("avatar_url, is_active").eq("user_id", user.id).maybeSingle(),
       supabase.from("app_settings").select("maintenance_mode, home_banner_text").eq("setting_key", "global").maybeSingle(),
     ]);
     setRefreshing(false);
-    if (expensesRes.error || profileRes.error || inboxRes.error) {
+    if (expensesRes.error || profileRes.error) {
       toast.error(
         expensesRes.error?.message ||
           profileRes.error?.message ||
-          inboxRes.error?.message ||
           "Falha ao carregar dados",
       );
       return;
     }
     setExpenses((expensesRes.data ?? []) as Expense[]);
-    setWhatsAppPhone(profileRes.data?.whatsapp_phone ?? null);
     const storedAvatar = profileRes.data?.avatar_url ?? user.user_metadata?.avatar_path ?? user.user_metadata?.avatar_url ?? null;
     setAvatarUrl(await resolveAvatarUrl(storedAvatar));
     setAccessActive(profileRes.data?.is_active ?? true);
     setMaintenanceMode(settingsRes.data?.maintenance_mode ?? false);
     setHomeBanner(settingsRes.data?.home_banner_text ?? null);
-    setWhatsAppInbox((inboxRes.data ?? []) as WhatsAppInboxItem[]);
-    try {
-      const bank = await fetchBankData();
-      const itemsById = new Map((bank.items as Array<{ id: string; institution_name: string | null }>).map((i) => [i.id, i.institution_name]));
-      setBankAccounts(
-        (bank.accounts as Array<{ id: string; name: string | null; type: string | null; number: string | null; balance: number | null; item_id: string }>).map((a) => ({
-          id: a.id,
-          name: a.name,
-          type: a.type,
-          number: a.number,
-          balance: a.balance,
-          institution: itemsById.get(a.item_id) ?? null,
-        })),
-      );
-    } catch {
-      setBankAccounts([]);
-    }
-  }, [user, fetchBankData]);
+  }, [user]);
 
   useEffect(() => {
     if (user) load();
@@ -200,9 +169,6 @@ function AppDashboard() {
   const monthExpenses = expenses.filter((e) => parseISO(e.expense_date) >= monthStart);
   const totalMonth = monthExpenses.reduce((s, e) => s + Number(e.amount), 0);
   const totalAll = expenses.reduce((s, e) => s + Number(e.amount), 0);
-  // Saldo disponível real: soma dos saldos das contas conectadas (Open Finance)
-  const saldoDisponivel = bankAccounts.reduce((s, a) => s + Number(a.balance ?? 0), 0);
-  const hasBankData = bankAccounts.length > 0;
   const primeiroNome = (
     (user.user_metadata?.display_name as string | undefined) ||
     user.email?.split("@")[0] ||
@@ -213,7 +179,6 @@ function AppDashboard() {
   return (
     <div className="min-h-screen bg-background">
       <Toaster richColors />
-      <ChatBot />
 
       <header className="border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 sticky top-0 z-30">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-2">
@@ -232,7 +197,6 @@ function AppDashboard() {
                 </Link>
               </Button>
             )}
-            <NotificationsButton userId={user.id} />
             <button
               onClick={() => setActiveTab("perfil")}
               aria-label="Abrir perfil do usuário"
@@ -268,7 +232,7 @@ function AppDashboard() {
       </header>
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 pb-28 sm:pb-28 space-y-6 sm:space-y-8">
-        <h1 className="sr-only">Painel de finanças: gastos do mês, contas e fluxo de caixa</h1>
+        <h1 className="sr-only">Painel de finanças: gastos do mês e fluxo de caixa</h1>
         {activeTab === "inicio" && (
           <>
             {homeBanner && <div role="status" className="rounded-lg border border-primary/25 bg-primary/10 px-4 py-3 text-sm text-foreground">{homeBanner}</div>}
@@ -282,49 +246,11 @@ function AppDashboard() {
               </p>
             </div>
 
-            {/* Saldo disponível */}
             <Card className="animate-rise p-5 sm:p-6 bg-gradient-hero text-primary-foreground border-0 shadow-elevated">
-              <p className="text-[11px] uppercase tracking-wider opacity-80">Saldo disponível</p>
-              <p className="font-display text-3xl sm:text-4xl font-bold mt-1 break-words tabular-nums">
-                {formatBRL(saldoDisponivel)}
-              </p>
-              <p className="text-xs opacity-80 mt-2">
-                {hasBankData
-                  ? "Atualizado agora · contas conectadas"
-                  : "Conecte um banco para ver seu saldo real"}
-              </p>
+              <p className="text-xs uppercase">Gastos do mês</p>
+              <p className="font-display text-3xl font-bold mt-1 tabular-nums">{formatBRL(totalMonth)}</p>
+              <p className="text-xs mt-2">{monthExpenses.length} gasto(s) registrado(s)</p>
             </Card>
-
-            {/* Indicadores do mês (dados reais) */}
-            <div className="grid grid-cols-3 gap-2.5 sm:gap-4 animate-rise">
-              <Card className="p-3.5 sm:p-5 bg-card shadow-soft">
-                <div className="flex items-center gap-1.5 text-[10.5px] sm:text-xs text-muted-foreground">
-                  <ArrowUpRight className="size-3.5 text-success shrink-0" />
-                  <span className="truncate">Receitas</span>
-                </div>
-                <p className="font-display text-base sm:text-2xl font-semibold mt-1.5 tabular-nums break-words">
-                  {formatBRL(0)}
-                </p>
-              </Card>
-              <Card className="p-3.5 sm:p-5 bg-card shadow-soft">
-                <div className="flex items-center gap-1.5 text-[10.5px] sm:text-xs text-muted-foreground">
-                  <ArrowDownRight className="size-3.5 text-destructive shrink-0" />
-                  <span className="truncate">Gastos</span>
-                </div>
-                <p className="font-display text-base sm:text-2xl font-semibold mt-1.5 tabular-nums break-words">
-                  {formatBRL(totalMonth)}
-                </p>
-              </Card>
-              <Card className="p-3.5 sm:p-5 bg-card shadow-soft">
-                <div className="flex items-center gap-1.5 text-[10.5px] sm:text-xs text-muted-foreground">
-                  <PiggyBank className="size-3.5 text-primary shrink-0" />
-                  <span className="truncate">Saldo</span>
-                </div>
-                <p className="font-display text-base sm:text-2xl font-semibold mt-1.5 tabular-nums break-words">
-                  {formatBRL(saldoDisponivel - totalMonth)}
-                </p>
-              </Card>
-            </div>
 
             {/* Destaque de voz */}
             <Card className="animate-rise p-5 sm:p-6 bg-card shadow-soft border border-primary/20">
@@ -356,22 +282,6 @@ function AppDashboard() {
             {/* Destaque de objetivo */}
             <GoalHighlight />
 
-            {/* Conexão Bancária */}
-            <Card className="p-5 sm:p-6 bg-card shadow-soft flex items-center gap-4">
-              <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                <Sparkles className="size-5 text-primary" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h2 className="font-display font-semibold">Conexão Bancária</h2>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  Conecte sua conta para sincronizar automaticamente.
-                </p>
-              </div>
-              <Button asChild size="sm" className="shrink-0">
-                <Link to="/app/bancos">Começar agora</Link>
-              </Button>
-            </Card>
-
             {/* Importar planilhas */}
             <ImportSpreadsheetButton />
 
@@ -394,81 +304,10 @@ function AppDashboard() {
                   <p className="text-[11px] uppercase tracking-wider text-muted-foreground">Total geral</p>
                   <p className="font-display text-xl sm:text-2xl font-semibold mt-1 break-words">{formatBRL(totalAll)}</p>
                 </Card>
-                {isAdmin && (
-                  <div className="col-span-2 lg:col-span-1 space-y-4">
-                    <WhatsAppDiagnosticsCard currentPhone={whatsAppPhone} />
-                  </div>
-                )}
+
 
               </div>
             </div>
-
-            {/* Minhas contas */}
-            <Card className="bg-card shadow-soft overflow-hidden">
-              <div className="p-4 sm:p-6 border-b border-border flex items-center justify-between gap-3">
-                <div>
-                  <h2 className="font-display text-base sm:text-lg font-semibold">Minhas contas</h2>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    {bankAccounts.length > 0
-                      ? `${bankAccounts.length} conta(s) sincronizada(s)`
-                      : "Conecte um banco para ver seus saldos"}
-                  </p>
-                </div>
-                <Button asChild size="sm" variant={bankAccounts.length > 0 ? "outline" : "default"}>
-                  <Link to="/app/bancos">{bankAccounts.length > 0 ? "Gerenciar" : "Conectar"}</Link>
-                </Button>
-              </div>
-              {bankAccounts.length === 0 ? (
-                <div className="px-4 sm:px-6 py-8 text-center">
-                  <Building2 className="mx-auto mb-2 size-8 text-muted-foreground" />
-                  <p className="text-sm text-muted-foreground">
-                    Nenhuma conta conectada ainda.
-                  </p>
-                </div>
-              ) : (
-                <ul className="divide-y divide-border">
-                  {bankAccounts.map((acc) => {
-                    const type = (acc.type ?? "").toLowerCase();
-                    const Icon = type.includes("credit") || type.includes("cart")
-                      ? CreditCard
-                      : type.includes("savings") || type.includes("poup")
-                        ? PiggyBank
-                        : Building2;
-                    return (
-                      <li key={acc.id} className="px-4 sm:px-6 py-4 flex items-center gap-3">
-                        <div className="size-10 rounded-xl bg-muted flex items-center justify-center shrink-0">
-                          <Icon className="size-4 text-muted-foreground" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium truncate">{acc.name ?? acc.type ?? "Conta"}</p>
-                          <p className="text-xs text-muted-foreground truncate">
-                            {[acc.institution, acc.number].filter(Boolean).join(" · ") || "—"}
-                          </p>
-                        </div>
-                        <p className="font-display font-semibold tabular-nums text-sm">
-                          {formatBRL(acc.balance ?? 0)}
-                        </p>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </Card>
-
-
-            {/* Recarga de celular */}
-            <Link to="/app/recarga" className="block">
-              <Card className="p-4 sm:p-5 bg-card shadow-soft hover:shadow-md transition-shadow flex items-center gap-4">
-                <div className="size-11 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                  <Zap className="size-5 text-primary" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium">Recarga de celular</p>
-                  <p className="text-xs text-muted-foreground">Claro, Vivo, Tim e Oi — a partir de R$10</p>
-                </div>
-                <ArrowUpRight className="size-4 text-muted-foreground" />
-              </Card>
-            </Link>
 
             {/* Fluxo de caixa */}
             <Card className="p-5 sm:p-6 bg-card shadow-soft">
@@ -493,7 +332,6 @@ function AppDashboard() {
             {/* Charts */}
             <ExpenseCharts expenses={monthExpenses} />
 
-            <WhatsAppInboxCard items={whatsAppInbox} />
 
             {/* List */}
             <Card className="bg-card shadow-soft overflow-hidden">
@@ -653,7 +491,6 @@ function ProfileTab({
       playSku: "falai_pro_monthly",
       features: [
         "Gastos ilimitados por áudio",
-        "Conexão bancária automática",
         "Relatórios avançados",
       ],
     },
@@ -1221,14 +1058,6 @@ function ProfileTab({
           Conta
         </h3>
         <Card className="bg-card shadow-soft overflow-hidden divide-y divide-border">
-          <Link
-            to="/app/agendas"
-            className="w-full px-4 py-3.5 flex items-center gap-3 text-left hover:bg-muted/40 transition-colors"
-          >
-            <CalendarIcon className="size-4 text-muted-foreground" />
-            <span className="text-sm font-medium flex-1">Agendas & WhatsApp</span>
-            <ExternalLink className="size-3.5 text-muted-foreground" />
-          </Link>
           <ProfileEditDialog
             userId={user.id}
             email={user.email}

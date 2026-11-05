@@ -29,18 +29,10 @@ import { Route as AppShopRouteImport } from './routes/app.shop'
 import { Route as AppWhatsappTestRouteImport } from './routes/app.whatsapp-test'
 import { Route as BlogGuiaGestaoDeGastosRouteImport } from './routes/blog.guia-gestao-de-gastos'
 import { Route as ApiPublicPlayRtdnRouteImport } from './routes/api/public/play-rtdn'
-import { Route as ApiPublicPluggyWebhookRouteImport } from './routes/api/public/pluggy-webhook'
-import { Route as ApiPublicWhatsappRouteImport } from './routes/api/public/whatsapp'
-import { Route as ApiPublicZapiRouteImport } from './routes/api/public/zapi'
 import { Route as AppAdminOfertasRouteImport } from './routes/app.admin_.ofertas'
 import { Route as AppPlanosRetornoRouteImport } from './routes/app.planos.retorno'
 import { Route as AppRecargaIndexRouteImport } from './routes/app.recarga.index'
 import { Route as AppRecargaConfiguracoesRouteImport } from './routes/app.recarga.configuracoes'
-import { Route as ApiPublicHooksWhatsappDailySummaryRouteImport } from './routes/api/public/hooks/whatsapp-daily-summary'
-import { Route as ApiPublicHooksWhatsappInactivityRouteImport } from './routes/api/public/hooks/whatsapp-inactivity'
-import { Route as ApiPublicHooksWhatsappMonthlySummaryRouteImport } from './routes/api/public/hooks/whatsapp-monthly-summary'
-import { Route as ApiPublicHooksWhatsappWeeklySummaryRouteImport } from './routes/api/public/hooks/whatsapp-weekly-summary'
-import { Route as ApiPublicHooksWhatsappWeeklyTipRouteImport } from './routes/api/public/hooks/whatsapp-weekly-tip'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
 const IndexRoute = IndexRouteImport.update({
@@ -143,21 +135,6 @@ const ApiPublicPlayRtdnRoute = ApiPublicPlayRtdnRouteImport.update({
   path: '/api/public/play-rtdn',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicPluggyWebhookRoute = ApiPublicPluggyWebhookRouteImport.update({
-  id: '/api/public/pluggy-webhook',
-  path: '/api/public/pluggy-webhook',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicWhatsappRoute = ApiPublicWhatsappRouteImport.update({
-  id: '/api/public/whatsapp',
-  path: '/api/public/whatsapp',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicZapiRoute = ApiPublicZapiRouteImport.update({
-  id: '/api/public/zapi',
-  path: '/api/public/zapi',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AppAdminOfertasRoute = AppAdminOfertasRouteImport.update({
   id: '/app/admin_/ofertas',
   path: '/app/admin/ofertas',
@@ -178,36 +155,6 @@ const AppRecargaConfiguracoesRoute = AppRecargaConfiguracoesRouteImport.update({
   path: '/app/recarga/configuracoes',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicHooksWhatsappDailySummaryRoute =
-  ApiPublicHooksWhatsappDailySummaryRouteImport.update({
-    id: '/api/public/hooks/whatsapp-daily-summary',
-    path: '/api/public/hooks/whatsapp-daily-summary',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicHooksWhatsappInactivityRoute =
-  ApiPublicHooksWhatsappInactivityRouteImport.update({
-    id: '/api/public/hooks/whatsapp-inactivity',
-    path: '/api/public/hooks/whatsapp-inactivity',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicHooksWhatsappMonthlySummaryRoute =
-  ApiPublicHooksWhatsappMonthlySummaryRouteImport.update({
-    id: '/api/public/hooks/whatsapp-monthly-summary',
-    path: '/api/public/hooks/whatsapp-monthly-summary',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicHooksWhatsappWeeklySummaryRoute =
-  ApiPublicHooksWhatsappWeeklySummaryRouteImport.update({
-    id: '/api/public/hooks/whatsapp-weekly-summary',
-    path: '/api/public/hooks/whatsapp-weekly-summary',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicHooksWhatsappWeeklyTipRoute =
-  ApiPublicHooksWhatsappWeeklyTipRouteImport.update({
-    id: '/api/public/hooks/whatsapp-weekly-tip',
-    path: '/api/public/hooks/whatsapp-weekly-tip',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 const ApiPublicPaymentsWebhookRoute =
   ApiPublicPaymentsWebhookRouteImport.update({
     id: '/api/public/payments/webhook',
@@ -236,18 +183,10 @@ export interface FileRoutesByFullPath {
   '/blog/guia-gestao-de-gastos': typeof BlogGuiaGestaoDeGastosRoute
   '/app/': typeof AppIndexRoute
   '/api/public/play-rtdn': typeof ApiPublicPlayRtdnRoute
-  '/api/public/pluggy-webhook': typeof ApiPublicPluggyWebhookRoute
-  '/api/public/whatsapp': typeof ApiPublicWhatsappRoute
-  '/api/public/zapi': typeof ApiPublicZapiRoute
   '/app/admin/ofertas': typeof AppAdminOfertasRoute
   '/app/planos/retorno': typeof AppPlanosRetornoRoute
   '/app/recarga/configuracoes': typeof AppRecargaConfiguracoesRoute
   '/app/recarga/': typeof AppRecargaIndexRoute
-  '/api/public/hooks/whatsapp-daily-summary': typeof ApiPublicHooksWhatsappDailySummaryRoute
-  '/api/public/hooks/whatsapp-inactivity': typeof ApiPublicHooksWhatsappInactivityRoute
-  '/api/public/hooks/whatsapp-monthly-summary': typeof ApiPublicHooksWhatsappMonthlySummaryRoute
-  '/api/public/hooks/whatsapp-weekly-summary': typeof ApiPublicHooksWhatsappWeeklySummaryRoute
-  '/api/public/hooks/whatsapp-weekly-tip': typeof ApiPublicHooksWhatsappWeeklyTipRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
@@ -271,18 +210,10 @@ export interface FileRoutesByTo {
   '/blog/guia-gestao-de-gastos': typeof BlogGuiaGestaoDeGastosRoute
   '/app': typeof AppIndexRoute
   '/api/public/play-rtdn': typeof ApiPublicPlayRtdnRoute
-  '/api/public/pluggy-webhook': typeof ApiPublicPluggyWebhookRoute
-  '/api/public/whatsapp': typeof ApiPublicWhatsappRoute
-  '/api/public/zapi': typeof ApiPublicZapiRoute
   '/app/admin/ofertas': typeof AppAdminOfertasRoute
   '/app/planos/retorno': typeof AppPlanosRetornoRoute
   '/app/recarga/configuracoes': typeof AppRecargaConfiguracoesRoute
   '/app/recarga': typeof AppRecargaIndexRoute
-  '/api/public/hooks/whatsapp-daily-summary': typeof ApiPublicHooksWhatsappDailySummaryRoute
-  '/api/public/hooks/whatsapp-inactivity': typeof ApiPublicHooksWhatsappInactivityRoute
-  '/api/public/hooks/whatsapp-monthly-summary': typeof ApiPublicHooksWhatsappMonthlySummaryRoute
-  '/api/public/hooks/whatsapp-weekly-summary': typeof ApiPublicHooksWhatsappWeeklySummaryRoute
-  '/api/public/hooks/whatsapp-weekly-tip': typeof ApiPublicHooksWhatsappWeeklyTipRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesById {
@@ -307,18 +238,10 @@ export interface FileRoutesById {
   '/blog/guia-gestao-de-gastos': typeof BlogGuiaGestaoDeGastosRoute
   '/app/': typeof AppIndexRoute
   '/api/public/play-rtdn': typeof ApiPublicPlayRtdnRoute
-  '/api/public/pluggy-webhook': typeof ApiPublicPluggyWebhookRoute
-  '/api/public/whatsapp': typeof ApiPublicWhatsappRoute
-  '/api/public/zapi': typeof ApiPublicZapiRoute
   '/app/admin_/ofertas': typeof AppAdminOfertasRoute
   '/app/planos/retorno': typeof AppPlanosRetornoRoute
   '/app/recarga/configuracoes': typeof AppRecargaConfiguracoesRoute
   '/app/recarga/': typeof AppRecargaIndexRoute
-  '/api/public/hooks/whatsapp-daily-summary': typeof ApiPublicHooksWhatsappDailySummaryRoute
-  '/api/public/hooks/whatsapp-inactivity': typeof ApiPublicHooksWhatsappInactivityRoute
-  '/api/public/hooks/whatsapp-monthly-summary': typeof ApiPublicHooksWhatsappMonthlySummaryRoute
-  '/api/public/hooks/whatsapp-weekly-summary': typeof ApiPublicHooksWhatsappWeeklySummaryRoute
-  '/api/public/hooks/whatsapp-weekly-tip': typeof ApiPublicHooksWhatsappWeeklyTipRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRouteTypes {
@@ -344,18 +267,10 @@ export interface FileRouteTypes {
     | '/blog/guia-gestao-de-gastos'
     | '/app/'
     | '/api/public/play-rtdn'
-    | '/api/public/pluggy-webhook'
-    | '/api/public/whatsapp'
-    | '/api/public/zapi'
     | '/app/admin/ofertas'
     | '/app/planos/retorno'
     | '/app/recarga/configuracoes'
     | '/app/recarga/'
-    | '/api/public/hooks/whatsapp-daily-summary'
-    | '/api/public/hooks/whatsapp-inactivity'
-    | '/api/public/hooks/whatsapp-monthly-summary'
-    | '/api/public/hooks/whatsapp-weekly-summary'
-    | '/api/public/hooks/whatsapp-weekly-tip'
     | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -379,18 +294,10 @@ export interface FileRouteTypes {
     | '/blog/guia-gestao-de-gastos'
     | '/app'
     | '/api/public/play-rtdn'
-    | '/api/public/pluggy-webhook'
-    | '/api/public/whatsapp'
-    | '/api/public/zapi'
     | '/app/admin/ofertas'
     | '/app/planos/retorno'
     | '/app/recarga/configuracoes'
     | '/app/recarga'
-    | '/api/public/hooks/whatsapp-daily-summary'
-    | '/api/public/hooks/whatsapp-inactivity'
-    | '/api/public/hooks/whatsapp-monthly-summary'
-    | '/api/public/hooks/whatsapp-weekly-summary'
-    | '/api/public/hooks/whatsapp-weekly-tip'
     | '/api/public/payments/webhook'
   id:
     | '__root__'
@@ -414,18 +321,10 @@ export interface FileRouteTypes {
     | '/blog/guia-gestao-de-gastos'
     | '/app/'
     | '/api/public/play-rtdn'
-    | '/api/public/pluggy-webhook'
-    | '/api/public/whatsapp'
-    | '/api/public/zapi'
     | '/app/admin_/ofertas'
     | '/app/planos/retorno'
     | '/app/recarga/configuracoes'
     | '/app/recarga/'
-    | '/api/public/hooks/whatsapp-daily-summary'
-    | '/api/public/hooks/whatsapp-inactivity'
-    | '/api/public/hooks/whatsapp-monthly-summary'
-    | '/api/public/hooks/whatsapp-weekly-summary'
-    | '/api/public/hooks/whatsapp-weekly-tip'
     | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
 }
@@ -450,17 +349,9 @@ export interface RootRouteChildren {
   BlogGuiaGestaoDeGastosRoute: typeof BlogGuiaGestaoDeGastosRoute
   AppIndexRoute: typeof AppIndexRoute
   ApiPublicPlayRtdnRoute: typeof ApiPublicPlayRtdnRoute
-  ApiPublicPluggyWebhookRoute: typeof ApiPublicPluggyWebhookRoute
-  ApiPublicWhatsappRoute: typeof ApiPublicWhatsappRoute
-  ApiPublicZapiRoute: typeof ApiPublicZapiRoute
   AppAdminOfertasRoute: typeof AppAdminOfertasRoute
   AppRecargaConfiguracoesRoute: typeof AppRecargaConfiguracoesRoute
   AppRecargaIndexRoute: typeof AppRecargaIndexRoute
-  ApiPublicHooksWhatsappDailySummaryRoute: typeof ApiPublicHooksWhatsappDailySummaryRoute
-  ApiPublicHooksWhatsappInactivityRoute: typeof ApiPublicHooksWhatsappInactivityRoute
-  ApiPublicHooksWhatsappMonthlySummaryRoute: typeof ApiPublicHooksWhatsappMonthlySummaryRoute
-  ApiPublicHooksWhatsappWeeklySummaryRoute: typeof ApiPublicHooksWhatsappWeeklySummaryRoute
-  ApiPublicHooksWhatsappWeeklyTipRoute: typeof ApiPublicHooksWhatsappWeeklyTipRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
@@ -606,27 +497,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicPlayRtdnRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/pluggy-webhook': {
-      id: '/api/public/pluggy-webhook'
-      path: '/api/public/pluggy-webhook'
-      fullPath: '/api/public/pluggy-webhook'
-      preLoaderRoute: typeof ApiPublicPluggyWebhookRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/whatsapp': {
-      id: '/api/public/whatsapp'
-      path: '/api/public/whatsapp'
-      fullPath: '/api/public/whatsapp'
-      preLoaderRoute: typeof ApiPublicWhatsappRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/zapi': {
-      id: '/api/public/zapi'
-      path: '/api/public/zapi'
-      fullPath: '/api/public/zapi'
-      preLoaderRoute: typeof ApiPublicZapiRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/app/admin_/ofertas': {
       id: '/app/admin_/ofertas'
       path: '/app/admin/ofertas'
@@ -653,41 +523,6 @@ declare module '@tanstack/react-router' {
       path: '/app/recarga/configuracoes'
       fullPath: '/app/recarga/configuracoes'
       preLoaderRoute: typeof AppRecargaConfiguracoesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/hooks/whatsapp-daily-summary': {
-      id: '/api/public/hooks/whatsapp-daily-summary'
-      path: '/api/public/hooks/whatsapp-daily-summary'
-      fullPath: '/api/public/hooks/whatsapp-daily-summary'
-      preLoaderRoute: typeof ApiPublicHooksWhatsappDailySummaryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/hooks/whatsapp-inactivity': {
-      id: '/api/public/hooks/whatsapp-inactivity'
-      path: '/api/public/hooks/whatsapp-inactivity'
-      fullPath: '/api/public/hooks/whatsapp-inactivity'
-      preLoaderRoute: typeof ApiPublicHooksWhatsappInactivityRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/hooks/whatsapp-monthly-summary': {
-      id: '/api/public/hooks/whatsapp-monthly-summary'
-      path: '/api/public/hooks/whatsapp-monthly-summary'
-      fullPath: '/api/public/hooks/whatsapp-monthly-summary'
-      preLoaderRoute: typeof ApiPublicHooksWhatsappMonthlySummaryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/hooks/whatsapp-weekly-summary': {
-      id: '/api/public/hooks/whatsapp-weekly-summary'
-      path: '/api/public/hooks/whatsapp-weekly-summary'
-      fullPath: '/api/public/hooks/whatsapp-weekly-summary'
-      preLoaderRoute: typeof ApiPublicHooksWhatsappWeeklySummaryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/hooks/whatsapp-weekly-tip': {
-      id: '/api/public/hooks/whatsapp-weekly-tip'
-      path: '/api/public/hooks/whatsapp-weekly-tip'
-      fullPath: '/api/public/hooks/whatsapp-weekly-tip'
-      preLoaderRoute: typeof ApiPublicHooksWhatsappWeeklyTipRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/payments/webhook': {
@@ -733,20 +568,9 @@ const rootRouteChildren: RootRouteChildren = {
   BlogGuiaGestaoDeGastosRoute: BlogGuiaGestaoDeGastosRoute,
   AppIndexRoute: AppIndexRoute,
   ApiPublicPlayRtdnRoute: ApiPublicPlayRtdnRoute,
-  ApiPublicPluggyWebhookRoute: ApiPublicPluggyWebhookRoute,
-  ApiPublicWhatsappRoute: ApiPublicWhatsappRoute,
-  ApiPublicZapiRoute: ApiPublicZapiRoute,
   AppAdminOfertasRoute: AppAdminOfertasRoute,
   AppRecargaConfiguracoesRoute: AppRecargaConfiguracoesRoute,
   AppRecargaIndexRoute: AppRecargaIndexRoute,
-  ApiPublicHooksWhatsappDailySummaryRoute:
-    ApiPublicHooksWhatsappDailySummaryRoute,
-  ApiPublicHooksWhatsappInactivityRoute: ApiPublicHooksWhatsappInactivityRoute,
-  ApiPublicHooksWhatsappMonthlySummaryRoute:
-    ApiPublicHooksWhatsappMonthlySummaryRoute,
-  ApiPublicHooksWhatsappWeeklySummaryRoute:
-    ApiPublicHooksWhatsappWeeklySummaryRoute,
-  ApiPublicHooksWhatsappWeeklyTipRoute: ApiPublicHooksWhatsappWeeklyTipRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport

@@ -1,18 +1,16 @@
 import { useNavigate } from "@tanstack/react-router";
 import {
   Home,
-  Wallet,
   PiggyBank,
   ShoppingBag,
   BarChart3,
   User as UserIcon,
 } from "lucide-react";
 
-export type NavTabKey = "inicio" | "contas" | "consorcio" | "shop" | "relatorios" | "perfil";
+export type NavTabKey = "inicio" | "consorcio" | "shop" | "relatorios" | "perfil";
 
 const tabs: { key: NavTabKey; label: string; icon: typeof Home }[] = [
   { key: "inicio", label: "Início", icon: Home },
-  { key: "contas", label: "Contas", icon: Wallet },
   { key: "consorcio", label: "Consórcio", icon: PiggyBank },
   { key: "shop", label: "Shop", icon: ShoppingBag },
   { key: "relatorios", label: "Relatórios", icon: BarChart3 },
@@ -21,7 +19,7 @@ const tabs: { key: NavTabKey; label: string; icon: typeof Home }[] = [
 
 /**
  * Menu inferior compartilhado entre o painel e as telas internas
- * (Contas, Agendas e Shop), para que o rodapé fique sempre visível.
+ * (Shop e demais telas), para que o rodapé fique sempre visível.
  * Em telas que não são o painel, as abas internas voltam para /app?tab=…
  */
 export function BottomNav({
@@ -35,7 +33,6 @@ export function BottomNav({
 
   const go = (key: NavTabKey) => {
     if (key === "shop") return void navigate({ to: "/app/shop" });
-    if (key === "contas") return void navigate({ to: "/app/bancos" });
     if (onSelectLocal) return onSelectLocal(key);
     void navigate({ to: "/app", search: { tab: key } });
   };
@@ -45,7 +42,7 @@ export function BottomNav({
       className="fixed bottom-0 inset-x-0 z-40 border-t border-border bg-card/90 backdrop-blur-xl supports-[backdrop-filter]:bg-card/70"
       aria-label="Navegação principal"
     >
-      <div className="max-w-6xl mx-auto grid grid-cols-6 px-1 pt-1.5">
+      <div className="max-w-6xl mx-auto grid grid-cols-5 px-1 pt-1.5">
         {tabs.map(({ key, label, icon: Icon }) => {
           const active = current === key;
           return (
