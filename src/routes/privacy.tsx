@@ -16,6 +16,7 @@ export const Route = createFileRoute("/privacy")({
         content:
           "Política de Privacidade do app Falaí Finanças: como coletamos, usamos e protegemos seus dados financeiros.",
       },
+      { name: "twitter:card", content: "summary" },
       { property: "og:type", content: "article" },
       { property: "og:url", content: "https://falai-finan-as.lovable.app/privacy" },
     ],
@@ -26,7 +27,7 @@ export const Route = createFileRoute("/privacy")({
 });
 
 function PrivacyPage() {
-  const updated = "11 de junho de 2026";
+  const updated = "5 de novembro de 2026";
   return (
     <main className="mx-auto max-w-3xl px-6 py-12 text-foreground">
       <h1 className="mb-2 text-3xl font-bold">Política de Privacidade</h1>
@@ -48,20 +49,12 @@ function PrivacyPage() {
           </li>
           <li>
             <strong>Dados financeiros:</strong> lançamentos de receitas, despesas,
-            categorias, metas e mensagens enviadas para o assistente.
+            categorias e metas.
           </li>
           <li>
             <strong>Áudio e imagens:</strong> gravações de voz e fotos de recibos
             que você envia voluntariamente para registro de despesas. O conteúdo é
             processado por IA e descartado após a transcrição/extração.
-          </li>
-          <li>
-            <strong>Telefone (opcional):</strong> número de WhatsApp, caso você
-            ative a integração de mensagens.
-          </li>
-          <li>
-            <strong>Dados bancários (opcional):</strong> via Open Finance/Pluggy,
-            apenas com seu consentimento explícito.
           </li>
         </ul>
 
@@ -83,10 +76,8 @@ function PrivacyPage() {
           para operar o serviço:
         </p>
         <ul className="list-disc space-y-2 pl-6">
-          <li>Supabase (autenticação e banco de dados)</li>
+          <li>Lovable Cloud (autenticação e banco de dados)</li>
           <li>Google Cloud / OpenAI (processamento de IA de voz e texto)</li>
-          <li>Pluggy (Open Finance, somente se você conectar uma conta)</li>
-          <li>Twilio (mensagens WhatsApp, somente se ativado)</li>
         </ul>
 
         <h2 className="mt-8 text-xl font-semibold">4. Segurança</h2>
@@ -101,7 +92,7 @@ function PrivacyPage() {
         <ul className="list-disc space-y-2 pl-6">
           <li>Acessar, corrigir ou exportar seus dados;</li>
           <li>Solicitar a exclusão permanente da sua conta e dados;</li>
-          <li>Revogar consentimentos (Open Finance, WhatsApp, notificações).</li>
+          <li>Revogar a autorização de notificações.</li>
         </ul>
         <p>
           Para exercer qualquer direito, envie um e-mail para{" "}
