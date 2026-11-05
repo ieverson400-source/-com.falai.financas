@@ -1,5 +1,5 @@
 # Roadmap
-- [ ] Limpeza pré-exportação: apresentar plano e confirmar impacto em chat, WhatsApp e histórico de push
+- [ ] Limpeza pré-exportação: apresentar plano para aprovação (chat e WhatsApp removidos; push/n8n preservados sem histórico)
 - [ ] Após aprovação: remover Pluggy/Open Finance e recargas, limpar rotas/dependências, preparar exclusões e validar erros
 - [x] IA Guardião Financeiro: apresentar auditoria e plano priorizado antes de alterar o app
 - [x] Segurança P0: resumos automáticos exigem segredo privado; webhook WhatsApp/Z-API exige token
