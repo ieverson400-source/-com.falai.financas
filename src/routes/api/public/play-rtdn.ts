@@ -168,46 +168,24 @@ export const Route = createFileRoute("/api/public/play-rtdn")({
         // Mesmo no caminho manual, se houver purchase_token, revalida no Google.
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-        if (parsed.data.purchase_token) {
-          try {
-            const { verifyPlaySubscription, persistVerifiedSubscription } = await import(
-              "@/lib/play-billing.server"
-            );
-            const verified = await verifyPlaySubscription({
-              purchaseToken: parsed.data.purchase_token,
-              productId: parsed.data.provider_product_id,
-            });
-            await persistVerifiedSubscription(parsed.data.user_id, verified);
-            return Response.json({ ok: true, verified: true, status: verified.status });
-          } catch (e) {
-            const msg = e instanceof Error ? e.message : String(e);
-            console.warn("manual verify failed, falling back to payload:", msg);
-          }
+        // Caminho manual só aceita compras confirmadas pelo Google; nunca grava plano/status informados.
+        if (!parsed.data.purchase_token) {
+          return Response.json({ error: "purchase_token required" }, { status: 400 });
         }
-
-        const { error } = await supabaseAdmin.from("subscriptions").upsert(
-          [
-            {
-              user_id: parsed.data.user_id,
-              plan: parsed.data.plan,
-              status: parsed.data.status,
-              provider: "play",
-              purchase_token: parsed.data.purchase_token,
-              provider_product_id: parsed.data.provider_product_id,
-              provider_subscription_id: parsed.data.provider_subscription_id,
-              current_period_end: parsed.data.current_period_end,
-              cancel_at_period_end: parsed.data.cancel_at_period_end ?? false,
-              raw: JSON.parse(JSON.stringify(parsed.data)),
-            },
-          ],
-          { onConflict: "user_id" },
-        );
-
-        if (error) {
-          console.error("play-rtdn upsert error", error.message);
-          return Response.json({ error: "Internal server error" }, { status: 500 });
+        try {
+          const { verifyPlaySubscription, persistVerifiedSubscription } = await import(
+            "@/lib/play-billing.server"
+          );
+          const verified = await verifyPlaySubscription({
+            purchaseToken: parsed.data.purchase_token,
+            productId: parsed.data.provider_product_id,
+          });
+          await persistVerifiedSubscription(parsed.data.user_id, verified);
+          return Response.json({ ok: true, verified: true, status: verified.status });
+        } catch (e) {
+          console.warn("manual verify failed:", e instanceof Error ? e.message : String(e));
+          return Response.json({ error: "verify failed" }, { status: 400 });
         }
-        return Response.json({ ok: true });
       },
     },
   },
