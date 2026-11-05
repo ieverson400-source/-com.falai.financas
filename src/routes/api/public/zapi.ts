@@ -96,7 +96,8 @@ export const Route = createFileRoute("/api/public/zapi")({
         // Verificação opcional via token no header (configure em ZAPI_WEBHOOK_TOKEN
         // e no painel da Z-API em "Client-Token" do webhook).
         const expectedToken = process.env.ZAPI_WEBHOOK_TOKEN;
-        if (expectedToken) {
+        if (!expectedToken) return jsonResponse({ error: "webhook not configured" }, 503);
+        {
           const provided = request.headers.get("client-token") ?? request.headers.get("x-webhook-token");
           if (provided !== expectedToken) {
             return jsonResponse({ error: "invalid token" }, 401);
