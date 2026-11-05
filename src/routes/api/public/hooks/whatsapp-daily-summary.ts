@@ -26,11 +26,8 @@ export const Route = createFileRoute("/api/public/hooks/whatsapp-daily-summary")
     handlers: {
       OPTIONS: async () => new Response(null, { status: 204, headers: corsHeaders }),
       POST: async ({ request }) => {
-        const expected = process.env.SUPABASE_PUBLISHABLE_KEY ?? process.env.SUPABASE_ANON_KEY;
-        const provided =
-          request.headers.get("apikey") ??
-          request.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
-        if (!expected || provided !== expected) {
+        const { isAuthorizedCron } = await import("@/lib/cron-auth.server");
+        if (!(await isAuthorizedCron(request))) {
           return json({ error: "Unauthorized" }, 401);
         }
 
