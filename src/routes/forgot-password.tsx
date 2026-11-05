@@ -15,6 +15,10 @@ export const Route = createFileRoute("/forgot-password")({
       { title: "Recuperar senha — Falaí Finanças" },
       { name: "description", content: "Receba um link seguro por e-mail para redefinir sua senha do Falaí Finanças." },
       { name: "robots", content: "noindex,nofollow" },
+      { property: "og:title", content: "Recuperar senha — Falaí Finanças" },
+      { property: "og:description", content: "Receba um link seguro para recuperar sua conta." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
 });
