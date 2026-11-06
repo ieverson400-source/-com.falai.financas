@@ -19,7 +19,7 @@ export const Route = createFileRoute("/app/admin_/ofertas")({
   component: AdminOffersPage,
   head: () => ({
     meta: [
-      { title: "Ofertas da Shop — Administração | Falaí Finanças" },
+      { title: "Ofertas da Shop — Administração | Falaí Finanças e Gastos" },
       {
         name: "description",
         content:

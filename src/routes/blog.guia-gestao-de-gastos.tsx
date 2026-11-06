@@ -3,7 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 export const Route = createFileRoute("/blog/guia-gestao-de-gastos")({
   head: () => ({
     meta: [
-      { title: "Guia de gestão de gastos com voz e IA | Falaí Finanças" },
+      { title: "Guia de gestão de gastos com voz e IA | Falaí Finanças e Gastos" },
       {
         name: "description",
         content:
@@ -36,8 +36,8 @@ export const Route = createFileRoute("/blog/guia-gestao-de-gastos")({
           headline: "Como fazer uma gestão de gastos eficiente em 2026",
           description:
             "Guia prático de gestão de gastos pessoais com automação por voz, foto e IA.",
-          author: { "@type": "Organization", name: "Falaí Finanças" },
-          publisher: { "@type": "Organization", name: "Falaí Finanças" },
+          author: { "@type": "Organization", name: "Falaí Finanças e Gastos" },
+          publisher: { "@type": "Organization", name: "Falaí Finanças e Gastos" },
           datePublished: "2026-06-12",
           dateModified: "2026-06-12",
           mainEntityOfPage: "https://falai-finan-as.lovable.app/blog/guia-gestao-de-gastos",
@@ -154,9 +154,9 @@ function GuiaGestaoGastos() {
             </li>
           </ul>
 
-          <h2 className="text-2xl font-semibold">Como o Falaí Finanças automatiza tudo isso</h2>
+          <h2 className="text-2xl font-semibold">Como o Falaí Finanças e Gastos automatiza tudo isso</h2>
           <p>
-            O Falaí Finanças foi feito para gente que já tentou (e desistiu de)
+            O Falaí Finanças e Gastos foi feito para gente que já tentou (e desistiu de)
             planilhas. Você fala ou manda foto do recibo — a IA
             categoriza, lança no relatório e mostra para onde seu dinheiro está indo.
           </p>

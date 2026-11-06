@@ -1,4 +1,4 @@
-Falaí Finanças — PWA (Progressive Web App)
+Falaí Finanças e Gastos — PWA (Progressive Web App)
 ============================================
 
 Este app é instalável como aplicativo nativo no celular e desktop.

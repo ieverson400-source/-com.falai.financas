@@ -12,10 +12,10 @@ export const Route = createFileRoute("/reset-password")({
   component: ResetPasswordPage,
   head: () => ({
     meta: [
-      { title: "Redefinir senha — Falaí Finanças" },
-      { name: "description", content: "Defina uma nova senha para sua conta do Falaí Finanças." },
+      { title: "Redefinir senha — Falaí Finanças e Gastos" },
+      { name: "description", content: "Defina uma nova senha para sua conta do Falaí Finanças e Gastos." },
       { name: "robots", content: "noindex,nofollow" },
-      { property: "og:title", content: "Redefinir senha — Falaí Finanças" },
+      { property: "og:title", content: "Redefinir senha — Falaí Finanças e Gastos" },
       { property: "og:description", content: "Defina uma nova senha para sua conta." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

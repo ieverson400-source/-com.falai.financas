@@ -12,10 +12,10 @@ export const Route = createFileRoute("/forgot-password")({
   component: ForgotPasswordPage,
   head: () => ({
     meta: [
-      { title: "Recuperar senha — Falaí Finanças" },
-      { name: "description", content: "Receba um link seguro por e-mail para redefinir sua senha do Falaí Finanças." },
+      { title: "Recuperar senha — Falaí Finanças e Gastos" },
+      { name: "description", content: "Receba um link seguro por e-mail para redefinir sua senha do Falaí Finanças e Gastos." },
       { name: "robots", content: "noindex,nofollow" },
-      { property: "og:title", content: "Recuperar senha — Falaí Finanças" },
+      { property: "og:title", content: "Recuperar senha — Falaí Finanças e Gastos" },
       { property: "og:description", content: "Receba um link seguro para recuperar sua conta." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

@@ -7,13 +7,13 @@ export const Route = createFileRoute("/account-delete")({
   component: AccountDeletePage,
   head: () => ({
     meta: [
-      { title: "Eliminar conta — Falaí Finanças" },
+      { title: "Eliminar conta — Falaí Finanças e Gastos" },
       {
         name: "description",
         content:
-          "Solicite a eliminação permanente da sua conta e de todos os dados associados no Falaí Finanças.",
+          "Solicite a eliminação permanente da sua conta e de todos os dados associados no Falaí Finanças e Gastos.",
       },
-      { property: "og:title", content: "Eliminar conta — Falaí Finanças" },
+      { property: "og:title", content: "Eliminar conta — Falaí Finanças e Gastos" },
       { property: "og:url", content: "https://falai-finan-as.lovable.app/account-delete" },
       { property: "og:description", content: "Solicite a eliminação da sua conta e dados." },
       { property: "og:type", content: "website" },
@@ -29,7 +29,7 @@ function AccountDeletePage() {
   const email = "privacidade@falai.app";
   const subject = "Pedido de eliminação de conta e dados";
   const body =
-    "Olá,\n\nSolicito a eliminação permanente da minha conta e de todos os dados associados no Falaí Finanças.\n\nE-mail da conta: \n\nObrigado.";
+    "Olá,\n\nSolicito a eliminação permanente da minha conta e de todos os dados associados no Falaí Finanças e Gastos.\n\nE-mail da conta: \n\nObrigado.";
   const mailto = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
   return (

@@ -14,10 +14,10 @@ export const Route = createFileRoute("/auth")({
   component: AuthPage,
   head: () => ({
     meta: [
-      { title: "Entrar — Falaí Finanças" },
-      { name: "description", content: "Entre ou crie sua conta no Falaí Finanças para registrar gastos por voz e foto com organização automática por IA." },
-      { property: "og:title", content: "Entrar — Falaí Finanças" },
-      { property: "og:description", content: "Acesse o Falaí Finanças para registrar gastos por voz ou foto e ver relatórios automáticos." },
+      { title: "Entrar — Falaí Finanças e Gastos" },
+      { name: "description", content: "Entre ou crie sua conta no Falaí Finanças e Gastos para registrar gastos por voz e foto com organização automática por IA." },
+      { property: "og:title", content: "Entrar — Falaí Finanças e Gastos" },
+      { property: "og:description", content: "Acesse o Falaí Finanças e Gastos para registrar gastos por voz ou foto e ver relatórios automáticos." },
       { property: "og:url", content: "https://falai-finan-as.lovable.app/auth" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

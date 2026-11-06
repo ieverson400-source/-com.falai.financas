@@ -35,9 +35,9 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes, viewport-fit=cover" },
-      { title: "Falaí Finanças" },
-      { name: "description", content: "Falaí Finanças: registre gastos por voz, foto ou texto. A IA categoriza tudo e mostra relatórios claros das suas finanças pessoais." },
-      { name: "author", content: "Falaí Finanças" },
+      { title: "Falaí Finanças e Gastos" },
+      { name: "description", content: "Falaí Finanças e Gastos: registre gastos por voz, foto ou texto. A IA categoriza tudo e mostra relatórios claros das suas finanças pessoais." },
+      { name: "author", content: "Falaí Finanças e Gastos" },
       // PWA: cor da barra do navegador / splash screen
       { name: "theme-color", content: "#0f1b2d" },
       // PWA: iOS (Safari "Adicionar à Tela de Início")
@@ -45,13 +45,13 @@ export const Route = createRootRoute({
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
       { name: "apple-mobile-web-app-title", content: "Falaí" },
       { name: "mobile-web-app-capable", content: "yes" },
-      { property: "og:site_name", content: "Falaí Finanças" },
-      { property: "og:title", content: "Falaí Finanças" },
+      { property: "og:site_name", content: "Falaí Finanças e Gastos" },
+      { property: "og:title", content: "Falaí Finanças e Gastos" },
       { property: "og:description", content: "Registre gastos por voz, foto ou texto. A IA categoriza e gera relatórios das suas finanças em segundos." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "Falaí Finanças" },
+      { name: "twitter:title", content: "Falaí Finanças e Gastos" },
       { name: "twitter:description", content: "Registre gastos por voz, foto ou texto. A IA categoriza e gera relatórios das suas finanças em segundos." },
     ],
     links: [

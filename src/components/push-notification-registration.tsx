@@ -68,7 +68,7 @@ export function PushNotificationRegistration() {
       <DialogHeader>
         <span className="mx-auto mb-2 grid size-11 place-items-center rounded-lg bg-primary/15 sm:mx-0"><BellRing className="size-5 text-primary" /></span>
         <DialogTitle>Ativar notificações</DialogTitle>
-        <DialogDescription>Receba avisos importantes do Falaí Finanças neste dispositivo.</DialogDescription>
+        <DialogDescription>Receba avisos importantes do Falaí Finanças e Gastos neste dispositivo.</DialogDescription>
       </DialogHeader>
       <DialogFooter>
         <Button variant="outline" onClick={dismiss} disabled={busy}>Agora não</Button>

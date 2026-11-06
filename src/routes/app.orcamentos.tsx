@@ -17,8 +17,8 @@ export const Route = createFileRoute("/app/orcamentos")({
   component: OrcamentosPage,
   head: () => ({
     meta: [
-      { title: "Orçamentos por categoria — Falaí Finanças" },
-      { property: "og:title", content: "Orçamentos por categoria — Falaí Finanças" },
+      { title: "Orçamentos por categoria — Falaí Finanças e Gastos" },
+      { property: "og:title", content: "Orçamentos por categoria — Falaí Finanças e Gastos" },
       { property: "og:description", content: "Acompanhe limites e gastos por categoria." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

@@ -23,16 +23,16 @@ export const Route = createFileRoute("/app/shop")({
   ),
   head: () => ({
     meta: [
-      { title: "Shop — ofertas e cashback | Falaí Finanças" },
+      { title: "Shop — ofertas e cashback | Falaí Finanças e Gastos" },
       {
         name: "description",
         content:
-          "Ofertas em destaque, cupons e cashback de parceiros dentro do Falaí Finanças. Economize nas suas compras do dia a dia.",
+          "Ofertas em destaque, cupons e cashback de parceiros dentro do Falaí Finanças e Gastos. Economize nas suas compras do dia a dia.",
       },
-      { property: "og:title", content: "Shop — ofertas e cashback | Falaí Finanças" },
+      { property: "og:title", content: "Shop — ofertas e cashback | Falaí Finanças e Gastos" },
       {
         property: "og:description",
-        content: "Ofertas em destaque, cupons e cashback de parceiros no Falaí Finanças.",
+        content: "Ofertas em destaque, cupons e cashback de parceiros no Falaí Finanças e Gastos.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -255,7 +255,7 @@ function ShopPage() {
 
       <footer className="border-t bg-background px-4 py-6 pb-24 text-center text-xs text-muted-foreground">
         <div className="mx-auto flex max-w-6xl items-center justify-center gap-4">
-          <span>© 2026 Falaí Finanças</span>
+          <span>© 2026 Falaí Finanças e Gastos</span>
           <Link to="/privacy" className="hover:underline underline-offset-2">
             Política de Privacidade
           </Link>

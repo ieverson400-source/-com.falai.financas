@@ -4,17 +4,17 @@ export const Route = createFileRoute("/privacy")({
   component: PrivacyPage,
   head: () => ({
     meta: [
-      { title: "Política de Privacidade — Falaí Finanças" },
+      { title: "Política de Privacidade — Falaí Finanças e Gastos" },
       {
         name: "description",
         content:
-          "Política de Privacidade do app Falaí Finanças: como coletamos, usamos e protegemos seus dados financeiros.",
+          "Política de Privacidade do app Falaí Finanças e Gastos: como coletamos, usamos e protegemos seus dados financeiros.",
       },
-      { property: "og:title", content: "Política de Privacidade — Falaí Finanças" },
+      { property: "og:title", content: "Política de Privacidade — Falaí Finanças e Gastos" },
       {
         property: "og:description",
         content:
-          "Política de Privacidade do app Falaí Finanças: como coletamos, usamos e protegemos seus dados financeiros.",
+          "Política de Privacidade do app Falaí Finanças e Gastos: como coletamos, usamos e protegemos seus dados financeiros.",
       },
       { name: "twitter:card", content: "summary" },
       { property: "og:type", content: "article" },
@@ -37,7 +37,7 @@ function PrivacyPage() {
 
       <section className="space-y-6 text-base leading-relaxed">
         <p>
-          O <strong>Falaí Finanças</strong> ("nós", "nosso app") respeita a sua
+          O <strong>Falaí Finanças e Gastos</strong> ("nós", "nosso app") respeita a sua
           privacidade. Esta política descreve quais dados coletamos, como os
           usamos e quais são os seus direitos como usuário.
         </p>
@@ -111,7 +111,7 @@ function PrivacyPage() {
 
         <h2 className="mt-8 text-xl font-semibold">7. Crianças</h2>
         <p>
-          O Falaí Finanças não é destinado a menores de 18 anos e não coleta
+          O Falaí Finanças e Gastos não é destinado a menores de 18 anos e não coleta
           intencionalmente dados de crianças.
         </p>
 

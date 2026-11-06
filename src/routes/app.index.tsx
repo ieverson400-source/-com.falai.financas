@@ -40,9 +40,9 @@ export const Route = createFileRoute("/app/")({
   },
   head: () => ({
     meta: [
-      { title: "Dashboard — Falaí Finanças" },
+      { title: "Dashboard — Falaí Finanças e Gastos" },
       { name: "description", content: "Painel das suas finanças no Falaí: gastos do mês, fluxo de caixa e relatórios organizados por IA." },
-      { property: "og:title", content: "Dashboard — Falaí Finanças" },
+      { property: "og:title", content: "Dashboard — Falaí Finanças e Gastos" },
       { property: "og:description", content: "Acompanhe seus gastos e fluxo de caixa em um único painel organizado por IA." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -439,7 +439,7 @@ function AppDashboard() {
       {/* Footer */}
       <footer className="border-t bg-background px-4 py-6 text-center text-xs text-muted-foreground pb-24">
         <div className="mx-auto flex max-w-6xl items-center justify-center gap-4">
-          <span>© 2026 Falaí Finanças</span>
+          <span>© 2026 Falaí Finanças e Gastos</span>
           <Link to="/privacy" className="hover:underline underline-offset-2">
             Política de Privacidade
           </Link>
@@ -539,7 +539,7 @@ function ProfileTab({
           className="w-full mt-4 bg-white text-primary hover:bg-white/90 gap-2"
           onClick={async () => {
             const shareData = {
-              title: "Falaí Finanças",
+              title: "Falaí Finanças e Gastos",
               text: "Organize seus gastos por áudio com IA — experimenta!",
               url: typeof window !== "undefined" ? window.location.origin : "",
             };
