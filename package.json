@@ -18,6 +18,8 @@
     "test:stripe-webhook": "node scripts/test-stripe-webhook.mjs"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^4.0.110",
+    "@ai-sdk/openai-compatible": "^3.0.86",
     "@cloudflare/vite-plugin": "^1.42.3",
     "@hookform/resolvers": "^5.2.2",
     "@lovable.dev/cloud-auth-js": "^1.1.2",
@@ -55,6 +57,7 @@
     "@tanstack/react-router": "1.170.41",
     "@tanstack/react-start": "1.168.60",
     "@tanstack/router-plugin": "1.168.42",
+    "ai": "^7.0.164",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
