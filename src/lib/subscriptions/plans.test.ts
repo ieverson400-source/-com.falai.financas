@@ -5,7 +5,7 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
-import { ALL_PLAN_IDS, PLANS, PLAN_IDS, PLAN_KEYS, formatPlanPrice } from "./plans.ts";
+import { ALL_PLAN_IDS, PLANS, PLAN_IDS, PLAN_KEYS, formatPlanPrice, packageName } from "./plans.ts";
 
 const norm = (s: string) => s.replace(/ /g, " ");
 
@@ -23,11 +23,22 @@ describe("planos", () => {
     assert.deepEqual(PLANS.map((p) => norm(formatPlanPrice(p.priceCents))), ["R$ 19,90", "R$ 39,90", "R$ 69,90"]);
   });
 
-  it("os benefícios são apenas placeholders", () => {
+  it("os benefícios são placeholders e ficam marcados como pendentes (a tela não os exibe)", () => {
     for (const p of PLANS) {
       assert.ok(p.benefits.length >= 3 && p.benefits.length <= 5);
       for (const b of p.benefits) assert.match(b, /^Benefício \d do /);
+      assert.equal(p.benefitsPending, true);
     }
+  });
+
+  it("exporta o nome do pacote informado para a Etapa 3", () => {
+    assert.equal(packageName, "co.median.android.zpqlzxm");
+  });
+
+  it("o código registra os TODOs de confirmação no Play Console", () => {
+    const src = readFileSync(join(fileURLToPath(new URL(".", import.meta.url)), "plans.ts"), "utf8");
+    assert.match(src, /TODO: confirmar status Ativo no Play Console/);
+    assert.match(src, /TODO: confirmar nome do pacote/);
   });
 });
 
@@ -45,12 +56,15 @@ describe("camada de assinaturas sem billing real", () => {
     }
   });
 
-  it("os stubs de servidor devolvem apenas estados neutros", () => {
+  it("compra e restauração continuam stubs; a consulta só lê a tabela do próprio usuário", () => {
     const read = (n: string) => readFileSync(join(dir, n), "utf8");
     assert.match(read("purchase-plan.functions.ts"), /status: "not_configured"/);
     assert.match(read("restore-purchases.functions.ts"), /status: "not_configured"/);
-    assert.match(read("get-subscription.functions.ts"), /state: "free"/);
-    assert.match(read("flags.functions.ts"), /SUBS_ENABLED === "true"/);
+    const get = read("get-subscription.functions.ts").replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
+    assert.match(get, /\.from\("subscriptions"\)/);
+    assert.match(get, /\.eq\("user_id", context\.userId\)/);
+    assert.ok(!/\.(insert|update|upsert|delete)\(/.test(get), "a consulta não pode gravar");
+    assert.match(read("flags.functions.ts"), /readFeatureFlags\(process\.env\)\.subscriptions/);
   });
 
   it("nenhum segredo ou variável de provedor é lido por esta camada", () => {

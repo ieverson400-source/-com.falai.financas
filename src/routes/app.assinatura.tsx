@@ -1,5 +1,5 @@
 import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
   AlertTriangle,
@@ -7,6 +7,7 @@ import {
   Clock,
   Crown,
   CreditCard,
+  Loader2,
   Sparkles,
   Star,
   User as UserIcon,
@@ -25,17 +26,17 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { PLANS, formatPlanPrice } from "@/lib/subscriptions/plans";
 import type { SubscriptionState } from "@/lib/subscriptions/provider";
-import { SUBSCRIPTION_STATES, setSubscriptionSimState, useSubscriptionSimState } from "@/lib/subscriptions/session-state";
+import { SUBSCRIPTION_STATES, setSubscriptionSimState, useSubscriptionSimOverride } from "@/lib/subscriptions/session-state";
 import { getSubscriptionFlags } from "@/lib/subscriptions/flags.functions";
 import { getSubscription } from "@/lib/subscriptions/get-subscription.functions";
 import { restorePurchases } from "@/lib/subscriptions/restore-purchases.functions";
 
-// Esta tela NÃO faz cobrança nem chama Google Play, RevenueCat ou Stripe. Os botões de compra ficam
-// desabilitados ("Em breve") até a integração ser aprovada. O plano exibido é uma SIMULAÇÃO local
-// (ver lib/subscriptions/session-state): em produção é sempre "free".
+// Vitrine de assinaturas: NÃO faz cobrança nem chama Google Play, RevenueCat ou Stripe. Os botões de
+// compra ficam desabilitados ("Em breve") até a integração ser aprovada. O plano atual vem da tabela
+// `subscriptions` (somente leitura, pela RLS do próprio usuário).
 
 export const Route = createFileRoute("/app/assinatura")({
-  // Feature flag lida no servidor: com SUBS_ENABLED diferente de "true" a rota redireciona para /app.
+  // Feature flag lida no servidor. A área vem ligada por padrão; SUBS_ENABLED=false redireciona para /app.
   beforeLoad: async () => {
     let enabled = false;
     try {
@@ -54,7 +55,10 @@ export const Route = createFileRoute("/app/assinatura")({
 // TODO: derivar do servidor quando houver SDK/provedor aprovado. Hoje a compra é sempre indisponível.
 const PURCHASE_AVAILABLE = false;
 
-const STATE_VIEW: Record<SubscriptionState, { icon: LucideIcon; title: string; text: string; tone: string }> = {
+type ViewState = SubscriptionState | "loading";
+
+const STATE_VIEW: Record<ViewState, { icon: LucideIcon; title: string; text: string; tone: string }> = {
+  loading: { icon: Loader2, title: "Verificando sua assinatura", text: "Só um instante…", tone: "text-muted-foreground animate-spin" },
   free: { icon: UserIcon, title: "Plano gratuito", text: "Você está no plano gratuito.", tone: "text-muted-foreground" },
   pro: { icon: Star, title: "Plano Pro", text: "Sua assinatura Pro está ativa.", tone: "text-emerald-500" },
   premium: { icon: Crown, title: "Plano Premium", text: "Sua assinatura Premium está ativa.", tone: "text-emerald-500" },
@@ -83,8 +87,10 @@ function SoonButton({ children, variant }: { children: React.ReactNode; variant?
 function SubscriptionPage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const state = useSubscriptionSimState();
+  const override = useSubscriptionSimOverride(); // sempre null fora de desenvolvimento
+  const [serverState, setServerState] = useState<ViewState>("loading");
   const [checking, setChecking] = useState(false);
+  const state: ViewState = override ?? serverState;
   const view = STATE_VIEW[state];
   const Icon = view.icon;
 
@@ -92,21 +98,29 @@ function SubscriptionPage() {
     if (!loading && !user) navigate({ to: "/auth" });
   }, [loading, user, navigate]);
 
+  const refresh = useCallback(async () => {
+    try {
+      const r = await getSubscription();
+      setServerState(r.state);
+    } catch {
+      setServerState("error");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (user) void refresh();
+  }, [user, refresh]);
+
   async function onCheckStatus() {
     setChecking(true);
-    try {
-      await getSubscription(); // stub: não consulta nenhum provedor
-      toast.info("Verificação disponível em breve");
-    } catch {
-      toast.error("Não foi possível verificar agora.");
-    } finally {
-      setChecking(false);
-    }
+    await refresh();
+    setChecking(false);
+    toast.info("Status atualizado");
   }
 
   async function onRestore() {
     try {
-      const r = await restorePurchases(); // stub
+      const r = await restorePurchases(); // stub: ainda não restaura nada
       if (r.status === "not_configured") toast.info("Em breve");
     } catch {
       toast.error("Não foi possível restaurar agora.");
@@ -168,14 +182,19 @@ function SubscriptionPage() {
                     {formatPlanPrice(plan.priceCents)}
                     <span className="text-sm font-normal text-muted-foreground"> /mês</span>
                   </p>
-                  <ul className="flex-1 space-y-2 text-sm">
-                    {plan.benefits.map((b) => (
-                      <li key={b} className="flex gap-2">
-                        <Check className="mt-0.5 size-4 shrink-0 text-primary" />
-                        <span>{b}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  {plan.benefitsPending ? (
+                    // Benefícios ainda são placeholders: não os mostramos aos usuários.
+                    <p className="flex-1 text-sm text-muted-foreground">Detalhes dos benefícios em breve.</p>
+                  ) : (
+                    <ul className="flex-1 space-y-2 text-sm">
+                      {plan.benefits.map((b) => (
+                        <li key={b} className="flex gap-2">
+                          <Check className="mt-0.5 size-4 shrink-0 text-primary" />
+                          <span>{b}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                   <SoonButton variant={current ? "outline" : "default"}>
                     {current ? "Gerenciar assinatura" : "Assinar"}
                   </SoonButton>
@@ -208,19 +227,26 @@ function SubscriptionPage() {
               </DialogContent>
             </Dialog>
           </div>
-          {/* TODO: revisar texto jurídico */}
-          <p className="flex items-center justify-center gap-1.5">
-            <CreditCard className="size-3.5" />
-            Assinaturas renovam automaticamente. Cancele quando quiser na Google Play Store.
-          </p>
+          {PURCHASE_AVAILABLE ? (
+            // TODO: revisar texto jurídico
+            <p className="flex items-center justify-center gap-1.5">
+              <CreditCard className="size-3.5" />
+              Assinaturas renovam automaticamente. Cancele quando quiser na Google Play Store.
+            </p>
+          ) : (
+            <p>As assinaturas ainda não estão disponíveis para contratação. Em breve.</p>
+          )}
         </footer>
 
         {import.meta.env.DEV && (
           <Card className="space-y-2 border-dashed p-4">
             <p className="text-xs text-muted-foreground">Pré-visualização dos estados (somente em desenvolvimento)</p>
             <div className="flex flex-wrap gap-2">
+              <Button size="sm" variant={override === null ? "default" : "outline"} onClick={() => setSubscriptionSimState(null)}>
+                real
+              </Button>
               {SUBSCRIPTION_STATES.map((k) => (
-                <Button key={k} size="sm" variant={k === state ? "default" : "outline"} onClick={() => setSubscriptionSimState(k)}>
+                <Button key={k} size="sm" variant={k === override ? "default" : "outline"} onClick={() => setSubscriptionSimState(k)}>
                   {k}
                 </Button>
               ))}

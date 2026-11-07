@@ -1,6 +1,6 @@
-// SIMULAÇÃO até a integração real: estado da assinatura somente no navegador, só para a UI poder ser
-// testada. Em produção o estado é SEMPRE "free"; apenas em desenvolvimento (import.meta.env.DEV) ele pode
-// ser alterado. Não lê nem escreve a tabela `subscriptions`.
+// SIMULAÇÃO somente para desenvolvimento: permite pré-visualizar os estados da tela de assinatura.
+// Em produção nenhuma simulação existe (o override é sempre null e vale o estado real do servidor).
+// Não lê nem escreve a tabela `subscriptions`.
 
 import { useSyncExternalStore } from "react";
 import type { SubscriptionState } from "./provider.ts";
@@ -17,34 +17,35 @@ export const SUBSCRIPTION_STATES: readonly SubscriptionState[] = [
 ];
 const listeners = new Set<() => void>();
 
-function read(): SubscriptionState {
-  if (!import.meta.env.DEV || typeof window === "undefined") return "free";
+function read(): SubscriptionState | null {
+  if (!import.meta.env.DEV || typeof window === "undefined") return null;
   try {
     const v = window.sessionStorage.getItem(KEY) as SubscriptionState | null;
-    return v && SUBSCRIPTION_STATES.includes(v) ? v : "free";
+    return v && SUBSCRIPTION_STATES.includes(v) ? v : null;
   } catch {
-    return "free";
+    return null;
   }
 }
 
-/** Só tem efeito em desenvolvimento. */
-export function setSubscriptionSimState(next: SubscriptionState): void {
+/** Só tem efeito em desenvolvimento. Use null para voltar ao estado real. */
+export function setSubscriptionSimState(next: SubscriptionState | null): void {
   if (!import.meta.env.DEV || typeof window === "undefined") return;
   try {
-    window.sessionStorage.setItem(KEY, next);
+    if (next === null) window.sessionStorage.removeItem(KEY);
+    else window.sessionStorage.setItem(KEY, next);
   } catch {
     /* armazenamento indisponível */
   }
   listeners.forEach((l) => l());
 }
 
-export function useSubscriptionSimState(): SubscriptionState {
+export function useSubscriptionSimOverride(): SubscriptionState | null {
   return useSyncExternalStore(
     (cb) => {
       listeners.add(cb);
       return () => listeners.delete(cb);
     },
     read,
-    () => "free",
+    () => null,
   );
 }

@@ -11,7 +11,7 @@ import { Switch } from "@/components/ui/switch";
 type Data = Awaited<ReturnType<typeof adminGetFeatureFlags>>;
 
 const ROWS: { key: FeatureFlagKey; title: string; description: string }[] = [
-  { key: "subscriptions", title: "Assinaturas", description: "Área de assinatura e atalho no perfil. Sem cobrança real nesta fase." },
+  { key: "subscriptions", title: "Assinaturas", description: "Vitrine de planos e atalho no perfil, ligada por padrão. Sem cobrança real nesta fase. SUBS_ENABLED=false desliga." },
   { key: "openFinance", title: "Open Finance", description: "Conexão bancária e atalho no perfil. Sem integração real nesta fase." },
   { key: "recharge", title: "Recarga de celular", description: "Atalho no perfil. A recarga ainda mostra \"Em breve\"." },
 ];
