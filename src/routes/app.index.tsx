@@ -537,43 +537,7 @@ function ProfileTab({
         </div>
       </Card>
 
-      {/* Loving the app? */}
-      <Card className="p-5 bg-gradient-hero text-primary-foreground border-0 shadow-elevated">
-        <div className="flex items-center gap-3">
-          <div className="size-11 rounded-xl bg-white/15 backdrop-blur flex items-center justify-center shrink-0">
-            <Heart className="size-5" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="font-display font-semibold">Está gostando do app?</p>
-            <p className="text-xs opacity-80 mt-0.5">Compartilhe com quem você gosta 💜</p>
-          </div>
-        </div>
-        <Button
-          variant="secondary"
-          className="w-full mt-4 bg-white text-primary hover:bg-white/90 gap-2"
-          onClick={async () => {
-            const shareData = {
-              title: "Falaí Finanças e Gastos",
-              text: "Organize seus gastos por áudio com IA — experimenta!",
-              url: typeof window !== "undefined" ? window.location.origin : "",
-            };
-            try {
-              if (typeof navigator !== "undefined" && navigator.share) {
-                await navigator.share(shareData);
-              } else if (typeof navigator !== "undefined" && navigator.clipboard) {
-                await navigator.clipboard.writeText(shareData.url);
-                toast.success("Link copiado!");
-              }
-            } catch {
-              /* cancelado */
-            }
-          }}
-        >
-          <Share2 className="size-4" /> Compartilhar
-        </Button>
-      </Card>
-
-      {/* Account actions */}
+      {/* Account actions (logo abaixo do cabeçalho, visível ao abrir o Perfil) */}
       <section>
         <h3 className="font-display font-semibold mb-2 px-1 text-sm uppercase tracking-wider text-muted-foreground">
           Conta
@@ -636,6 +600,42 @@ function ProfileTab({
           </Link>
         </Card>
       </section>
+
+      {/* Loving the app? */}
+      <Card className="p-5 bg-gradient-hero text-primary-foreground border-0 shadow-elevated">
+        <div className="flex items-center gap-3">
+          <div className="size-11 rounded-xl bg-white/15 backdrop-blur flex items-center justify-center shrink-0">
+            <Heart className="size-5" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="font-display font-semibold">Está gostando do app?</p>
+            <p className="text-xs opacity-80 mt-0.5">Compartilhe com quem você gosta 💜</p>
+          </div>
+        </div>
+        <Button
+          variant="secondary"
+          className="w-full mt-4 bg-white text-primary hover:bg-white/90 gap-2"
+          onClick={async () => {
+            const shareData = {
+              title: "Falaí Finanças e Gastos",
+              text: "Organize seus gastos por áudio com IA — experimenta!",
+              url: typeof window !== "undefined" ? window.location.origin : "",
+            };
+            try {
+              if (typeof navigator !== "undefined" && navigator.share) {
+                await navigator.share(shareData);
+              } else if (typeof navigator !== "undefined" && navigator.clipboard) {
+                await navigator.clipboard.writeText(shareData.url);
+                toast.success("Link copiado!");
+              }
+            } catch {
+              /* cancelado */
+            }
+          }}
+        >
+          <Share2 className="size-4" /> Compartilhar
+        </Button>
+      </Card>
     </div>
   );
 }
