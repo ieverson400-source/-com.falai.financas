@@ -1,9 +1,9 @@
 // Estado dos recursos em liberação. Código puro: recebe as variáveis de ambiente como parâmetro,
 // não lê process.env e não contém segredos.
 //
-// - Open Finance e recarga: DESLIGADOS por padrão; só o valor exato "true" liga.
-// - Assinaturas: LIGADA por padrão (vitrine "Em breve", sem cobrança); funciona como chave de
-//   desligamento: SUBS_ENABLED com "false", "0", "off" ou "no" (sem diferenciar maiúsculas) desliga.
+// Os três recursos vêm LIGADOS por padrão como vitrine "Em breve" (sem cobrança, sem integração real).
+// Cada variável funciona como chave de desligamento: com "false", "0", "off" ou "no" (sem diferenciar
+// maiúsculas nem espaços) o recurso é desligado.
 
 export interface FeatureFlags {
   subscriptions: boolean;
@@ -23,11 +23,13 @@ export const FEATURE_FLAG_ENV: Readonly<Record<FeatureFlagKey, string>> = {
 const OFF_VALUES = ["false", "0", "off", "no"];
 
 export function readFeatureFlags(env: Record<string, string | undefined>): FeatureFlags {
-  const exactTrue = (key: FeatureFlagKey) => env[FEATURE_FLAG_ENV[key]] === "true";
-  const subs = env[FEATURE_FLAG_ENV.subscriptions];
+  const enabled = (key: FeatureFlagKey) => {
+    const raw = env[FEATURE_FLAG_ENV[key]];
+    return !(raw !== undefined && OFF_VALUES.includes(raw.trim().toLowerCase()));
+  };
   return {
-    subscriptions: !(subs !== undefined && OFF_VALUES.includes(subs.trim().toLowerCase())),
-    openFinance: exactTrue("openFinance"),
-    recharge: exactTrue("recharge"),
+    subscriptions: enabled("subscriptions"),
+    openFinance: enabled("openFinance"),
+    recharge: enabled("recharge"),
   };
 }

@@ -12,8 +12,8 @@ type Data = Awaited<ReturnType<typeof adminGetFeatureFlags>>;
 
 const ROWS: { key: FeatureFlagKey; title: string; description: string }[] = [
   { key: "subscriptions", title: "Assinaturas", description: "Vitrine de planos e atalho no perfil, ligada por padrão. Sem cobrança real nesta fase. SUBS_ENABLED=false desliga." },
-  { key: "openFinance", title: "Open Finance", description: "Conexão bancária e atalho no perfil. Sem integração real nesta fase." },
-  { key: "recharge", title: "Recarga de celular", description: "Atalho no perfil. A recarga ainda mostra \"Em breve\"." },
+  { key: "openFinance", title: "Open Finance", description: "Vitrine de conexão bancária e atalho no perfil, ligada por padrão. Sem integração real nesta fase. OF_ENABLED=false desliga." },
+  { key: "recharge", title: "Recarga de celular", description: "Tela e atalho no perfil, ligados por padrão. A recarga ainda mostra \"Em breve\". RECHARGE_ENABLED=false desliga." },
 ];
 
 /** Mostra o estado dos recursos em liberação. Somente leitura: o valor vem do servidor. */
