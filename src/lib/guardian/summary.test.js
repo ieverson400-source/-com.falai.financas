@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'bun:test';
-import { guardianMonth, summarizeGuardian } from './summary';
+import { guardianMonth, summarizeGuardian } from './summary.ts';
 describe('Guardian privacy and actual totals', () => {
   it('projects only category totals, not transaction details', () => {
     const input = { category: 'Lazer', amount: 120, description: 'private', user_id: 'private', raw_transcript: 'private' };
