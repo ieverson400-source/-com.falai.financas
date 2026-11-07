@@ -4,11 +4,12 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { FEATURE_FLAG_ENV, readFeatureFlags, type FeatureFlagKey } from "./feature-flags.ts";
 
-const KEYS: FeatureFlagKey[] = ["subscriptions", "openFinance", "recharge"];
+const KEYS: FeatureFlagKey[] = ["subscriptions", "openFinance", "recharge", "assistant"];
+const ALL_ON = { subscriptions: true, openFinance: true, recharge: true, assistant: true };
 
 describe("flags de recursos em liberação", () => {
-  it("padrão: os três recursos vêm ligados (vitrine Em breve)", () => {
-    assert.deepEqual(readFeatureFlags({}), { subscriptions: true, openFinance: true, recharge: true });
+  it("padrão: todos os recursos vêm ligados", () => {
+    assert.deepEqual(readFeatureFlags({}), ALL_ON);
   });
 
   it("cada recurso desliga com false, 0, off ou no (qualquer caixa, com espaços)", () => {
@@ -27,16 +28,15 @@ describe("flags de recursos em liberação", () => {
       subscriptions: "SUBS_ENABLED",
       openFinance: "OF_ENABLED",
       recharge: "RECHARGE_ENABLED",
+      assistant: "ASSISTANT_ENABLED",
     });
-    assert.deepEqual(readFeatureFlags({ OF_ENABLED: "false" }), { subscriptions: true, openFinance: false, recharge: true });
-    assert.deepEqual(readFeatureFlags({ RECHARGE_ENABLED: "off" }), { subscriptions: true, openFinance: true, recharge: false });
-    assert.deepEqual(readFeatureFlags({ SUBS_ENABLED: "0" }), { subscriptions: false, openFinance: true, recharge: true });
+    assert.deepEqual(readFeatureFlags({ OF_ENABLED: "false" }), { ...ALL_ON, openFinance: false });
+    assert.deepEqual(readFeatureFlags({ RECHARGE_ENABLED: "off" }), { ...ALL_ON, recharge: false });
+    assert.deepEqual(readFeatureFlags({ SUBS_ENABLED: "0" }), { ...ALL_ON, subscriptions: false });
+    assert.deepEqual(readFeatureFlags({ ASSISTANT_ENABLED: "no" }), { ...ALL_ON, assistant: false });
   });
 
   it("variáveis sem relação não alteram nada", () => {
-    assert.deepEqual(
-      readFeatureFlags({ GOOGLE_PLAY_SERVICE_ACCOUNT_JSON: "false", CELCOIN_CLIENT_ID: "false" }),
-      { subscriptions: true, openFinance: true, recharge: true },
-    );
+    assert.deepEqual(readFeatureFlags({ GOOGLE_PLAY_SERVICE_ACCOUNT_JSON: "false", CELCOIN_CLIENT_ID: "false" }), ALL_ON);
   });
 });

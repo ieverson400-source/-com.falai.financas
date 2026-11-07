@@ -1,14 +1,15 @@
 // Estado dos recursos em liberação. Código puro: recebe as variáveis de ambiente como parâmetro,
 // não lê process.env e não contém segredos.
 //
-// Os três recursos vêm LIGADOS por padrão como vitrine "Em breve" (sem cobrança, sem integração real).
-// Cada variável funciona como chave de desligamento: com "false", "0", "off" ou "no" (sem diferenciar
-// maiúsculas nem espaços) o recurso é desligado.
+// Os recursos vêm LIGADOS por padrão (vitrine "Em breve" ou assistente de ajuda). Cada variável funciona
+// como chave de desligamento: com "false", "0", "off" ou "no" (sem diferenciar maiúsculas nem espaços)
+// o recurso é desligado.
 
 export interface FeatureFlags {
   subscriptions: boolean;
   openFinance: boolean;
   recharge: boolean;
+  assistant: boolean;
 }
 
 export type FeatureFlagKey = keyof FeatureFlags;
@@ -18,6 +19,7 @@ export const FEATURE_FLAG_ENV: Readonly<Record<FeatureFlagKey, string>> = {
   subscriptions: "SUBS_ENABLED",
   openFinance: "OF_ENABLED",
   recharge: "RECHARGE_ENABLED",
+  assistant: "ASSISTANT_ENABLED",
 };
 
 const OFF_VALUES = ["false", "0", "off", "no"];
@@ -31,5 +33,6 @@ export function readFeatureFlags(env: Record<string, string | undefined>): Featu
     subscriptions: enabled("subscriptions"),
     openFinance: enabled("openFinance"),
     recharge: enabled("recharge"),
+    assistant: enabled("assistant"),
   };
 }

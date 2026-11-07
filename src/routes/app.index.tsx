@@ -469,7 +469,7 @@ function ProfileTab({
 
   // Atalhos de recursos em liberação (Assinatura, Open Finance, Recarga): cada um só aparece se o
   // servidor informar que está ligado. Se a consulta falhar, nenhum aparece (falha fechada).
-  const [flags, setFlags] = useState({ subscriptions: false, openFinance: false, recharge: false });
+  const [flags, setFlags] = useState({ subscriptions: false, openFinance: false, recharge: false, assistant: false });
   useEffect(() => {
     let alive = true;
     getFeatureFlags()

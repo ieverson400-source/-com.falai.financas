@@ -4,6 +4,7 @@ import appCss from "../styles.css?url";
 import { InstallPWAButton } from "@/components/InstallPWAButton";
 import { AnimatedSplashScreen } from "@/components/animated-splash-screen";
 import { PushNotificationRegistration } from "@/components/push-notification-registration";
+import { AssistantWidget } from "@/components/assistant-widget";
 import "@/integrations/supabase/server-fn-fetch-patch";
 
 
@@ -103,6 +104,7 @@ function RootComponent() {
       <InstallPWAButton />
       <AnimatedSplashScreen />
       <PushNotificationRegistration />
+      <AssistantWidget />
     </>
   );
 }
