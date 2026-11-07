@@ -1,4 +1,5 @@
 # Roadmap
+- [x] Criar tela pessoal do Guardião com recomendações reais, privacidade, limite mensal e acesso pelo app; tela autenticada e IA verificadas, salvamento ponta a ponta pendente de gastos reais neste mês
 - [x] Remover toda a área visual de assinatura e redirecionar páginas antigas, preservando cobranças e benefícios existentes; perfil autenticado e celular verificados
 - [x] Limpeza pré-exportação: plano aprovado; chat/WhatsApp removidos, push/n8n preservados sem histórico
 - [x] Remover Pluggy/Open Finance e recargas do código, limpar menus e rotas antigas; testes e compilação OK

@@ -8,3 +8,4 @@
 - The admin AdSense section uses a dedicated editor calling the existing admin-authorized settings functions; keep Shop offers independent of ad configuration failures.
 - Shop offer approval uses the existing is_active publication flag and date-based RLS; categories are optional so legacy offers remain unchanged.
 - Partner advertising uses the existing advertisers, advertisements and event tables independently of legacy Shop offers; admin functions authorize through user_roles and user-scoped event inserts retain session/day deduplication.
+- Personal Guardian lives under the client-only authenticated layout; financial reads use the caller's RLS client, AI receives category aggregates only, and durable per-user reservations enforce the configured monthly limit.

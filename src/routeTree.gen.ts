@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AccountDeleteRouteImport } from './routes/account-delete'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -30,6 +31,7 @@ import { Route as AppPlanosRouteImport } from './routes/app.planos'
 import { Route as AppShopRouteImport } from './routes/app.shop'
 import { Route as AppWhatsappTestRouteImport } from './routes/app.whatsapp-test'
 import { Route as BlogGuiaGestaoDeGastosRouteImport } from './routes/blog.guia-gestao-de-gastos'
+import { Route as AuthenticatedAppGuardiaoRouteImport } from './routes/_authenticated.app.guardiao'
 import { Route as ApiPublicPlayRtdnRouteImport } from './routes/api/public/play-rtdn'
 import { Route as AppAdminOfertasRouteImport } from './routes/app.admin_.ofertas'
 import { Route as AppPlanosRetornoRouteImport } from './routes/app.planos.retorno'
@@ -40,6 +42,10 @@ import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/publi
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AccountDeleteRoute = AccountDeleteRouteImport.update({
@@ -142,6 +148,12 @@ const BlogGuiaGestaoDeGastosRoute = BlogGuiaGestaoDeGastosRouteImport.update({
   path: '/blog/guia-gestao-de-gastos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAppGuardiaoRoute =
+  AuthenticatedAppGuardiaoRouteImport.update({
+    id: '/app/guardiao',
+    path: '/app/guardiao',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const ApiPublicPlayRtdnRoute = ApiPublicPlayRtdnRouteImport.update({
   id: '/api/public/play-rtdn',
   path: '/api/public/play-rtdn',
@@ -196,6 +208,7 @@ export interface FileRoutesByFullPath {
   '/app/whatsapp-test': typeof AppWhatsappTestRoute
   '/blog/guia-gestao-de-gastos': typeof BlogGuiaGestaoDeGastosRoute
   '/app/': typeof AppIndexRoute
+  '/app/guardiao': typeof AuthenticatedAppGuardiaoRoute
   '/api/public/play-rtdn': typeof ApiPublicPlayRtdnRoute
   '/app/admin/ofertas': typeof AppAdminOfertasRoute
   '/app/planos/retorno': typeof AppPlanosRetornoRoute
@@ -225,6 +238,7 @@ export interface FileRoutesByTo {
   '/app/whatsapp-test': typeof AppWhatsappTestRoute
   '/blog/guia-gestao-de-gastos': typeof BlogGuiaGestaoDeGastosRoute
   '/app': typeof AppIndexRoute
+  '/app/guardiao': typeof AuthenticatedAppGuardiaoRoute
   '/api/public/play-rtdn': typeof ApiPublicPlayRtdnRoute
   '/app/admin/ofertas': typeof AppAdminOfertasRoute
   '/app/planos/retorno': typeof AppPlanosRetornoRoute
@@ -235,6 +249,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/account-delete': typeof AccountDeleteRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
@@ -255,6 +270,7 @@ export interface FileRoutesById {
   '/app/whatsapp-test': typeof AppWhatsappTestRoute
   '/blog/guia-gestao-de-gastos': typeof BlogGuiaGestaoDeGastosRoute
   '/app/': typeof AppIndexRoute
+  '/_authenticated/app/guardiao': typeof AuthenticatedAppGuardiaoRoute
   '/api/public/play-rtdn': typeof ApiPublicPlayRtdnRoute
   '/app/admin_/ofertas': typeof AppAdminOfertasRoute
   '/app/planos/retorno': typeof AppPlanosRetornoRoute
@@ -286,6 +302,7 @@ export interface FileRouteTypes {
     | '/app/whatsapp-test'
     | '/blog/guia-gestao-de-gastos'
     | '/app/'
+    | '/app/guardiao'
     | '/api/public/play-rtdn'
     | '/app/admin/ofertas'
     | '/app/planos/retorno'
@@ -315,6 +332,7 @@ export interface FileRouteTypes {
     | '/app/whatsapp-test'
     | '/blog/guia-gestao-de-gastos'
     | '/app'
+    | '/app/guardiao'
     | '/api/public/play-rtdn'
     | '/app/admin/ofertas'
     | '/app/planos/retorno'
@@ -324,6 +342,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/account-delete'
     | '/admin'
     | '/auth'
@@ -344,6 +363,7 @@ export interface FileRouteTypes {
     | '/app/whatsapp-test'
     | '/blog/guia-gestao-de-gastos'
     | '/app/'
+    | '/_authenticated/app/guardiao'
     | '/api/public/play-rtdn'
     | '/app/admin_/ofertas'
     | '/app/planos/retorno'
@@ -354,6 +374,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AccountDeleteRoute: typeof AccountDeleteRoute
   AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
@@ -388,6 +409,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/account-delete': {
@@ -530,6 +558,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogGuiaGestaoDeGastosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/app/guardiao': {
+      id: '/_authenticated/app/guardiao'
+      path: '/app/guardiao'
+      fullPath: '/app/guardiao'
+      preLoaderRoute: typeof AuthenticatedAppGuardiaoRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/api/public/play-rtdn': {
       id: '/api/public/play-rtdn'
       path: '/api/public/play-rtdn'
@@ -575,6 +610,18 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedRouteChildren {
+  AuthenticatedAppGuardiaoRoute: typeof AuthenticatedAppGuardiaoRoute
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedAppGuardiaoRoute: AuthenticatedAppGuardiaoRoute,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+)
+
 interface AppPlanosRouteChildren {
   AppPlanosRetornoRoute: typeof AppPlanosRetornoRoute
 }
@@ -589,6 +636,7 @@ const AppPlanosRouteWithChildren = AppPlanosRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AccountDeleteRoute: AccountDeleteRoute,
   AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,

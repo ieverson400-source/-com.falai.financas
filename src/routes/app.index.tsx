@@ -184,6 +184,9 @@ function AppDashboard() {
             <span className="font-display font-semibold truncate">Falaí</span>
           </Link>
           <div className="flex items-center gap-1">
+            <Button asChild size="sm" variant="outline" className="text-primary" title="Guardião Financeiro">
+              <Link to="/app/guardiao" aria-label="Abrir Guardião Financeiro"><ShieldCheck className="size-4" /><span className="hidden sm:inline">Guardião</span></Link>
+            </Button>
             {isAdmin && (
               <Button asChild size="sm" variant="outline" className="border-primary/40 text-primary">
                 <Link to="/admin" aria-label="Abrir painel administrativo">
@@ -275,6 +278,10 @@ function AppDashboard() {
             </Card>
 
             {/* Destaque de objetivo */}
+            <section className="flex flex-wrap items-center justify-between gap-4 border-y border-border py-5">
+              <div className="flex items-center gap-3"><ShieldCheck className="size-7 text-primary" /><h2 className="font-display font-semibold">Guardião Financeiro</h2></div>
+              <Button asChild variant="outline"><Link to="/app/guardiao">Ver recomendações <ArrowUpRight className="size-4" /></Link></Button>
+            </section>
             <GoalHighlight />
 
             {/* Importar planilhas */}
