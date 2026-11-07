@@ -420,6 +420,51 @@ export type Database = {
         }
         Relationships: []
       }
+      guardian_analyses: {
+        Row: {
+          created_at: string
+          id: string
+          month: string
+          recommendation: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          month: string
+          recommendation?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          month?: string
+          recommendation?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      guardian_gateway_state: {
+        Row: {
+          blocked: boolean
+          message: string | null
+          setting_key: string
+        }
+        Insert: {
+          blocked?: boolean
+          message?: string | null
+          setting_key: string
+        }
+        Update: {
+          blocked?: boolean
+          message?: string | null
+          setting_key?: string
+        }
+        Relationships: []
+      }
       guardian_settings: {
         Row: {
           enabled: boolean
@@ -1220,6 +1265,10 @@ export type Database = {
         Returns: boolean
       }
       is_account_active: { Args: { _user_id: string }; Returns: boolean }
+      reserve_guardian_analysis: {
+        Args: { p_user_id: string }
+        Returns: string
+      }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
