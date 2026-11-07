@@ -2,6 +2,14 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { type StripeEnv, createStripeClient, getStripeErrorMessage } from "@/lib/stripe.server";
 
+function assertSafeReturnUrl(url: string | undefined) {
+  if (!url) return;
+  const allowed = [/^https:\/\/falai-finan-as\.lovable\.app$/, /^https:\/\/[a-z0-9-]+\.lovable\.app$/, /^http:\/\/localhost(:\d+)?$/];
+  let origin: string;
+  try { origin = new URL(url.replace("{CHECKOUT_SESSION_ID}", "x")).origin; } catch { throw new Error("Invalid returnUrl"); }
+  if (!allowed.some((r) => r.test(origin))) throw new Error("Invalid returnUrl");
+}
+
 type CheckoutSessionResult = { clientSecret: string } | { error: string };
 type PortalSessionResult = { url: string } | { error: string };
 
@@ -31,6 +39,7 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: { priceId: string; returnUrl: string; environment: StripeEnv }) => {
     if (!/^[a-zA-Z0-9_-]+$/.test(data.priceId)) throw new Error("Invalid priceId");
+    assertSafeReturnUrl(data.returnUrl);
     return data;
   })
   .handler(async ({ data, context }): Promise<CheckoutSessionResult> => {
@@ -68,7 +77,10 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
 
 export const createPortalSession = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { returnUrl?: string; environment: StripeEnv }) => data)
+  .inputValidator((data: { returnUrl?: string; environment: StripeEnv }) => {
+    assertSafeReturnUrl(data.returnUrl);
+    return data;
+  })
   .handler(async ({ data, context }): Promise<PortalSessionResult> => {
     const { supabase, userId } = context;
 
