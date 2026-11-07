@@ -14,6 +14,8 @@ import { ExpenseCharts } from "@/components/expense-charts";
 import { ManualExpenseDialog } from "@/components/manual-expense-dialog";
 import { ReceiptScanner } from "@/components/receipt-scanner";
 import { ImportSpreadsheetButton } from "@/components/import-spreadsheet-button";
+import { NotificationImportDialog } from "@/components/notification-import-dialog";
+import { InsightsCards } from "@/components/insights-cards";
 
 
 
@@ -280,6 +282,9 @@ function AppDashboard() {
             {/* Importar planilhas */}
             <ImportSpreadsheetButton />
 
+            {/* Gasto a partir de notificação, SMS ou e-mail colado */}
+            <NotificationImportDialog userId={user.id} expenses={expenses} onSuccess={load} />
+
 
             {/* Top stats + recorder */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5">
@@ -327,6 +332,8 @@ function AppDashboard() {
             {/* Charts */}
             <ExpenseCharts expenses={monthExpenses} />
 
+            {/* Projeção do mês e assinaturas recorrentes (calculadas no aparelho) */}
+            <InsightsCards expenses={expenses} />
 
             {/* List */}
             <Card className="bg-card shadow-soft overflow-hidden">

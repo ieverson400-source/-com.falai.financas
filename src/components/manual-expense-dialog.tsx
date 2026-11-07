@@ -17,6 +17,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { CATEGORIES } from "@/lib/categories";
+import { suggestCategory } from "@/lib/insights/categorize";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -25,6 +26,8 @@ export function ManualExpenseDialog({ onSuccess, userId }: { onSuccess: () => vo
   const [open, setOpen] = useState(false);
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState<string>("Outros");
+  // Enquanto o usuário não escolher a categoria, ela é sugerida pela descrição.
+  const [categoryTouched, setCategoryTouched] = useState(false);
   const [description, setDescription] = useState("");
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
   const [loading, setLoading] = useState(false);
@@ -49,6 +52,8 @@ export function ManualExpenseDialog({ onSuccess, userId }: { onSuccess: () => vo
     setOpen(false);
     setAmount("");
     setDescription("");
+    setCategory("Outros");
+    setCategoryTouched(false);
     onSuccess();
   };
 
@@ -84,7 +89,13 @@ export function ManualExpenseDialog({ onSuccess, userId }: { onSuccess: () => vo
           </div>
           <div className="space-y-2">
             <Label>Categoria</Label>
-            <Select value={category} onValueChange={setCategory}>
+            <Select
+              value={category}
+              onValueChange={(v) => {
+                setCategory(v);
+                setCategoryTouched(true);
+              }}
+            >
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
                 {CATEGORIES.map((c) => (
@@ -95,7 +106,16 @@ export function ManualExpenseDialog({ onSuccess, userId }: { onSuccess: () => vo
           </div>
           <div className="space-y-2">
             <Label>Descrição (opcional)</Label>
-            <Input value={description} onChange={(e) => setDescription(e.target.value)} />
+            <Input
+              value={description}
+              onChange={(e) => {
+                setDescription(e.target.value);
+                if (!categoryTouched) {
+                  const suggested = suggestCategory(e.target.value);
+                  if (suggested) setCategory(suggested);
+                }
+              }}
+            />
           </div>
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? "Salvando..." : "Salvar"}

@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Loader2, FileSpreadsheet, Upload, Link as LinkIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import { suggestCategory } from "@/lib/insights/categorize";
 
 type RawRow = Record<string, unknown>;
 
@@ -94,17 +95,18 @@ function normalizeRows(rows: RawRow[]): { parsed: ParsedRow[]; skipped: number }
         | number
         | undefined) ?? "";
     const amount = parseAmount(pick(r, ["valor", "amount", "preco", "price", "total"]));
-    const category =
-      (pick(r, ["categoria", "category", "tipo"]) as string | undefined) ?? "Outros";
+    const rawCategory = String((pick(r, ["categoria", "category", "tipo"]) as string | undefined) ?? "").trim();
     if (!date || amount == null) {
       skipped++;
       continue;
     }
+    // Sem categoria na planilha: sugere pela descrição; sem correspondência, "Outros".
+    const category = rawCategory || suggestCategory(String(description)) || "Outros";
     parsed.push({
       expense_date: date,
       description: String(description).trim(),
       amount,
-      category: String(category).trim() || "Outros",
+      category,
     });
   }
   return { parsed, skipped };
