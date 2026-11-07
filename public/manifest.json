@@ -11,6 +11,11 @@
   "background_color": "#0f1b2d",
   "lang": "pt-BR",
   "categories": ["finance", "productivity", "utilities"],
+  "share_target": {
+    "action": "/app/compartilhar",
+    "method": "GET",
+    "params": { "title": "title", "text": "text", "url": "url" }
+  },
   "icons": [
     {
       "src": "/icon-192.png",

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ClipboardPaste, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -31,12 +31,22 @@ export function NotificationImportDialog({
   userId,
   expenses,
   onSuccess,
+  initialText,
+  defaultOpen = false,
+  hideTrigger = false,
+  onClose,
 }: {
   userId: string;
   expenses: readonly ExistingExpense[];
   onSuccess: () => void;
+  /** Texto já recebido (ex.: compartilhado de outro app). É lido ao abrir, sem o usuário precisar colar. */
+  initialText?: string;
+  defaultOpen?: boolean;
+  hideTrigger?: boolean;
+  /** Chamado quando o diálogo é fechado sem salvar. */
+  onClose?: () => void;
 }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   const [text, setText] = useState("");
   const [analyzed, setAnalyzed] = useState(false);
   const [amount, setAmount] = useState("");
@@ -79,6 +89,15 @@ export function NotificationImportDialog({
     setCategory(parsed.category ?? "Outros");
     setAnalyzed(true);
   }
+
+  // Texto compartilhado: preenche e lê automaticamente uma única vez, na abertura.
+  useEffect(() => {
+    if (!initialText?.trim()) return;
+    const value = initialText.slice(0, 2000);
+    setText(value);
+    analyze(value);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function pasteFromClipboard() {
     try {
@@ -126,14 +145,19 @@ export function NotificationImportDialog({
       open={open}
       onOpenChange={(v) => {
         setOpen(v);
-        if (!v) reset();
+        if (!v) {
+          reset();
+          onClose?.();
+        }
       }}
     >
-      <DialogTrigger asChild>
-        <Button variant="outline" className="w-full gap-2">
-          <ClipboardPaste className="size-4" /> Colar notificação ou e-mail
-        </Button>
-      </DialogTrigger>
+      {!hideTrigger && (
+        <DialogTrigger asChild>
+          <Button variant="outline" className="w-full gap-2">
+            <ClipboardPaste className="size-4" /> Colar notificação ou e-mail
+          </Button>
+        </DialogTrigger>
+      )}
       <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Gasto a partir de um texto</DialogTitle>

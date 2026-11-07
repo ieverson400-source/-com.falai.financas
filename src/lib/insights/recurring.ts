@@ -19,6 +19,7 @@ export interface RecurringCharge {
   category: string;
   /** Valor típico mensal (mediana). */
   typicalAmount: number;
+  firstAmount: number;
   lastAmount: number;
   occurrences: number;
   firstDate: string;
@@ -57,6 +58,11 @@ export function fromDay(day: number): string {
   return new Date(day * DAY_MS).toISOString().slice(0, 10);
 }
 
+/** yyyy-mm-dd na data LOCAL do usuário (toISOString usaria UTC e viraria o dia à noite no Brasil). */
+export function localIso(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
 /** Mesmo dia do mês seguinte (ajustado ao último dia quando o mês seguinte é mais curto). */
 export function addOneMonth(iso: string): string {
   const [y, m, d] = iso.split("-").map(Number);
@@ -65,22 +71,17 @@ export function addOneMonth(iso: string): string {
   return dt.toISOString().slice(0, 10);
 }
 
-function median(values: number[]): number {
-  const s = [...values].sort((a, b) => a - b);
-  const mid = Math.floor(s.length / 2);
-  return s.length % 2 ? s[mid] : (s[mid - 1] + s[mid]) / 2;
-}
 const round2 = (n: number) => Math.round(n * 100) / 100;
 
 const MONTHLY_MIN = 24;
 const MONTHLY_MAX = 38;
 const ACTIVE_WINDOW_DAYS = 50;
+/** Variação máxima (35%) de uma cobrança para a seguinte para ainda ser considerada a mesma cobrança. */
+const MAX_STEP_CHANGE = 0.35;
 
 export function detectRecurring(expenses: readonly ExpenseLike[], today: Date): RecurringCharge[] {
   // Data LOCAL do usuário (não UTC), para bater com a projeção do mês.
-  const todayDay = toDay(
-    `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`,
-  );
+  const todayDay = toDay(localIso(today));
   const groups = new Map<string, ExpenseLike[]>();
   for (const e of expenses) {
     if (!(Number(e.amount) > 0) || !/^\d{4}-\d{2}-\d{2}$/.test(e.expense_date)) continue;
@@ -110,10 +111,11 @@ export function detectRecurring(expenses: readonly ExpenseLike[], today: Date): 
     const monthlyShare = intervals.filter((i) => i >= MONTHLY_MIN && i <= MONTHLY_MAX).length / intervals.length;
     if (monthlyShare < 0.8) continue;
 
+    // Valores parecidos de uma cobrança para a próxima. Compara cada valor com o anterior (e não com a
+    // mediana) para continuar reconhecendo assinaturas que sobem de preço em degraus.
     const amounts = sorted.map((e) => Number(e.amount));
-    const med = median(amounts);
-    const stableShare = amounts.filter((a) => Math.abs(a - med) <= med * 0.15).length / amounts.length;
-    if (stableShare < 0.8) continue;
+    const steps = amounts.slice(1).map((a, i) => Math.abs(a - amounts[i]) <= amounts[i] * MAX_STEP_CHANGE);
+    if (steps.filter(Boolean).length / steps.length < 0.8) continue;
 
     const lastDay = days[days.length - 1];
     const status: "active" | "stopped" = todayDay - lastDay <= ACTIVE_WINDOW_DAYS ? "active" : "stopped";
@@ -122,13 +124,15 @@ export function detectRecurring(expenses: readonly ExpenseLike[], today: Date): 
     const lastAmount = amounts[amounts.length - 1];
     const change = firstAmount > 0 ? ((lastAmount - firstAmount) / firstAmount) * 100 : 0;
     const priceChangePct = Math.abs(change) >= 3 ? Math.round(change) : null;
-    const monthlyCost = round2(med);
+    // Custo mensal = último valor cobrado (o preço atual), não a mediana, que subestima após um reajuste.
+    const monthlyCost = round2(lastAmount);
 
     out.push({
       key,
       label,
       category: last.category,
       typicalAmount: monthlyCost,
+      firstAmount: round2(firstAmount),
       lastAmount: round2(lastAmount),
       occurrences: sorted.length,
       firstDate: first.expense_date,
@@ -139,7 +143,8 @@ export function detectRecurring(expenses: readonly ExpenseLike[], today: Date): 
       annualCost: round2(monthlyCost * 12),
       priceChangePct,
       likelySubscription,
-      review: status === "active" && ((likelySubscription && monthsActive >= 6) || (priceChangePct ?? 0) >= 10),
+      // Só assinaturas: contas variáveis (luz, água) oscilam todo mês e não devem gerar "Vale revisar".
+      review: status === "active" && likelySubscription && (monthsActive >= 6 || (priceChangePct ?? 0) >= 10),
       status,
     });
   }

@@ -6,7 +6,9 @@ import { useAuth } from "@/hooks/use-auth";
 
 import { useSubscription } from "@/hooks/use-subscription";
 import { verifyMyPlayPurchase } from "@/lib/play-billing.functions";
-import { getFeatureFlags } from "@/lib/feature-flags.functions";
+import { useFeatureFlags } from "@/hooks/use-feature-flags";
+import { HomeShortcuts } from "@/components/home-shortcuts";
+import { PriceChangeAlerts } from "@/components/price-change-alerts";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { AudioRecorder } from "@/components/audio-recorder";
@@ -24,7 +26,7 @@ import { ProfileEditDialog } from "@/components/profile-edit-dialog";
 import { GoalHighlight } from "@/components/goal-highlight";
 import { resolveAvatarUrl } from "@/lib/avatar-url";
 import { toast } from "sonner";
-import { Trash2, Mic, Hand, BarChart3, PiggyBank, ArrowUpRight, ArrowDownRight, Construction, Shield, ShieldCheck, Calendar as CalendarIcon, TrendingUp, Heart, Share2, Moon, Sun, LogOut, AlertTriangle, ExternalLink, CreditCard, Landmark, Smartphone } from "lucide-react";
+import { Trash2, Mic, Hand, BarChart3, PiggyBank, ArrowUpRight, ArrowDownRight, Construction, Shield, ShieldCheck, Calendar as CalendarIcon, TrendingUp, Heart, Share2, Moon, Sun, LogOut, AlertTriangle, ExternalLink, CreditCard } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
 import { categoryColor, formatBRL } from "@/lib/categories";
 import { format, parseISO, startOfMonth } from "date-fns";
@@ -83,6 +85,7 @@ function AppDashboard() {
   const { tab: initialTab } = Route.useSearch();
   const [activeTab, setActiveTab] = useState<TabKey>(initialTab ?? "inicio");
   const [isAdmin, setIsAdmin] = useState(false);
+  const flags = useFeatureFlags(); // atalhos do início (recarga e Open Finance)
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth" });
@@ -248,6 +251,12 @@ function AppDashboard() {
               <p className="font-display text-3xl font-bold mt-1 tabular-nums">{formatBRL(totalMonth)}</p>
               <p className="text-xs mt-2">{monthExpenses.length} gasto(s) registrado(s)</p>
             </Card>
+
+            {/* Atalhos: recarga de celular e conexão bancária (só se ligados no servidor) */}
+            <HomeShortcuts flags={flags} />
+
+            {/* Avisos de reajuste de assinaturas */}
+            <PriceChangeAlerts expenses={expenses} />
 
             {/* Destaque de voz */}
             <Card className="animate-rise p-5 sm:p-6 bg-card shadow-soft border border-primary/20">
@@ -474,18 +483,9 @@ function ProfileTab({
   const { isActive, refresh } = useSubscription(user.id);
   const verifyPlay = useServerFn(verifyMyPlayPurchase);
 
-  // Atalhos de recursos em liberação (Assinatura, Open Finance, Recarga): cada um só aparece se o
-  // servidor informar que está ligado. Se a consulta falhar, nenhum aparece (falha fechada).
-  const [flags, setFlags] = useState({ subscriptions: false, openFinance: false, recharge: false, assistant: false });
-  useEffect(() => {
-    let alive = true;
-    getFeatureFlags()
-      .then((f) => alive && setFlags(f))
-      .catch(() => {});
-    return () => {
-      alive = false;
-    };
-  }, []);
+  // Atalho "Assinatura": só aparece se o servidor informar que está ligado (falha fechada).
+  // Recarga e Open Finance ficam no início do app (HomeShortcuts), não mais aqui.
+  const flags = useFeatureFlags();
 
   // Lê o purchaseToken que a camada nativa (Play Billing / TWA bridge) grava
   // em localStorage após o checkout — chave compartilhada com o wrapper Android.
@@ -564,24 +564,6 @@ function ProfileTab({
             >
               <CreditCard className="size-4 text-muted-foreground" />
               <span className="text-sm font-medium flex-1">Assinatura</span>
-            </Link>
-          )}
-          {flags.openFinance && (
-            <Link
-              to="/app/open-finance"
-              className="w-full px-4 py-3.5 flex items-center gap-3 text-left hover:bg-muted/40 transition-colors"
-            >
-              <Landmark className="size-4 text-muted-foreground" />
-              <span className="text-sm font-medium flex-1">Conectar conta bancária</span>
-            </Link>
-          )}
-          {flags.recharge && (
-            <Link
-              to="/app/recarga"
-              className="w-full px-4 py-3.5 flex items-center gap-3 text-left hover:bg-muted/40 transition-colors"
-            >
-              <Smartphone className="size-4 text-muted-foreground" />
-              <span className="text-sm font-medium flex-1">Recarga de celular</span>
             </Link>
           )}
           <Button variant="ghost" className="h-auto w-full justify-start gap-3 rounded-none px-4 py-3.5" onClick={() => window.dispatchEvent(new Event("falai-enable-push"))}>
