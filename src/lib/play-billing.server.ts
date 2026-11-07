@@ -216,7 +216,14 @@ export async function persistVerifiedSubscription(
   if (owner) throw new Error("Esta compra já está vinculada a outra conta.");
   // A compra precisa ter sido iniciada por esta conta (obfuscatedAccountId = userId).
   const boundTo = (v.raw as SubV2Response | null)?.externalAccountIdentifiers?.obfuscatedExternalAccountId;
-  if (!boundTo || boundTo !== userId) throw new Error("Esta compra não pertence a esta conta.");
+  const { data: existing } = await supabaseAdmin
+    .from("subscriptions")
+    .select("user_id")
+    .eq("purchase_token", v.purchaseToken)
+    .eq("user_id", userId)
+    .limit(1)
+    .maybeSingle();
+  if (!existing && (!boundTo || boundTo !== userId)) throw new Error("Esta compra não pertence a esta conta.");
   const { error } = await supabaseAdmin.from("subscriptions").upsert(
     [
       {
