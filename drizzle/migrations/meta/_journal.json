@@ -29,6 +29,13 @@
       "when": 1794010449602,
       "tag": "0003_harden_advertisers_and_blocked_users",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1794013075106,
+      "tag": "0004_create_guardian_settings",
+      "breakpoints": true
     }
   ]
 }

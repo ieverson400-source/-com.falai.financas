@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { BadgeDollarSign, BarChart3, Bell, ExternalLink, LayoutDashboard, Settings, ShieldCheck, ShoppingBag, Users } from "lucide-react";
+import { BadgeDollarSign, BarChart3, Bell, ExternalLink, LayoutDashboard, Settings, ShieldCheck, ShoppingBag, Sparkles, Users } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
@@ -9,6 +9,7 @@ const items = [
   { hash: "offers", label: "Anúncios", icon: ShoppingBag },
   { hash: "advertising", label: "Publicidade", icon: BarChart3 },
   { hash: "monetization", label: "AdSense", icon: BadgeDollarSign },
+  { hash: "guardian", label: "Guardião IA", icon: Sparkles },
   { hash: "notifications", label: "Notificações", icon: Bell },
   { hash: "settings", label: "Configurações", icon: Settings },
 ];
