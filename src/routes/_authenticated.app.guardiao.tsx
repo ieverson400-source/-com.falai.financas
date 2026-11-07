@@ -1,5 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
-import { queryOptions, useSuspenseQuery, useQueryClient } from '@tanstack/react-query';
+import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
 import { useServerFn } from '@tanstack/react-start';
 import { useState } from 'react';
 import { ArrowLeft, ShieldCheck, Sparkles, Loader2, AlertTriangle, RefreshCw } from 'lucide-react';
@@ -9,13 +8,11 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { BottomNav } from '@/components/bottom-nav';
 
-const guardianQuery = queryOptions({ queryKey: ['my-guardian'], queryFn: () => getMyGuardian(), staleTime: 0 });
-
 export const Route = createFileRoute('/_authenticated/app/guardiao')({
-  loader: ({ context }) => context.queryClient.ensureQueryData(guardianQuery),
+  loader: () => getMyGuardian(),
   component: GuardianPage,
   pendingComponent: () => <div className="min-h-screen grid place-items-center bg-background"><Loader2 className="size-7 animate-spin text-primary" aria-label="Carregando Guardião" /></div>,
-  errorComponent: ({ error, reset }) => <main className="min-h-screen grid place-items-center bg-background p-6"><div className="max-w-md space-y-4"><h1 className="text-xl font-semibold">Guardião Financeiro</h1><p role="alert">{error.message}</p><Button onClick={reset}><RefreshCw className="size-4" />Tentar novamente</Button><Button asChild variant="outline"><Link to="/app">Voltar ao app</Link></Button></div></main>,
+  errorComponent: ({ error, reset }) => <main className="min-h-screen grid place-items-center bg-background p-6"><div className="max-w-md space-y-4"><h1 className="text-xl font-semibold">Guardião Financeiro</h1><p role="alert">{error instanceof Error ? error.message : 'Não foi possível carregar o Guardião.'}</p><Button onClick={reset}><RefreshCw className="size-4" />Tentar novamente</Button><Button asChild variant="outline"><Link to="/app">Voltar ao app</Link></Button></div></main>,
   head: () => ({ meta: [
     { title: 'Guardião Financeiro — Falaí Finanças' },
     { name: 'description', content: 'Suas recomendações pessoais de gastos e alertas de orçamento no Falaí Finanças.' },
@@ -28,8 +25,8 @@ export const Route = createFileRoute('/_authenticated/app/guardiao')({
 });
 
 function GuardianPage() {
-  const { data } = useSuspenseQuery(guardianQuery);
-  const client = useQueryClient();
+  const data = Route.useLoaderData();
+  const router = useRouter();
   const generate = useServerFn(generateMyGuardian);
   const [working, setWorking] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -41,7 +38,7 @@ function GuardianPage() {
     try {
       const result = await generate();
       if (!result.ok) setError(result.message);
-      await client.invalidateQueries({ queryKey: ['my-guardian'] });
+      await router.invalidate();
     } catch (e) { setError(e instanceof Error ? e.message : 'Não foi possível concluir a análise.'); }
     finally { setWorking(false); }
   };
