@@ -420,6 +420,42 @@ export type Database = {
         }
         Relationships: []
       }
+      guardian_settings: {
+        Row: {
+          enabled: boolean
+          include_budget_alerts: boolean
+          model: string
+          monthly_insight_limit: number
+          setting_key: string
+          share_category_totals_only: boolean
+          system_prompt: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          enabled?: boolean
+          include_budget_alerts?: boolean
+          model?: string
+          monthly_insight_limit?: number
+          setting_key: string
+          share_category_totals_only?: boolean
+          system_prompt?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          enabled?: boolean
+          include_budget_alerts?: boolean
+          model?: string
+          monthly_insight_limit?: number
+          setting_key?: string
+          share_category_totals_only?: boolean
+          system_prompt?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       internal_secrets: {
         Row: {
           created_at: string
