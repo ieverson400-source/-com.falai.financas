@@ -21,8 +21,10 @@ import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppAdminRouteImport } from './routes/app.admin'
 import { Route as AppAgendaMensagensRouteImport } from './routes/app.agenda-mensagens'
 import { Route as AppAgendasRouteImport } from './routes/app.agendas'
+import { Route as AppAssinaturaRouteImport } from './routes/app.assinatura'
 import { Route as AppBancosRouteImport } from './routes/app.bancos'
 import { Route as AppConectarWhatsappRouteImport } from './routes/app.conectar-whatsapp'
+import { Route as AppOpenFinanceRouteImport } from './routes/app.open-finance'
 import { Route as AppOrcamentosRouteImport } from './routes/app.orcamentos'
 import { Route as AppPlanosRouteImport } from './routes/app.planos'
 import { Route as AppShopRouteImport } from './routes/app.shop'
@@ -95,6 +97,11 @@ const AppAgendasRoute = AppAgendasRouteImport.update({
   path: '/app/agendas',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppAssinaturaRoute = AppAssinaturaRouteImport.update({
+  id: '/app/assinatura',
+  path: '/app/assinatura',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppBancosRoute = AppBancosRouteImport.update({
   id: '/app/bancos',
   path: '/app/bancos',
@@ -103,6 +110,11 @@ const AppBancosRoute = AppBancosRouteImport.update({
 const AppConectarWhatsappRoute = AppConectarWhatsappRouteImport.update({
   id: '/app/conectar-whatsapp',
   path: '/app/conectar-whatsapp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppOpenFinanceRoute = AppOpenFinanceRouteImport.update({
+  id: '/app/open-finance',
+  path: '/app/open-finance',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppOrcamentosRoute = AppOrcamentosRouteImport.update({
@@ -174,8 +186,10 @@ export interface FileRoutesByFullPath {
   '/app/admin': typeof AppAdminRoute
   '/app/agenda-mensagens': typeof AppAgendaMensagensRoute
   '/app/agendas': typeof AppAgendasRoute
+  '/app/assinatura': typeof AppAssinaturaRoute
   '/app/bancos': typeof AppBancosRoute
   '/app/conectar-whatsapp': typeof AppConectarWhatsappRoute
+  '/app/open-finance': typeof AppOpenFinanceRoute
   '/app/orcamentos': typeof AppOrcamentosRoute
   '/app/planos': typeof AppPlanosRouteWithChildren
   '/app/shop': typeof AppShopRoute
@@ -201,8 +215,10 @@ export interface FileRoutesByTo {
   '/app/admin': typeof AppAdminRoute
   '/app/agenda-mensagens': typeof AppAgendaMensagensRoute
   '/app/agendas': typeof AppAgendasRoute
+  '/app/assinatura': typeof AppAssinaturaRoute
   '/app/bancos': typeof AppBancosRoute
   '/app/conectar-whatsapp': typeof AppConectarWhatsappRoute
+  '/app/open-finance': typeof AppOpenFinanceRoute
   '/app/orcamentos': typeof AppOrcamentosRoute
   '/app/planos': typeof AppPlanosRouteWithChildren
   '/app/shop': typeof AppShopRoute
@@ -229,8 +245,10 @@ export interface FileRoutesById {
   '/app/admin': typeof AppAdminRoute
   '/app/agenda-mensagens': typeof AppAgendaMensagensRoute
   '/app/agendas': typeof AppAgendasRoute
+  '/app/assinatura': typeof AppAssinaturaRoute
   '/app/bancos': typeof AppBancosRoute
   '/app/conectar-whatsapp': typeof AppConectarWhatsappRoute
+  '/app/open-finance': typeof AppOpenFinanceRoute
   '/app/orcamentos': typeof AppOrcamentosRoute
   '/app/planos': typeof AppPlanosRouteWithChildren
   '/app/shop': typeof AppShopRoute
@@ -258,8 +276,10 @@ export interface FileRouteTypes {
     | '/app/admin'
     | '/app/agenda-mensagens'
     | '/app/agendas'
+    | '/app/assinatura'
     | '/app/bancos'
     | '/app/conectar-whatsapp'
+    | '/app/open-finance'
     | '/app/orcamentos'
     | '/app/planos'
     | '/app/shop'
@@ -285,8 +305,10 @@ export interface FileRouteTypes {
     | '/app/admin'
     | '/app/agenda-mensagens'
     | '/app/agendas'
+    | '/app/assinatura'
     | '/app/bancos'
     | '/app/conectar-whatsapp'
+    | '/app/open-finance'
     | '/app/orcamentos'
     | '/app/planos'
     | '/app/shop'
@@ -312,8 +334,10 @@ export interface FileRouteTypes {
     | '/app/admin'
     | '/app/agenda-mensagens'
     | '/app/agendas'
+    | '/app/assinatura'
     | '/app/bancos'
     | '/app/conectar-whatsapp'
+    | '/app/open-finance'
     | '/app/orcamentos'
     | '/app/planos'
     | '/app/shop'
@@ -340,8 +364,10 @@ export interface RootRouteChildren {
   AppAdminRoute: typeof AppAdminRoute
   AppAgendaMensagensRoute: typeof AppAgendaMensagensRoute
   AppAgendasRoute: typeof AppAgendasRoute
+  AppAssinaturaRoute: typeof AppAssinaturaRoute
   AppBancosRoute: typeof AppBancosRoute
   AppConectarWhatsappRoute: typeof AppConectarWhatsappRoute
+  AppOpenFinanceRoute: typeof AppOpenFinanceRoute
   AppOrcamentosRoute: typeof AppOrcamentosRoute
   AppPlanosRoute: typeof AppPlanosRouteWithChildren
   AppShopRoute: typeof AppShopRoute
@@ -441,6 +467,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAgendasRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/assinatura': {
+      id: '/app/assinatura'
+      path: '/app/assinatura'
+      fullPath: '/app/assinatura'
+      preLoaderRoute: typeof AppAssinaturaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/app/bancos': {
       id: '/app/bancos'
       path: '/app/bancos'
@@ -453,6 +486,13 @@ declare module '@tanstack/react-router' {
       path: '/app/conectar-whatsapp'
       fullPath: '/app/conectar-whatsapp'
       preLoaderRoute: typeof AppConectarWhatsappRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/open-finance': {
+      id: '/app/open-finance'
+      path: '/app/open-finance'
+      fullPath: '/app/open-finance'
+      preLoaderRoute: typeof AppOpenFinanceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app/orcamentos': {
@@ -559,8 +599,10 @@ const rootRouteChildren: RootRouteChildren = {
   AppAdminRoute: AppAdminRoute,
   AppAgendaMensagensRoute: AppAgendaMensagensRoute,
   AppAgendasRoute: AppAgendasRoute,
+  AppAssinaturaRoute: AppAssinaturaRoute,
   AppBancosRoute: AppBancosRoute,
   AppConectarWhatsappRoute: AppConectarWhatsappRoute,
+  AppOpenFinanceRoute: AppOpenFinanceRoute,
   AppOrcamentosRoute: AppOrcamentosRoute,
   AppPlanosRoute: AppPlanosRouteWithChildren,
   AppShopRoute: AppShopRoute,

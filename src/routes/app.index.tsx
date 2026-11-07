@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/use-auth";
 
 import { useSubscription } from "@/hooks/use-subscription";
 import { verifyMyPlayPurchase } from "@/lib/play-billing.functions";
+import { getFeatureFlags } from "@/lib/feature-flags.functions";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { AudioRecorder } from "@/components/audio-recorder";
@@ -21,7 +22,7 @@ import { ProfileEditDialog } from "@/components/profile-edit-dialog";
 import { GoalHighlight } from "@/components/goal-highlight";
 import { resolveAvatarUrl } from "@/lib/avatar-url";
 import { toast } from "sonner";
-import { Trash2, Mic, Hand, BarChart3, PiggyBank, ArrowUpRight, ArrowDownRight, Construction, Shield, ShieldCheck, Calendar as CalendarIcon, TrendingUp, Heart, Share2, Moon, Sun, LogOut, AlertTriangle, ExternalLink } from "lucide-react";
+import { Trash2, Mic, Hand, BarChart3, PiggyBank, ArrowUpRight, ArrowDownRight, Construction, Shield, ShieldCheck, Calendar as CalendarIcon, TrendingUp, Heart, Share2, Moon, Sun, LogOut, AlertTriangle, ExternalLink, CreditCard, Landmark, Smartphone } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
 import { categoryColor, formatBRL } from "@/lib/categories";
 import { format, parseISO, startOfMonth } from "date-fns";
@@ -466,6 +467,19 @@ function ProfileTab({
   const { isActive, refresh } = useSubscription(user.id);
   const verifyPlay = useServerFn(verifyMyPlayPurchase);
 
+  // Atalhos de recursos em liberação (Assinatura, Open Finance, Recarga): cada um só aparece se o
+  // servidor informar que está ligado. Se a consulta falhar, nenhum aparece (falha fechada).
+  const [flags, setFlags] = useState({ subscriptions: false, openFinance: false, recharge: false });
+  useEffect(() => {
+    let alive = true;
+    getFeatureFlags()
+      .then((f) => alive && setFlags(f))
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, []);
+
   // Lê o purchaseToken que a camada nativa (Play Billing / TWA bridge) grava
   // em localStorage após o checkout — chave compartilhada com o wrapper Android.
   const readStoredPlayToken = useCallback(():
@@ -572,6 +586,33 @@ function ProfileTab({
             onAvatarChange={onAvatarChange}
           />
           <ConfigThemeRow />
+          {flags.subscriptions && (
+            <Link
+              to="/app/assinatura"
+              className="w-full px-4 py-3.5 flex items-center gap-3 text-left hover:bg-muted/40 transition-colors"
+            >
+              <CreditCard className="size-4 text-muted-foreground" />
+              <span className="text-sm font-medium flex-1">Assinatura</span>
+            </Link>
+          )}
+          {flags.openFinance && (
+            <Link
+              to="/app/open-finance"
+              className="w-full px-4 py-3.5 flex items-center gap-3 text-left hover:bg-muted/40 transition-colors"
+            >
+              <Landmark className="size-4 text-muted-foreground" />
+              <span className="text-sm font-medium flex-1">Conectar conta bancária</span>
+            </Link>
+          )}
+          {flags.recharge && (
+            <Link
+              to="/app/recarga"
+              className="w-full px-4 py-3.5 flex items-center gap-3 text-left hover:bg-muted/40 transition-colors"
+            >
+              <Smartphone className="size-4 text-muted-foreground" />
+              <span className="text-sm font-medium flex-1">Recarga de celular</span>
+            </Link>
+          )}
           <Button variant="ghost" className="h-auto w-full justify-start gap-3 rounded-none px-4 py-3.5" onClick={() => window.dispatchEvent(new Event("falai-enable-push"))}>
             <ExternalLink className="size-4 text-muted-foreground" />Ativar notificações push
           </Button>
