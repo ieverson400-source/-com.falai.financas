@@ -14,6 +14,7 @@ import { Card } from "@/components/ui/card";
 import { AudioRecorder } from "@/components/audio-recorder";
 import { ExpenseCharts } from "@/components/expense-charts";
 import { ManualExpenseDialog } from "@/components/manual-expense-dialog";
+import { ManualIncomeDialog } from "@/components/manual-income-dialog";
 import { ReceiptScanner } from "@/components/receipt-scanner";
 import { ImportSpreadsheetButton } from "@/components/import-spreadsheet-button";
 import { NotificationImportDialog } from "@/components/notification-import-dialog";
@@ -353,7 +354,7 @@ function AppDashboard() {
                     {refreshing ? "Atualizando..." : `${expenses.length} no total`}
                   </p>
                 </div>
-                <ManualExpenseDialog onSuccess={load} userId={user.id} />
+                <div className="flex gap-2"><ManualIncomeDialog userId={user.id} /><ManualExpenseDialog onSuccess={load} userId={user.id} /></div>
               </div>
 
               {expenses.length === 0 ? (

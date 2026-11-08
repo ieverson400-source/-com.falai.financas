@@ -36,6 +36,13 @@
       "when": 1794013075106,
       "tag": "0004_create_guardian_settings",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1794154760965,
+      "tag": "0005_create_incomes",
+      "breakpoints": true
     }
   ]
 }
