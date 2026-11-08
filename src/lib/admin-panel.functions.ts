@@ -198,3 +198,30 @@ export const adminListPurchases = createServerFn({ method: "GET" })
       cancelAtPeriodEnd: s.cancel_at_period_end, createdAt: s.created_at, updatedAt: s.updated_at,
     }));
   });
+
+export const adminUserStatement = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { userId: string; month: string }) => z.object({ userId: z.string().uuid(), month: z.string().regex(/^\d{4}-\d{2}$/) }).parse(input))
+  .handler(async ({ data, context }) => {
+    const { supabaseAdmin } = await authorizedAdmin(context);
+    const [y, m] = data.month.split("-").map(Number);
+    const start = `${data.month}-01`;
+    const end = new Date(Date.UTC(y, m, 1)).toISOString().slice(0, 10);
+    const [exp, inc, prevExp, prevInc] = await Promise.all([
+      supabaseAdmin.from("expenses").select("id,amount,category,description,expense_date").eq("user_id", data.userId).gte("expense_date", start).lt("expense_date", end),
+      supabaseAdmin.from("incomes").select("id,amount,description,income_date").eq("user_id", data.userId).gte("income_date", start).lt("income_date", end),
+      supabaseAdmin.from("expenses").select("amount").eq("user_id", data.userId).lt("expense_date", start),
+      supabaseAdmin.from("incomes").select("amount").eq("user_id", data.userId).lt("income_date", start),
+    ]);
+    for (const r of [exp, inc, prevExp, prevInc]) if (r.error) throw r.error;
+    const sum = (rows: { amount: number | string }[] | null) => (rows ?? []).reduce((t, r) => t + Number(r.amount), 0);
+    const openingBalance = sum(prevInc.data) - sum(prevExp.data);
+    const entries = [
+      ...(inc.data ?? []).map((r) => ({ id: r.id, date: r.income_date, type: "income" as const, description: r.description ?? "Receita", category: null as string | null, amount: Number(r.amount) })),
+      ...(exp.data ?? []).map((r) => ({ id: r.id, date: r.expense_date, type: "expense" as const, description: r.description ?? r.category, category: r.category, amount: Number(r.amount) })),
+    ].sort((a, b) => a.date.localeCompare(b.date) || (a.type === "income" ? -1 : 1));
+    let running = openingBalance;
+    const rows = entries.map((e) => { running += e.type === "income" ? e.amount : -e.amount; return { ...e, balance: running }; });
+    const totalIncome = sum(inc.data), totalExpense = sum(exp.data);
+    return { openingBalance, totalIncome, totalExpense, monthBalance: totalIncome - totalExpense, closingBalance: running, rows };
+  });
