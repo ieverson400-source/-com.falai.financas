@@ -85,7 +85,7 @@ class BillingManager(
      * Inicia o fluxo NATIVO de pagamento do Google Play.
      * Use no clique de "Assinar Premium" / "Assinar Família".
      */
-    fun launchPurchase(activity: Activity, productId: String): Boolean {
+    fun launchPurchase(activity: Activity, productId: String, userId: String? = null): Boolean {
         val details = _productDetails.value[productId] ?: run {
             Log.e(TAG, "ProductDetails não carregado para $productId — chame queryProductDetails antes")
             return false
@@ -100,9 +100,10 @@ class BillingManager(
             .setOfferToken(offerToken)
             .build()
 
-        val flowParams = BillingFlowParams.newBuilder()
+        val flowBuilder = BillingFlowParams.newBuilder()
             .setProductDetailsParamsList(listOf(productParams))
-            .build()
+        if (!userId.isNullOrBlank()) flowBuilder.setObfuscatedAccountId(userId)
+        val flowParams = flowBuilder.build()
 
         val result = billingClient.launchBillingFlow(activity, flowParams)
         Log.d(TAG, "launchBillingFlow($productId) -> ${result.responseCode}")
