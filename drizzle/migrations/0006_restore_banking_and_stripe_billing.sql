@@ -1,0 +1,17 @@
+ALTER TABLE public.subscriptions DROP CONSTRAINT subscriptions_plan_check;
+ALTER TABLE public.subscriptions ADD CONSTRAINT subscriptions_plan_check CHECK (plan IN ('free','pro','premium','familia'));
+CREATE TABLE public.stripe_subscription_records (id text PRIMARY KEY, user_id uuid NOT NULL, environment text NOT NULL CHECK(environment IN ('sandbox','live')), customer_id text NOT NULL, plan text NOT NULL CHECK(plan IN ('pro','premium','familia')), status text NOT NULL, current_period_end timestamptz, cancel_at_period_end boolean NOT NULL DEFAULT false, updated_at timestamptz NOT NULL DEFAULT now());
+GRANT SELECT ON public.stripe_subscription_records TO authenticated;
+GRANT ALL ON public.stripe_subscription_records TO service_role;
+ALTER TABLE public.stripe_subscription_records ENABLE ROW LEVEL SECURITY;
+CREATE POLICY own_stripe_read ON public.stripe_subscription_records FOR SELECT TO authenticated USING (user_id=auth.uid());
+CREATE INDEX stripe_records_user_env ON public.stripe_subscription_records(user_id,environment);
+GRANT SELECT ON public.pluggy_items,public.pluggy_accounts,public.pluggy_transactions TO authenticated;
+GRANT ALL ON public.pluggy_items,public.pluggy_accounts,public.pluggy_transactions TO service_role;
+ALTER TABLE public.pluggy_items ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.pluggy_accounts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.pluggy_transactions ENABLE ROW LEVEL SECURITY;
+REVOKE INSERT,UPDATE,DELETE ON public.pluggy_items,public.pluggy_accounts,public.pluggy_transactions FROM authenticated,anon;
+CREATE POLICY restored_item_read ON public.pluggy_items FOR SELECT TO authenticated USING(user_id=auth.uid() AND EXISTS(SELECT 1 FROM public.profiles WHERE user_id=auth.uid() AND is_active=true));
+CREATE POLICY restored_account_read ON public.pluggy_accounts FOR SELECT TO authenticated USING(user_id=auth.uid() AND EXISTS(SELECT 1 FROM public.profiles WHERE user_id=auth.uid() AND is_active=true));
+CREATE POLICY restored_transaction_read ON public.pluggy_transactions FOR SELECT TO authenticated USING(user_id=auth.uid() AND EXISTS(SELECT 1 FROM public.profiles WHERE user_id=auth.uid() AND is_active=true));
