@@ -180,3 +180,21 @@ export const adminSaveAdSenseSettings = createServerFn({ method: "POST" })
     if (error) throw error;
     return { ok: true };
   });
+
+export const adminListPurchases = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabaseAdmin } = await authorizedAdmin(context);
+    const [subsRes, authRes] = await Promise.all([
+      supabaseAdmin.from("subscriptions").select("id,user_id,plan,status,provider,provider_product_id,current_period_end,cancel_at_period_end,created_at,updated_at").order("updated_at", { ascending: false }).limit(1000),
+      supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 1000 }),
+    ]);
+    if (subsRes.error) throw subsRes.error;
+    if (authRes.error) throw authRes.error;
+    const emails = new Map((authRes.data?.users ?? []).map((u) => [u.id, u.email ?? null]));
+    return (subsRes.data ?? []).map((s) => ({
+      id: s.id, email: emails.get(s.user_id) ?? null, plan: s.plan, status: s.status,
+      provider: s.provider, productId: s.provider_product_id, periodEnd: s.current_period_end,
+      cancelAtPeriodEnd: s.cancel_at_period_end, createdAt: s.created_at, updatedAt: s.updated_at,
+    }));
+  });
