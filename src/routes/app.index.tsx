@@ -191,16 +191,6 @@ function AppDashboard() {
             <span className="font-display font-semibold truncate">Falaí</span>
           </Link>
           <div className="flex items-center gap-1">
-            <Button asChild size="sm" variant="ghost">
-              <Link to="/app/orcamentos" aria-label="Orçamentos">
-                <span className="text-xs">Orçamentos</span>
-              </Link>
-            </Button>
-            <Button asChild size="sm" variant="ghost">
-              <Link to="/app/guardiao" aria-label="Guardião IA">
-                <span className="text-xs">Guardião</span>
-              </Link>
-            </Button>
             {isAdmin && (
               <Button asChild size="sm" variant="outline" className="border-primary/40 text-primary">
                 <Link to="/admin" aria-label="Abrir painel administrativo">

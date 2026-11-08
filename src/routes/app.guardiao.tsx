@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Loader2, Sparkles, AlertTriangle, CheckCircle2 } from "lucide-react";
 import { formatBRL } from "@/lib/categories";
 import { useAuth } from "@/hooks/use-auth";
+import { useIsAdmin } from "@/hooks/use-is-admin";
 import { getMyGuardianAnalysis } from "@/lib/guardian-user.functions";
 
 export const Route = createFileRoute("/app/guardiao")({
@@ -25,7 +26,9 @@ export const Route = createFileRoute("/app/guardiao")({
 type Result = Awaited<ReturnType<typeof getMyGuardianAnalysis>>;
 
 function GuardiaoPage() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
+  const { isAdmin, loading: roleLoading } = useIsAdmin(user);
+  const navigate = useNavigate();
   const analyze = useServerFn(getMyGuardianAnalysis);
   const [data, setData] = useState<Result | null>(null);
   const [loading, setLoading] = useState(false);
@@ -35,7 +38,22 @@ function GuardiaoPage() {
     try { setData(await analyze()); } catch { setData({ enabled: true, categories: [], recommendations: [], error: "Não foi possível analisar agora." }); }
     setLoading(false);
   };
-  useEffect(() => { if (user) void run(); }, [user]);
+
+  useEffect(() => {
+    if (authLoading || roleLoading) return;
+    if (!user) { navigate({ to: "/auth" }); return; }
+    if (!isAdmin) navigate({ to: "/app" });
+  }, [authLoading, roleLoading, user, isAdmin, navigate]);
+
+  useEffect(() => { if (user && isAdmin) void run(); }, [user, isAdmin]);
+
+  if (authLoading || roleLoading || !user || !isAdmin) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background p-4 pb-24">
