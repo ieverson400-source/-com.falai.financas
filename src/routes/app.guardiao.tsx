@@ -26,7 +26,9 @@ export const Route = createFileRoute("/app/guardiao")({
 type Result = Awaited<ReturnType<typeof getMyGuardianAnalysis>>;
 
 function GuardiaoPage() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
+  const { isAdmin, loading: roleLoading } = useIsAdmin(user);
+  const navigate = useNavigate();
   const analyze = useServerFn(getMyGuardianAnalysis);
   const [data, setData] = useState<Result | null>(null);
   const [loading, setLoading] = useState(false);
@@ -36,7 +38,22 @@ function GuardiaoPage() {
     try { setData(await analyze()); } catch { setData({ enabled: true, categories: [], recommendations: [], error: "Não foi possível analisar agora." }); }
     setLoading(false);
   };
-  useEffect(() => { if (user) void run(); }, [user]);
+
+  useEffect(() => {
+    if (authLoading || roleLoading) return;
+    if (!user) { navigate({ to: "/auth" }); return; }
+    if (!isAdmin) navigate({ to: "/app" });
+  }, [authLoading, roleLoading, user, isAdmin, navigate]);
+
+  useEffect(() => { if (user && isAdmin) void run(); }, [user, isAdmin]);
+
+  if (authLoading || roleLoading || !user || !isAdmin) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background p-4 pb-24">

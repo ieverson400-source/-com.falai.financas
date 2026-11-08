@@ -36,6 +36,8 @@ interface BudgetRow {
 
 function OrcamentosPage() {
   const { user, loading: authLoading } = useAuth();
+  const { isAdmin, loading: roleLoading } = useIsAdmin(user);
+  const navigate = useNavigate();
   
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
