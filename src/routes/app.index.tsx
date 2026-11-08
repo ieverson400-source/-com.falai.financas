@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useSubscription } from "@/hooks/use-subscription";
 import { verifyMyPlayPurchase } from "@/lib/play-billing.functions";
 import { useFeatureFlags } from "@/hooks/use-feature-flags";
+import { PlaySubscriptionCard } from "@/components/play-subscription-card";
 import { HomeShortcuts } from "@/components/home-shortcuts";
 import { PriceChangeAlerts } from "@/components/price-change-alerts";
 import { Button } from "@/components/ui/button";
@@ -491,7 +492,7 @@ function ProfileTab({
   avatarUrl: string | null;
   onAvatarChange: (url: string | null) => void;
 }) {
-  const { isActive, refresh } = useSubscription(user.id);
+  const { isActive, refresh, plan } = useSubscription(user.id);
   const verifyPlay = useServerFn(verifyMyPlayPurchase);
 
   // Atalho "Assinatura": só aparece se o servidor informar que está ligado (falha fechada).
@@ -568,6 +569,7 @@ function ProfileTab({
             onAvatarChange={onAvatarChange}
           />
           <ConfigThemeRow />
+          <PlaySubscriptionCard plan={plan} isActive={isActive} refresh={refresh} />
           {flags.subscriptions && (
             <Link
               to="/app/assinatura"
