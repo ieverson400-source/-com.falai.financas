@@ -46,7 +46,13 @@ function OrcamentosPage() {
   const [spent, setSpent] = useState<Record<string, number>>({});
 
   useEffect(() => {
-    if (!user) return;
+    if (authLoading || roleLoading) return;
+    if (!user) { navigate({ to: "/auth" }); return; }
+    if (!isAdmin) navigate({ to: "/app" });
+  }, [authLoading, roleLoading, user, isAdmin, navigate]);
+
+  useEffect(() => {
+    if (!user || !isAdmin) return;
     let cancelled = false;
     (async () => {
       setLoading(true);
@@ -146,7 +152,7 @@ function OrcamentosPage() {
     }
   };
 
-  if (authLoading || loading) {
+  if (authLoading || roleLoading || loading || !user || !isAdmin) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
