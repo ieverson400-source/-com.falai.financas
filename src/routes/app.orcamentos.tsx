@@ -167,6 +167,9 @@ function OrcamentosPage() {
               Limites mensais por categoria
             </p>
           </div>
+          <Button asChild variant="outline" size="sm">
+            <Link to="/app/guardiao">Guardião IA</Link>
+          </Button>
         </div>
       </header>
 
