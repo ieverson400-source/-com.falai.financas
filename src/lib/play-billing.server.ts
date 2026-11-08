@@ -223,7 +223,8 @@ export async function persistVerifiedSubscription(
     .eq("user_id", userId)
     .limit(1)
     .maybeSingle();
-  if (!existing && (!boundTo || boundTo !== userId)) throw new Error("Esta compra não pertence a esta conta.");
+  // Compras sem identificador (app antigo) seguem protegidas pela unicidade do token acima.
+  if (!existing && boundTo && boundTo !== userId) throw new Error("Esta compra não pertence a esta conta.");
   const { error } = await supabaseAdmin.from("subscriptions").upsert(
     [
       {
