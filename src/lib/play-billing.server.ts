@@ -11,7 +11,7 @@
 
 import { SignJWT, importPKCS8 } from "jose";
 
-const DEFAULT_PACKAGE = "br.com.falaifinancas.app";
+const DEFAULT_PACKAGE = "com.falai.financas";
 const TOKEN_URL = "https://oauth2.googleapis.com/token";
 const ANDROID_PUBLISHER = "https://androidpublisher.googleapis.com/androidpublisher/v3";
 const SCOPE = "https://www.googleapis.com/auth/androidpublisher";
@@ -41,6 +41,11 @@ const SKU_TO_PLAN: Record<string, PlayPlanKey> = {
   falai_pro_monthly: "pro",
   falai_premium_monthly: "premium",
   falai_familia_monthly: "familia",
+  falai_pro: "pro",
+  falai_premium: "premium",
+  falai_familia: "familia",
+  premium_mensal: "premium",
+  familia_mensal: "familia",
 };
 
 interface ServiceAccount {
