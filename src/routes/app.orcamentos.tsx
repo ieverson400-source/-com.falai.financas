@@ -89,7 +89,7 @@ function OrcamentosPage() {
     return () => {
       cancelled = true;
     };
-  }, [user]);
+  }, [user, isAdmin]);
 
   const parseValue = (v: string): number | null => {
     if (!v.trim()) return 0;
