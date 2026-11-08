@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Loader2, Sparkles, AlertTriangle, CheckCircle2 } from "lucide-react";
 import { formatBRL } from "@/lib/categories";
 import { useAuth } from "@/hooks/use-auth";
+import { useIsAdmin } from "@/hooks/use-is-admin";
 import { getMyGuardianAnalysis } from "@/lib/guardian-user.functions";
 
 export const Route = createFileRoute("/app/guardiao")({
