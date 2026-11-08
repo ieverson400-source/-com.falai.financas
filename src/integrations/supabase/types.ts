@@ -1078,6 +1078,42 @@ export type Database = {
         }
         Relationships: []
       }
+      stripe_subscription_records: {
+        Row: {
+          cancel_at_period_end: boolean
+          current_period_end: string | null
+          customer_id: string
+          environment: string
+          id: string
+          plan: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cancel_at_period_end?: boolean
+          current_period_end?: string | null
+          customer_id: string
+          environment: string
+          id: string
+          plan: string
+          status: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cancel_at_period_end?: boolean
+          current_period_end?: string | null
+          customer_id?: string
+          environment?: string
+          id?: string
+          plan?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
           cancel_at_period_end: boolean
