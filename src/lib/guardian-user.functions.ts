@@ -24,7 +24,7 @@ export const getMyGuardianAnalysis = createServerFn({ method: "POST" })
     const categories: GuardianCategory[] = cats.map((c) => {
       const s = Math.round((spent[c] ?? 0) * 100) / 100;
       const l = limits[c] ?? null;
-      const alert = !settings.include_budget_alerts || !l ? null : s > l ? "over" : s >= l * 0.8 ? "near" : "ok";
+      const alert: GuardianCategory["alert"] = !settings.include_budget_alerts || !l ? null : s > l ? "over" : s >= l * 0.8 ? "near" : "ok";
       return { category: c, spent: s, limit: l, alert };
     }).sort((a, b) => b.spent - a.spent);
 
