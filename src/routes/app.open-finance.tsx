@@ -1,5 +1,6 @@
-import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { createFileRoute, Link, useNavigate, ClientOnly } from "@tanstack/react-router";
+import { lazy, Suspense, useCallback, useEffect, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import {
   AlertTriangle,
@@ -19,32 +20,22 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import type { OpenFinanceConnectionStatus } from "@/lib/openfinance/provider";
-import { setOpenFinanceSimState, useOpenFinanceSimState } from "@/lib/openfinance/session-state";
-import { getOpenFinanceFlags } from "@/lib/openfinance/flags.functions";
-import { startOpenFinanceConsent } from "@/lib/openfinance/start-consent.functions";
+import { listMyBanks, startBankConnection, syncMyBank, disconnectMyBank } from "@/lib/pluggy.functions";
+const PluggyWidget = lazy(() => import("@/components/pluggy-connect-widget"));
 
 // Esta tela NÃO chama a Celcoin nem exibe dado bancário. O botão "Conectar banco" fica desabilitado
 // até a integração existir. O estado exibido é uma SIMULAÇÃO local (ver lib/openfinance/session-state).
 
 export const Route = createFileRoute("/app/open-finance")({
   // Feature flag lida no servidor: com OF_ENABLED diferente de "true" a rota redireciona para /app.
-  beforeLoad: async () => {
-    let enabled = false;
-    try {
-      enabled = (await getOpenFinanceFlags()).enabled;
-    } catch {
-      enabled = false;
-    }
-    if (!enabled) throw redirect({ to: "/app" });
-  },
   component: OpenFinancePage,
   head: () => ({
-    meta: [{ title: "Conectar sua conta bancária — Falaí Finanças e Gastos" }],
+    meta: [{ title: "Bancos conectados — Falaí Finanças" }, { name: "description", content: "Gerencie suas conexões bancárias pessoais com Pluggy no Falaí Finanças." }, { property: "og:title", content: "Bancos conectados — Falaí Finanças" }, { property: "og:description", content: "Suas contas bancárias, com autorização individual e leitura segura." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }],
   }),
 });
 
 // TODO: derivar do servidor quando a integração for aprovada (Etapa 3). Hoje é sempre indisponível.
-const CONSENT_AVAILABLE = false;
+const CONSENT_AVAILABLE = true;
 
 const STATUS: Record<OpenFinanceConnectionStatus, { icon: LucideIcon; title: string; text: string; tone: string }> = {
   disconnected: {
@@ -84,7 +75,15 @@ const STATE_ORDER: OpenFinanceConnectionStatus[] = ["disconnected", "pending", "
 function OpenFinancePage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const state = useOpenFinanceSimState();
+  const list = useServerFn(listMyBanks);
+  const start = useServerFn(startBankConnection);
+  const sync = useServerFn(syncMyBank);
+  const disconnect = useServerFn(disconnectMyBank);
+  const [banks, setBanks] = useState<Awaited<ReturnType<typeof listMyBanks>> | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [updateItem, setUpdateItem] = useState<string | undefined>();
+  const [error, setError] = useState<string | null>(null);
+  const state: OpenFinanceConnectionStatus = banks?.items.length ? "connected" : "disconnected";
   const [busy, setBusy] = useState(false);
   const s = STATUS[state];
   const Icon = s.icon;
@@ -92,18 +91,36 @@ function OpenFinancePage() {
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth" });
   }, [loading, user, navigate]);
+  const refresh = useCallback(async () => {
+    try { setBanks(await list()); setError(null); } catch (e) { setError(e instanceof Error ? e.message : "Falha ao carregar bancos."); }
+  }, [list]);
+  useEffect(() => { if (user) void refresh(); }, [user, refresh]);
 
-  async function onConnect() {
+  async function onConnect(itemId?: string) {
     if (!CONSENT_AVAILABLE || busy) return;
     setBusy(true);
     try {
-      const result = await startOpenFinanceConsent();
-      if (result.status === "not_configured") toast.info("Em breve");
-    } catch {
-      toast.error("Não foi possível iniciar a conexão agora.");
+      const result = await start({ data: { itemId } });
+      if ("error" in result) throw new Error(result.error);
+      setUpdateItem(itemId); setToken(result.accessToken);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Não foi possível iniciar a conexão agora.");
     } finally {
       setBusy(false);
     }
+  }
+  async function update(itemId: string) {
+    setBusy(true);
+    try { const result = await sync({ data: { itemId } }); if ("error" in result) throw new Error(result.error); await refresh(); toast.success("Dados bancários atualizados."); }
+    catch (e) { toast.error(e instanceof Error ? e.message : "Falha ao atualizar."); }
+    finally { setBusy(false); }
+  }
+  async function remove(itemId: string) {
+    if (!window.confirm("Desconectar este banco e remover os dados bancários salvos?")) return;
+    setBusy(true);
+    try { const result = await disconnect({ data: { itemId } }); if ("error" in result) throw new Error(result.error); await refresh(); toast.success("Banco desconectado."); }
+    catch (e) { toast.error(e instanceof Error ? e.message : "Falha ao desconectar."); }
+    finally { setBusy(false); }
   }
 
   return (
@@ -142,7 +159,7 @@ function OpenFinancePage() {
             </li>
             <li className="flex gap-2">
               <ShieldCheck className="mt-0.5 size-4 shrink-0 text-primary" />
-              <span>Os dados são usados para facilitar recargas e nada além disso.</span>
+              <span>Conexão de leitura pela Pluggy, com sua autorização.</span>
             </li>
           </ul>
 
@@ -163,10 +180,10 @@ function OpenFinancePage() {
               <div className="space-y-3 text-sm text-muted-foreground">
                 <p>
                   <strong className="text-foreground">Aviso de privacidade (LGPD):</strong> ao criar o consentimento,
-                  será solicitado o seu CPF ou CNPJ, conforme exigência da Celcoin. Esse dado é usado somente para
+                  poderá ser solicitado o seu CPF ou CNPJ no ambiente da Pluggy ou do banco. Esse dado é usado somente para
                   esta finalidade.
                 </p>
-                <p>Esta função ainda não está disponível. Os detalhes do fluxo podem mudar até a liberação.</p>
+                <p>As senhas bancárias não são salvas pelo Falaí. O compartilhamento depende da autorização do titular.</p>
               </div>
             </DialogContent>
           </Dialog>
@@ -184,7 +201,7 @@ function OpenFinancePage() {
           <Tooltip>
             <TooltipTrigger asChild>
               <span tabIndex={CONSENT_AVAILABLE ? -1 : 0} className="block">
-                <Button className="w-full" disabled={!CONSENT_AVAILABLE || busy} onClick={onConnect}>
+                <Button className="w-full" disabled={!user || busy} onClick={() => onConnect()}>
                   Conectar banco
                 </Button>
               </span>
@@ -194,23 +211,9 @@ function OpenFinancePage() {
         </TooltipProvider>
         {!CONSENT_AVAILABLE && <p className="text-center text-xs text-muted-foreground">Em breve.</p>}
 
-        {import.meta.env.DEV && (
-          <Card className="space-y-2 border-dashed p-4">
-            <p className="text-xs text-muted-foreground">Pré-visualização dos estados (somente em desenvolvimento)</p>
-            <div className="flex flex-wrap gap-2">
-              {STATE_ORDER.map((k) => (
-                <Button
-                  key={k}
-                  size="sm"
-                  variant={k === state ? "default" : "outline"}
-                  onClick={() => setOpenFinanceSimState(k)}
-                >
-                  {k}
-                </Button>
-              ))}
-            </div>
-          </Card>
-        )}
+        {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+        {banks?.items.map((item) => <section key={item.id} className="space-y-3 border-t border-border pt-4"><div><h2 className="font-semibold">{item.institution_name ?? "Banco conectado"}</h2><p className="text-xs text-muted-foreground">{item.status} · {item.last_synced_at ? new Date(item.last_synced_at).toLocaleString("pt-BR") : "Aguardando atualização"}</p></div>{banks.accounts.filter((a) => a.item_id === item.id).map((a) => <div key={a.id} className="flex justify-between gap-3 text-sm"><span>{a.name}</span><span>{new Intl.NumberFormat("pt-BR", { style: "currency", currency: a.currency_code ?? "BRL" }).format(Number(a.balance ?? 0))}</span></div>)}<div className="flex flex-wrap gap-2"><Button variant="outline" size="sm" disabled={busy} onClick={() => update(item.pluggy_item_id)}>Atualizar dados</Button><Button variant="outline" size="sm" disabled={busy} onClick={() => onConnect(item.pluggy_item_id)}>Renovar autorização</Button><Button variant="ghost" size="sm" disabled={busy} onClick={() => remove(item.pluggy_item_id)}>Desconectar</Button></div></section>)}
+        {token && <ClientOnly><Suspense fallback={<p>Carregando Pluggy…</p>}><PluggyWidget token={token} itemId={updateItem} onSuccess={(id) => { setToken(null); void update(id); }} onClose={() => setToken(null)} onError={() => { setToken(null); toast.error("Não foi possível concluir a autorização bancária."); }} /></Suspense></ClientOnly>}
       </main>
 
       <Toaster richColors />
