@@ -8,6 +8,7 @@ import { useSubscription } from "@/hooks/use-subscription";
 import { verifyMyPlayPurchase } from "@/lib/play-billing.functions";
 import { useFeatureFlags } from "@/hooks/use-feature-flags";
 import { PlaySubscriptionCard } from "@/components/play-subscription-card";
+import { StripeSubscriptionControls } from "@/components/stripe-subscription-controls";
 import { HomeShortcuts } from "@/components/home-shortcuts";
 import { PriceChangeAlerts } from "@/components/price-change-alerts";
 import { Button } from "@/components/ui/button";
@@ -560,15 +561,8 @@ function ProfileTab({
           />
           <ConfigThemeRow />
           <PlaySubscriptionCard plan={plan} isActive={isActive} refresh={refresh} />
-          {flags.subscriptions && (
-            <Link
-              to="/app/assinatura"
-              className="w-full px-4 py-3.5 flex items-center gap-3 text-left hover:bg-muted/40 transition-colors"
-            >
-              <CreditCard className="size-4 text-muted-foreground" />
-              <span className="text-sm font-medium flex-1">Assinatura</span>
-            </Link>
-          )}
+          <StripeSubscriptionControls isActive={isActive} />
+          <Button variant="ghost" asChild className="h-auto w-full justify-start gap-3 rounded-none px-4 py-3.5"><Link to="/app/open-finance"><CreditCard className="size-4 text-primary" />Conectar banco · Pluggy</Link></Button>
           <Button variant="ghost" className="h-auto w-full justify-start gap-3 rounded-none px-4 py-3.5" onClick={() => window.dispatchEvent(new Event("falai-enable-push"))}>
             <ExternalLink className="size-4 text-muted-foreground" />Ativar notificações push
           </Button>
