@@ -420,6 +420,51 @@ export type Database = {
         }
         Relationships: []
       }
+      guardian_analyses: {
+        Row: {
+          created_at: string
+          id: string
+          month: string
+          recommendation: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          month: string
+          recommendation?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          month?: string
+          recommendation?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      guardian_gateway_state: {
+        Row: {
+          blocked: boolean
+          message: string | null
+          setting_key: string
+        }
+        Insert: {
+          blocked?: boolean
+          message?: string | null
+          setting_key: string
+        }
+        Update: {
+          blocked?: boolean
+          message?: string | null
+          setting_key?: string
+        }
+        Relationships: []
+      }
       guardian_settings: {
         Row: {
           enabled: boolean
@@ -453,6 +498,33 @@ export type Database = {
           system_prompt?: string
           updated_at?: string
           updated_by?: string | null
+        }
+        Relationships: []
+      }
+      incomes: {
+        Row: {
+          amount: number
+          created_at: string
+          description: string | null
+          id: string
+          income_date: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          income_date?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          income_date?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -1006,6 +1078,42 @@ export type Database = {
         }
         Relationships: []
       }
+      stripe_subscription_records: {
+        Row: {
+          cancel_at_period_end: boolean
+          current_period_end: string | null
+          customer_id: string
+          environment: string
+          id: string
+          plan: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cancel_at_period_end?: boolean
+          current_period_end?: string | null
+          customer_id: string
+          environment: string
+          id: string
+          plan: string
+          status: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cancel_at_period_end?: boolean
+          current_period_end?: string | null
+          customer_id?: string
+          environment?: string
+          id?: string
+          plan?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
           cancel_at_period_end: boolean
@@ -1220,6 +1328,10 @@ export type Database = {
         Returns: boolean
       }
       is_account_active: { Args: { _user_id: string }; Returns: boolean }
+      reserve_guardian_analysis: {
+        Args: { p_user_id: string }
+        Returns: string
+      }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"

@@ -36,6 +36,20 @@
       "when": 1794013075106,
       "tag": "0004_create_guardian_settings",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1794154760965,
+      "tag": "0005_create_incomes",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1794161174827,
+      "tag": "0006_restore_banking_and_stripe_billing",
+      "breakpoints": true
     }
   ]
 }

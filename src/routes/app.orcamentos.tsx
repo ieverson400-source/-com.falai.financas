@@ -1,7 +1,8 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import { useIsAdmin } from "@/hooks/use-is-admin";
 
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -35,6 +36,8 @@ interface BudgetRow {
 
 function OrcamentosPage() {
   const { user, loading: authLoading } = useAuth();
+  const { isAdmin, loading: roleLoading } = useIsAdmin(user);
+  const navigate = useNavigate();
   
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -43,7 +46,13 @@ function OrcamentosPage() {
   const [spent, setSpent] = useState<Record<string, number>>({});
 
   useEffect(() => {
-    if (!user) return;
+    if (authLoading || roleLoading) return;
+    if (!user) { navigate({ to: "/auth" }); return; }
+    if (!isAdmin) navigate({ to: "/app" });
+  }, [authLoading, roleLoading, user, isAdmin, navigate]);
+
+  useEffect(() => {
+    if (!user || !isAdmin) return;
     let cancelled = false;
     (async () => {
       setLoading(true);
@@ -80,7 +89,7 @@ function OrcamentosPage() {
     return () => {
       cancelled = true;
     };
-  }, [user]);
+  }, [user, isAdmin]);
 
   const parseValue = (v: string): number | null => {
     if (!v.trim()) return 0;
@@ -143,7 +152,7 @@ function OrcamentosPage() {
     }
   };
 
-  if (authLoading || loading) {
+  if (authLoading || roleLoading || loading || !user || !isAdmin) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
@@ -167,6 +176,9 @@ function OrcamentosPage() {
               Limites mensais por categoria
             </p>
           </div>
+          <Button asChild variant="outline" size="sm">
+            <Link to="/app/guardiao">Guardião IA</Link>
+          </Button>
         </div>
       </header>
 

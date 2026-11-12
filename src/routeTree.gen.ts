@@ -25,6 +25,7 @@ import { Route as AppAssinaturaRouteImport } from './routes/app.assinatura'
 import { Route as AppBancosRouteImport } from './routes/app.bancos'
 import { Route as AppCompartilharRouteImport } from './routes/app.compartilhar'
 import { Route as AppConectarWhatsappRouteImport } from './routes/app.conectar-whatsapp'
+import { Route as AppGuardiaoRouteImport } from './routes/app.guardiao'
 import { Route as AppOpenFinanceRouteImport } from './routes/app.open-finance'
 import { Route as AppOrcamentosRouteImport } from './routes/app.orcamentos'
 import { Route as AppPlanosRouteImport } from './routes/app.planos'
@@ -118,6 +119,11 @@ const AppConectarWhatsappRoute = AppConectarWhatsappRouteImport.update({
   path: '/app/conectar-whatsapp',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppGuardiaoRoute = AppGuardiaoRouteImport.update({
+  id: '/app/guardiao',
+  path: '/app/guardiao',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppOpenFinanceRoute = AppOpenFinanceRouteImport.update({
   id: '/app/open-finance',
   path: '/app/open-finance',
@@ -196,6 +202,7 @@ export interface FileRoutesByFullPath {
   '/app/bancos': typeof AppBancosRoute
   '/app/compartilhar': typeof AppCompartilharRoute
   '/app/conectar-whatsapp': typeof AppConectarWhatsappRoute
+  '/app/guardiao': typeof AppGuardiaoRoute
   '/app/open-finance': typeof AppOpenFinanceRoute
   '/app/orcamentos': typeof AppOrcamentosRoute
   '/app/planos': typeof AppPlanosRouteWithChildren
@@ -226,6 +233,7 @@ export interface FileRoutesByTo {
   '/app/bancos': typeof AppBancosRoute
   '/app/compartilhar': typeof AppCompartilharRoute
   '/app/conectar-whatsapp': typeof AppConectarWhatsappRoute
+  '/app/guardiao': typeof AppGuardiaoRoute
   '/app/open-finance': typeof AppOpenFinanceRoute
   '/app/orcamentos': typeof AppOrcamentosRoute
   '/app/planos': typeof AppPlanosRouteWithChildren
@@ -257,6 +265,7 @@ export interface FileRoutesById {
   '/app/bancos': typeof AppBancosRoute
   '/app/compartilhar': typeof AppCompartilharRoute
   '/app/conectar-whatsapp': typeof AppConectarWhatsappRoute
+  '/app/guardiao': typeof AppGuardiaoRoute
   '/app/open-finance': typeof AppOpenFinanceRoute
   '/app/orcamentos': typeof AppOrcamentosRoute
   '/app/planos': typeof AppPlanosRouteWithChildren
@@ -289,6 +298,7 @@ export interface FileRouteTypes {
     | '/app/bancos'
     | '/app/compartilhar'
     | '/app/conectar-whatsapp'
+    | '/app/guardiao'
     | '/app/open-finance'
     | '/app/orcamentos'
     | '/app/planos'
@@ -319,6 +329,7 @@ export interface FileRouteTypes {
     | '/app/bancos'
     | '/app/compartilhar'
     | '/app/conectar-whatsapp'
+    | '/app/guardiao'
     | '/app/open-finance'
     | '/app/orcamentos'
     | '/app/planos'
@@ -349,6 +360,7 @@ export interface FileRouteTypes {
     | '/app/bancos'
     | '/app/compartilhar'
     | '/app/conectar-whatsapp'
+    | '/app/guardiao'
     | '/app/open-finance'
     | '/app/orcamentos'
     | '/app/planos'
@@ -380,6 +392,7 @@ export interface RootRouteChildren {
   AppBancosRoute: typeof AppBancosRoute
   AppCompartilharRoute: typeof AppCompartilharRoute
   AppConectarWhatsappRoute: typeof AppConectarWhatsappRoute
+  AppGuardiaoRoute: typeof AppGuardiaoRoute
   AppOpenFinanceRoute: typeof AppOpenFinanceRoute
   AppOrcamentosRoute: typeof AppOrcamentosRoute
   AppPlanosRoute: typeof AppPlanosRouteWithChildren
@@ -508,6 +521,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppConectarWhatsappRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/guardiao': {
+      id: '/app/guardiao'
+      path: '/app/guardiao'
+      fullPath: '/app/guardiao'
+      preLoaderRoute: typeof AppGuardiaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/app/open-finance': {
       id: '/app/open-finance'
       path: '/app/open-finance'
@@ -623,6 +643,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppBancosRoute: AppBancosRoute,
   AppCompartilharRoute: AppCompartilharRoute,
   AppConectarWhatsappRoute: AppConectarWhatsappRoute,
+  AppGuardiaoRoute: AppGuardiaoRoute,
   AppOpenFinanceRoute: AppOpenFinanceRoute,
   AppOrcamentosRoute: AppOrcamentosRoute,
   AppPlanosRoute: AppPlanosRouteWithChildren,

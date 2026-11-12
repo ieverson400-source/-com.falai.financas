@@ -9,6 +9,8 @@ import { AdminAdSenseSettings } from "@/components/admin-adsense-settings";
 import { AdminAdvertising } from "@/components/admin-advertising";
 import { AdminFeatureFlags } from "@/components/admin-feature-flags";
 import { AdminGuardianSettings } from "@/components/admin-guardian-settings";
+import { AdminPurchases } from "@/components/admin-purchases";
+import { AdminStatement } from "@/components/admin-statement";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -85,6 +87,8 @@ function AdminPanel() {
     {section === "overview" && <Overview data={dashboard} />}
     {section === "monetization" && <AdminAdSenseSettings />}
     {section === "guardian" && <AdminGuardianSettings />}
+    {section === "purchases" && <AdminPurchases />}
+    {section === "statement" && <AdminStatement users={dashboard?.users ?? []} />}
     {section === "advertising" && <AdminAdvertising />}
     {section === "users" && <section><AdminSectionTitle icon={Users} title="Usuários" description="Contas, permissões, acesso e histórico financeiro." /><div className="relative mb-4 max-w-md"><Search className="absolute left-3 top-3 size-4 text-muted-foreground" /><Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Buscar por nome ou e-mail" className="h-10 pl-9" /></div><Card className="overflow-hidden"><Table><TableHeader><TableRow><TableHead>Usuário</TableHead><TableHead>Cadastro</TableHead><TableHead>Gastos registrados</TableHead><TableHead>Função</TableHead><TableHead>Status</TableHead><TableHead className="text-right">Ação</TableHead></TableRow></TableHeader><TableBody>{filteredUsers.map((item) => <TableRow key={item.id}><TableCell><p className="font-medium">{item.name ?? "Sem nome"}</p><p className="text-xs text-muted-foreground">{item.email ?? "—"}</p></TableCell><TableCell>{dt(item.createdAt)}</TableCell><TableCell>{brl.format(item.expenseTotal)}</TableCell><TableCell><Badge variant={item.role === "admin" ? "default" : "outline"}>{item.role}</Badge></TableCell><TableCell><Badge variant={item.isActive ? "secondary" : "destructive"}>{item.isActive ? "Ativo" : "Bloqueado"}</Badge></TableCell><TableCell className="text-right"><Button size="sm" variant="ghost" onClick={() => void openUser(item)}><Pencil className="mr-2 size-4" />Editar</Button></TableCell></TableRow>)}</TableBody></Table></Card></section>}
     {section === "notifications" && <section><AdminSectionTitle icon={Bell} title="Notificações" description="Envios push e automações n8n." /><div className="flex flex-wrap gap-3"><Button onClick={() => void openPush()}><BellRing className="size-4" />Enviar Notificação Push</Button><Button variant="outline" disabled={busy} onClick={async () => { setBusy(true); try { const result = await testN8nWebhook(); if (result.ok) toast.success("Teste enviado ao n8n com sucesso."); else toast.error(result.error); } catch (error) { toast.error(error instanceof Error ? error.message : "Não foi possível enviar o teste ao n8n."); } finally { setBusy(false); } }}><Send className="size-4" />Testar n8n</Button></div></section>}
