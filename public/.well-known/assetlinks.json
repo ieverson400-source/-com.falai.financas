@@ -5,6 +5,19 @@
     ],
     "target": {
       "namespace": "android_app",
+      "package_name": "co.median.android.zpqlzxm",
+      "sha256_cert_fingerprints": [
+        "E7:59:C4:0A:A4:75:88:B0:AA:7C:3E:6B:1A:6E:C0:D6:66:7E:C7:81:07:5D:28:73:91:38:97:6F:E6:62:32:2C",
+        "72:97:71:47:89:AA:29:21:00:48:DD:5D:E3:AC:7E:13:DC:9F:C7:D4:1F:33:2E:CF:18:14:24:58:FA:4C:83:43"
+      ]
+    }
+  },
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
       "package_name": "com.falai.financas",
       "sha256_cert_fingerprints": [
         "B5:DC:A9:BA:01:78:9B:9F:FA:84:36:18:D1:32:61:A4:00:C2:D0:85:48:53:F7:33:4D:3F:C8:70:61:D4:10:D2"

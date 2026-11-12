@@ -570,7 +570,7 @@ function ProfileTab({
             <ExternalLink className="size-4 text-muted-foreground" />Ativar notificações push
           </Button>
           <a
-            href="https://id-preview--724889f1-e026-4a50-8f4a-842975d93e05.lovable.app/privacy"
+            href="https://falai-finan-as.lovable.app/privacy"
             target="_blank"
             rel="noopener noreferrer"
             className="w-full px-4 py-3.5 flex items-center gap-3 text-left hover:bg-muted/40 transition-colors"
